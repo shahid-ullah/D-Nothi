@@ -1,0 +1,50 @@
+.app-body {
+    background-color: rgb(255, 255, 255);
+}
+
+.app-header.navbar {
+    background-color: #fff;
+    border-bottom: 1px solid #aaaaaa;
+}
+
+.app-header.navbar .navbar-brand {
+    background-size: 120px auto;
+    border-bottom: 1px solid #aaaaaa;
+}
+
+app-header.navbar {
+    border-bottom: 1px solid #f64846 !important;
+}
+
+.sidebar {
+    border-right: 1px solid #aaaaaa;
+    background-color: rgb(255, 255, 255);
+}
+
+.sidebar .nav-link, .sidebar .navbar .dropdown-toggle, .navbar .sidebar .dropdown-toggle {
+    color: black;
+}
+
+.sidebar .nav-link:hover, .sidebar .nav-link:focus, .sidebar .nav-link.active {
+    background-color: #ff7473 !important;
+}
+
+.a {
+    color: #f64846;
+}
+
+.card-header-custom {
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    background: #03b8c0;
+}
+
+.card-header-custom2 {
+    color: #174b67;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    background: #fff;
+}
