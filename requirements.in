@@ -1,3 +1,5 @@
 pip-tools
 Django
 pandas
+django-environ
+mysqlclient
