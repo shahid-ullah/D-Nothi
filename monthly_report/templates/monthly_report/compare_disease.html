@@ -1,0 +1,138 @@
+{% extends 'monthly_report/base.html' %}
+
+{% block title %}Illness Analysis{% endblock %}
+
+{% block body_block %}
+    <form class="col-lg-12" id="form">
+        <legend>Month-wise Illness Analysis</legend>
+        <hr>
+        <div class="row">
+            <div class="col-sm-8">
+                Select Multiple Illness: ({{ num_dis|safe }})
+                <select class="form-control" name="illness" id="illness" multiple>
+                    {% for ill_id, illness_name in illness_categories %}
+                        <option value="{{ ill_id }}">{{ illness_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-sm-2">
+                From Year-Month: <input type="text" class="form-control year_month" id="fromDate" placeholder="YYYY-MM" value="2015-01">
+            </div>
+            <div class="col-sm-2">
+                To Year-Month: <input type="text" class="form-control year_month" id="toDate" placeholder="YYYY-MM" value="2019-04">
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm">
+                <input type="submit" id="submit" value="Show" class="btn btn-primary">
+
+            </div>
+        </div>
+    </form>
+
+    <hr>
+    <script src="https://code.highcharts.com/highcharts.src.js"></script>
+    <div class="row card card-accent-danger container-box" style="display:none;">
+        <h5 class="card-header" id="result"></h5>
+        <div class="card-body">
+            <div id="illness-graph"></div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        $(function() {
+            function call_ajax(callback) {
+                $('.container-box').hide();
+                var illness = $('#form option:selected').text();
+
+                const fromDate = $('#fromDate').val();
+                const toDate = $('#toDate').val();
+
+                const data = {illness: illness, fromDate: fromDate, toDate: toDate,
+                multi_illness: ''};
+                // you can verify the data in the browser console
+                console.log(data);
+                $.ajax({
+                    url: '/monthly_report/compare_diseases_monthwise/',
+                    data: data,
+                    type: 'POST',
+                    success: callback,
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            }
+
+            function server_response(response) {
+                // convert to json format
+                const r = JSON.parse(response);
+                console.log(r);
+                $('#result').html(r.result);
+                $('.container-box').show();
+            }
+
+            function update_graph(response)
+            {
+                //
+                server_response(response);
+
+                const r = JSON.parse(response);
+                //var series_data = {{ all_data|safe }};
+                Highcharts.chart('illness-graph', {
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: ''
+                },
+                legend: {
+                    layout: 'horizontal',
+                    align: 'center',
+                    verticalAlign: 'bottom'
+                    },
+                xAxis: {
+                    categories: r.cat_tim_m_jp,
+                    plotBands: r.plot_bands
+                },
+
+                yAxis: {
+                    title: {
+                        text: '症例別患者数'
+                    }
+                },
+                tooltip: {
+                    shared: true,
+                    valueSuffix: ' patients'
+                },
+                credits: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        marker: {
+                            symbol: 'circle'
+                        }
+
+                    },
+                    areaspline: {
+                        fillOpacity: 0.5
+                    }
+                },
+                series: r.series_multi_illness
+            });
+
+            }
+
+            // Validate
+            $('#form').submit(function(e) {
+                e.preventDefault();
+                call_ajax(update_graph);
+            });
+        });
+    </script>
+{% endblock %}

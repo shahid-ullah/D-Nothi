@@ -1,0 +1,304 @@
+{% extends 'monthly_report/base.html' %}
+
+{% block title %}Analytic Dashboard{% endblock %}
+
+{% block body_block %}
+
+<div id="chart_top_illness">
+    <script
+       src="https://code.highcharts.com/highcharts.src.js">
+    </script>
+
+    <script>
+        Highcharts.chart('chart_top_illness', {
+          chart: {
+              type: 'line'
+          },
+          title: {
+              text: 'Most Common Diseases'
+          },
+          subtitle: {
+              text: 'Month, Disease wise Patient Count (Data from Year {{ year_s }} to {{ year_e }} ) '
+          },
+          xAxis: {
+              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+          },
+          yAxis: {
+              title: {
+                  text: 'Number of Patients'
+              }
+          },
+          plotOptions: {
+                        series: {
+                            marker: {
+                                symbol: 'circle'
+                            }
+                        },
+                        areaspline: {
+                            fillOpacity: 0.5
+                        }
+                    },
+          series: {{ series_obj|safe }}
+        });
+    </script>
+</div>
+<div>
+    {{waiting_time_json}}
+</div>
+<hr>
+<div>
+    {{patients}}
+</div>
+<hr>
+<div id="chart_waiting_time_by_clinic">
+    <script>
+        var data = {{ waiting_time_by_clinic|safe }};
+        Highcharts.chart('chart_waiting_time_by_clinic', {
+                chart: {
+                    type: 'bar'
+                },
+                title: {
+                    text: 'Clinic waiting time'
+                },
+                xAxis: {
+                    categories: data.clinics
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: ''
+                    }
+                },
+                legend: {
+                    reversed: true
+                },
+                plotOptions: {
+                    series: {
+                        stacking: 'normal'
+                    }
+                },
+                series: data.data
+            });
+    </script>
+</div>
+<hr>
+<div id="chart_department_visit">
+    <script>
+        var dept_data = {{ department_visits|safe }};
+        Highcharts.chart('chart_department_visit', {
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    type: 'pie'
+                },
+                title: {
+                    text: 'Visit Department'
+                },
+                tooltip: {
+                    //pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                            style: {
+                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                            }
+                        }
+                    }
+                },
+            series: [{
+                name: 'Medical Examination Department',
+                colorByPoint: true,
+                data: dept_data
+            }]
+            });
+    </script>
+</div>
+<hr>
+<div id="chart_monthly_departments_visit">
+    <script>
+        var data = {{ department_visits_monthly|safe }};
+        Highcharts.chart('chart_monthly_departments_visit', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Visit department by month'
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: data.months,
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Patient visit'
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: data.data
+            });
+    </script>
+</div>
+
+<hr>
+<div id="chart_monthly_patient_visit_count">
+    <script>
+        var data = {{ monthly_patient_visit_count|safe }};
+        Highcharts.chart('chart_monthly_patient_visit_count', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Patients visit by Clinic'
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: data.months,
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Patients visit'
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: data.data
+            });
+
+    </script>
+</div>
+
+<hr>
+<div id="chart_staff_count_by_clinic">
+    <script>
+        var data = {{ staff_count_by_clinic|safe }};
+        Highcharts.chart('chart_staff_count_by_clinic', {
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    type: 'pie'
+                },
+                title: {
+                    text: 'Staff Count by Clinics'
+                },
+                tooltip: {
+                    //pointFormat: '{series.name}: <b>{point.count:.1f}%</b>'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                            style: {
+                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                            }
+                        }
+                    }
+                },
+                series: [{
+                    name: 'Staffs',
+                    colorByPoint: true,
+                    data: data
+                }]
+            });
+    </script>
+</div>
+<hr>
+<div id="chart_doctor_patient_count">
+    <script>
+        var data = {{ doctor_patients_count|safe }};
+        Highcharts.chart('chart_doctor_patient_count', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Doctors patient visit'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                type: 'category',
+                labels: {
+                    rotation: -45,
+                    style: {
+                        fontSize: '13px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Patients for doctors'
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            tooltip: {
+                pointFormat: 'Patients for doctor: <b>{point.y}</b>'
+            },
+            series: [{
+                name: 'Patients',
+                data: data,
+                dataLabels: {
+                    enabled: true,
+                    rotation: -90,
+                    color: '#FFFFFF',
+                    align: 'right',
+                    format: '{point.y}', // one decimal
+                    y: 10, // 10 pixels down from the top
+                    style: {
+                        fontSize: '13px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                }
+            }]
+        });
+
+    </script>
+
+</div>
+{% endblock %}

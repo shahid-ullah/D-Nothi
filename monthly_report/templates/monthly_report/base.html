@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> D-nothi
+      {% block title %} Title goes here {% endblock %}
+    </title>
+
+    {% block metadata %}
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="description" content="CAPS Predictive Analysis">
+      <!-- other html tags here -->
+    {% endblock %}
+
+    <link rel="shortcut icon" href="{% static 'img/favicon.png' %}" />
+
+    {% block cdn_css %}
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    {% endblock %}
+
+    {% block local_css %}
+      <!-- Icons -->
+      <link rel="stylesheet" href="{% static "\vendors\css\flag-icon.min.css" %}">
+      <link rel="stylesheet" href="{% static "\vendors\css\font-awesome.min.css" %}">
+      <link rel="stylesheet" href="{% static "\vendors\css\simple-line-icons.min.css" %}">
+
+      <!-- Main styles for this application -->
+      <link rel="stylesheet" href="{% static "\css\style.core.css" %}">
+      <link rel="stylesheet" href="{% static "\css\custom-style.css" %}">
+
+      <!-- Styles required by this views -->
+      <link rel="stylesheet" href="{% static "\vendors\css\daterangepicker.min.css" %}">
+      <link rel="stylesheet" href="{% static "\vendors\css\gauge.min.css" %}">
+      <link rel="stylesheet" href="{% static "\vendors\css\toastr.min.css" %}">
+      <link rel="stylesheet" href="{% static "\vendors\css\select2.min.css" %}">
+
+      <script src="{% static "\vendors\js\jquery.min.js" %}"></script>
+
+    {% endblock %}
+
+
+    {% block internal_css %}
+      <!--<style>-->
+<!--body{-->
+  <!--color: black;-->
+  <!--}-->
+  <!--</style>-->
+    {% endblock %}
+    {% block extra_head %}{% endblock %}
+  </head>
+
+  <body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
+    <header class="app-header navbar">
+      <button class="navbar-toggler mobile-sidebar-toggler d-lg-none" type="button">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand font-weight-bold" href="#">D-Nothi</a>
+      <button class="navbar-toggler sidebar-toggler d-md-down-none" type="button">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <ul class="nav navbar-nav d-md-down-none mr-auto">
+
+      </ul>
+
+      <ul class="nav navbar-nav ml-auto">
+        <li class="nav-item dropdown">
+          <a class="nav-link nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            <img src="{% static 'img/avatars/6.jpg' %}" class="img-avatar" alt="admin@capsclinic.jp">
+          </a>
+          <div class="dropdown-menu dropdown-menu-right">
+            <div class="dropdown-header text-center">
+              <strong>Account</strong>
+            </div>
+            <a class="dropdown-item" href="#"><i class="fa fa-bell-o"></i> Updates<span class="badge badge-info">42</span></a>
+            <a class="dropdown-item" href="#"><i class="fa fa-envelope-o"></i> Messages<span class="badge badge-success">42</span></a>
+            <div class="dropdown-header text-center">
+              <strong>Settings</strong>
+            </div>
+            <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Profile</a>
+            <a class="dropdown-item" href="#"><i class="fa fa-wrench"></i> Settings</a>
+            <div class="divider"></div>
+            <a class="dropdown-item" href="#"><i class="fa fa-shield"></i> Lock Account</a>
+            <a class="dropdown-item" href="#"><i class="fa fa-lock"></i> Logout</a>
+          </div>
+        </li>
+        <button class="navbar-toggler aside-menu-toggler" type="button">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </ul>
+    </header>
+
+    <div class="app-body">
+      <div class="sidebar">
+        <nav class="sidebar-nav">
+          <ul class="nav">
+            <li class="nav-item">
+              <a href="{%url 'dashboard' %}" class="nav-link"><i class="icon-speedometer"></i> Dashboard </a>
+            </li>
+            <li class="nav-title">
+              {# Basic Analysis #}
+            </li>
+            <li class="nav-item">
+              {# <a href="{%url 'disease' %}" class="nav-link"><i class="icon-drop"></i> Illness Yearly </a> #}
+            </li>
+            <li class="nav-item">
+              {# <a href="{%url 'compare_disease' %}" class="nav-link"><i class="icon-drop"></i> Illness Monthly </a> #}
+            </li>
+            <li class="nav-title">
+              {# Feature Analysis #}
+            </li>
+            <li class="nav-item">
+              {# <a href="{%url 'age_group_analysis' %}" class="nav-link"><i class="icon-drop"></i> Age Group </a> #}
+            </li>
+            <!--<li class="nav-title">-->
+            <!--Predict-->
+            <!--</li>-->
+            <!--<li class="nav-item">-->
+            <!--<a href="{%url 'analyze_consultation' %}" class="nav-link"><i class="icon-drop"></i> Consultation Analysis </a>-->
+            <!--</li>-->
+          </ul>
+        </nav>
+        <button class="sidebar-minimizer brand-minimizer" type="button"></button>
+      </div>
+      <!-- Main content -->
+      <main class="main">
+
+        <div class="container-fluid">
+          <div id="ui-view">
+            {% block body_block %}
+              Main content
+            {% endblock %}
+          </div>
+        </div>
+        <!-- /.conainer-fluid -->
+      </main>
+
+    </div>
+
+    <footer class="app-footer">
+      <span>©2020 TAPPWARE<a href=""></a> All Rights Reserved. </span>
+      <span class="ml-auto">Analysis by <a href="https://www.tappware.com">TAPPWARE</a></span>
+    </footer>
+
+    {% block cdn_js %}
+      <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
+      <!-- other cdn javascript links -->
+      <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {% endblock %}
+
+    {% block local_js %}
+      <!-- Bootstrap and necessary plugins -->
+      <script src="{% static "\vendors\js\popper.min.js" %}"></script>
+      <script src="{% static "\vendors\js\bootstrap.min.js" %}"></script>
+      <script src="{% static "\vendors\js\pace.min.js" %}"></script>
+
+      <!-- Plugins and scripts required by this views -->
+      <script src="{% static "\vendors\js\jquery.maskedinput.min.js" %}"></script>
+      <script src="{% static "\vendors\js\toastr.min.js" %}"></script>
+      <script src="{% static "\vendors\js\gauge.min.js" %}"></script>
+      <script src="{% static "\vendors\js\moment.min.js" %}"></script>
+      <script src="{% static "\vendors\js\daterangepicker.min.js" %}"></script>
+      <script src="{% static "\vendors\js\select2.min.js" %}"></script>
+
+      <script src="{% static "\js\app.js" %}"></script>
+      {# <script src="{% static "\js\views\main.js" %}"></script> #}
+      <!-- other cdn javascript links -->
+    {% endblock %}
+
+    {% block internal_js %}
+      <script type="text/javascript">
+        console.log(" Analysis base is working...")
+          <!-- extra script -->
+      </script>
+    {% endblock %}
+  </body>
+</html>

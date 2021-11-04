@@ -1,0 +1,76 @@
+{% extends 'monthly_report/base.html' %}
+
+{% block title %}Visit Prediction{% endblock %}
+
+{% block body_block %}
+
+    <form class="col-lg-12" id="form">
+      <legend>Select Disease to Predict Patient Visit</legend>
+        <hr>
+        <div class="row">
+            <div class="col-sm-10">
+                Select Illness: ({{ num_dis|safe }})
+                <select class="form-control" name="illness" id="illness" multiple>
+                    {% for ill_id, illness_name in illness_categories %}
+                        <option value="{{ ill_id }}">{{ illness_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-sm-2">
+                Select Month: ({{ num_mon|safe }})
+                <select class="form-control" name="illness" id="month">
+                    {% for illness_name in months %}
+                        <option value="{{ illness_name }}">{{ illness_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm">
+                <input type="submit" id="submit" value="Predict" class="btn btn-primary">
+            </div>
+        </div>
+    </form>
+
+    <div class="row" id="prediction_result">
+        <div class="col-sm">
+            <h4 class="result-box"><strong id="result"></strong></h4>
+        </div>
+        <div class="col-sm-12 col-md-12" id="prediction-container">
+
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        $(function() {
+            function call_ajax(callback) {
+                const illness = $('#form option:selected').text();
+                const month = $('#month').val();
+                const request_data = {illness: illness, month: month}
+
+                $.ajax({
+                    url: '/monthly_report/generate_view/',
+                    data: request_data,
+                    type: 'POST',
+                    success: callback,
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            }
+
+            function server_response(response) {
+                $('#prediction-container').html(response);
+            }
+
+            // Validate
+            $('#form').submit(function(e) {
+                e.preventDefault();
+                call_ajax(server_response);
+            });
+        });
+    </script>
+{% endblock %}
