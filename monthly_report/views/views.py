@@ -9,6 +9,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 from ..apps import MonthlyReportConfig
+from ..utils import load_office_table
 from .data_loader import data_load, data_load_dashboard
 
 
@@ -121,8 +122,12 @@ def analyze(request):
 
 
 def dashboard(request):
+    if not settings.OFFICES_CSV_FILE_LOADED:
+        print('loading office table data')
+        load_office_table()
 
-    offices_df = MonthlyReportConfig.offices_df
+    # offices_df = MonthlyReportConfig.offices_df
+    offices_df = settings.OFFICES_CSV_FILE_PATH
     # years = offices_df.year.values
     # breakpoint()
     # print(list(set(years)))
