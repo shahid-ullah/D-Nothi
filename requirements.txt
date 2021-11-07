@@ -9,8 +9,17 @@ asgiref==3.4.1
 click==8.0.3
     # via pip-tools
 django==3.2.9
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   django-filter
+    #   djangorestframework
 django-environ==0.8.1
+    # via -r requirements.in
+django-filter==21.1
+    # via -r requirements.in
+djangorestframework==3.12.4
+    # via -r requirements.in
+markdown==3.3.4
     # via -r requirements.in
 mysqlclient==2.0.3
     # via -r requirements.in

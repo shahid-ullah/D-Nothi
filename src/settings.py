@@ -44,7 +44,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'monthly_report',
+    # third party app
+    'rest_framework',
+    # local apps
+    'monthly_report.apps.MonthlyReportConfig',
     'users.apps.UsersConfig',
 ]
 
@@ -135,9 +138,14 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Add these new lines
-STATICFILES_DIRS = (os.path.join(os.path.dirname(__file__), 'static'),)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 STATIC_ROOT = os.path.join(os.path.dirname(__file__), 'staticfiles')
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.CustomUser'
+
+DATA_BASE_DIR_PATH = os.path.join(BASE_DIR, 'Data')

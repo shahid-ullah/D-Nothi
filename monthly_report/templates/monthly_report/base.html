@@ -7,36 +7,36 @@
     </title>
 
     {% block metadata %}
-      <meta charset="UTF-8">
-      <meta http-equiv="X-UA-Compatible" content="ie=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-      <meta name="description" content="CAPS Predictive Analysis">
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+
       <!-- other html tags here -->
     {% endblock %}
 
     <link rel="shortcut icon" href="{% static 'img/favicon.png' %}" />
 
     {% block cdn_css %}
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
       <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
     {% endblock %}
 
     {% block local_css %}
       <!-- Icons -->
-      <link rel="stylesheet" href="{% static "\vendors\css\flag-icon.min.css" %}">
-      <link rel="stylesheet" href="{% static "\vendors\css\font-awesome.min.css" %}">
-      <link rel="stylesheet" href="{% static "\vendors\css\simple-line-icons.min.css" %}">
+      <link rel="stylesheet" href="{% static 'vendors/css/flag-icon.min.css' %}">
+      <link rel="stylesheet" href="{% static 'vendors/css/font-awesome.min.css' %}">
+      <link rel="stylesheet" href="{% static 'vendors/css/simple-line-icons.min.css' %}">
 
-      <!-- Main styles for this application -->
-      <link rel="stylesheet" href="{% static "\css\style.core.css" %}">
-      <link rel="stylesheet" href="{% static "\css\custom-style.css" %}">
+      {# <!-- Main styles for this application --> #}
+      <link rel="stylesheet" href="{% static 'css/style.core.css' %}">
+      <link rel="stylesheet" href="{% static 'css/custom-style.css' %}">
 
-      <!-- Styles required by this views -->
-      <link rel="stylesheet" href="{% static "\vendors\css\daterangepicker.min.css" %}">
-      <link rel="stylesheet" href="{% static "\vendors\css\gauge.min.css" %}">
-      <link rel="stylesheet" href="{% static "\vendors\css\toastr.min.css" %}">
-      <link rel="stylesheet" href="{% static "\vendors\css\select2.min.css" %}">
+      {# <!-- Styles required by this views --> #}
+      {# <link rel="stylesheet" href="{% static '\vendors\css\daterangepicker.min.css' %}"> #}
+      {# <link rel="stylesheet" href="{% static '\vendors\css\gauge.min.css' %}"> #}
+      {# <link rel="stylesheet" href="{% static '\vendors\css\toastr.min.css' %}"> #}
+      {# <link rel="stylesheet" href="{% static '\vendors\css\select2.min.css' %}"> #}
 
-      <script src="{% static "\vendors\js\jquery.min.js" %}"></script>
+      {# <script src="{% static '\vendors\js\jquery.min.js' %}"></script> #}
 
     {% endblock %}
 
@@ -99,19 +99,19 @@
               <a href="{%url 'dashboard' %}" class="nav-link"><i class="icon-speedometer"></i> Dashboard </a>
             </li>
             <li class="nav-title">
-              {# Basic Analysis #}
+              Basic Analysis
             </li>
             <li class="nav-item">
-              {# <a href="{%url 'disease' %}" class="nav-link"><i class="icon-drop"></i> Illness Yearly </a> #}
+              <a href="{%url 'disease' %}" class="nav-link"><i class="icon-drop"></i> Illness Yearly </a>
             </li>
             <li class="nav-item">
-              {# <a href="{%url 'compare_disease' %}" class="nav-link"><i class="icon-drop"></i> Illness Monthly </a> #}
+              <a href="{%url 'compare_disease' %}" class="nav-link"><i class="icon-drop"></i> Illness Monthly </a>
             </li>
             <li class="nav-title">
               {# Feature Analysis #}
             </li>
             <li class="nav-item">
-              {# <a href="{%url 'age_group_analysis' %}" class="nav-link"><i class="icon-drop"></i> Age Group </a> #}
+              <a href="{%url 'age_group_analysis' %}" class="nav-link"><i class="icon-drop"></i> Age Group </a>
             </li>
             <!--<li class="nav-title">-->
             <!--Predict-->
@@ -146,26 +146,32 @@
     {% block cdn_js %}
       <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
       <!-- other cdn javascript links -->
+
+      <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js" ></script>
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+
       <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      {# <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> #}
+      {# <script src="https://code.highcharts.com/highcharts.src.js"></script> #}
     {% endblock %}
 
     {% block local_js %}
       <!-- Bootstrap and necessary plugins -->
-      <script src="{% static "\vendors\js\popper.min.js" %}"></script>
-      <script src="{% static "\vendors\js\bootstrap.min.js" %}"></script>
+      {# <script src="{% static "\vendors\js\popper.min.js" %}"></script> #}
+      {# <script src="{% static "\vendors\js\bootstrap.min.js" %}"></script> #}
       <script src="{% static "\vendors\js\pace.min.js" %}"></script>
 
       <!-- Plugins and scripts required by this views -->
-      <script src="{% static "\vendors\js\jquery.maskedinput.min.js" %}"></script>
-      <script src="{% static "\vendors\js\toastr.min.js" %}"></script>
-      <script src="{% static "\vendors\js\gauge.min.js" %}"></script>
-      <script src="{% static "\vendors\js\moment.min.js" %}"></script>
-      <script src="{% static "\vendors\js\daterangepicker.min.js" %}"></script>
-      <script src="{% static "\vendors\js\select2.min.js" %}"></script>
+      {# <script src="{% static "\vendors\js\jquery.maskedinput.min.js" %}"></script> #}
+      {# <script src="{% static "\vendors\js\toastr.min.js" %}"></script> #}
+      {# <script src="{% static "\vendors\js\gauge.min.js" %}"></script> #}
+      {# <script src="{% static "\vendors\js\moment.min.js" %}"></script> #}
+      {# <script src="{% static "\vendors\js\daterangepicker.min.js" %}"></script> #}
+      {# <script src="{% static "\vendors\js\select2.min.js" %}"></script> #}
 
-      <script src="{% static "\js\app.js" %}"></script>
-      {# <script src="{% static "\js\views\main.js" %}"></script> #}
+      {# <script src="{% static "\js\app.js" %}"></script> #}
+      <script src="{% static 'js/monthly_report.js' %}"></script>
       <!-- other cdn javascript links -->
     {% endblock %}
 

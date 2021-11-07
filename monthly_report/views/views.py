@@ -2,11 +2,25 @@
 
 import json
 
+import numpy as np
+from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
+from ..apps import MonthlyReportConfig
 from .data_loader import data_load, data_load_dashboard
+
+
+class NpEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        if isinstance(obj, np.floating):
+            return float(obj)
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return super(NpEncoder, self).default(obj)
 
 
 def analyze(request):
@@ -107,48 +121,69 @@ def analyze(request):
 
 
 def dashboard(request):
-    series_obj_p1, dis_series_obj, dis_list, year_s, year_e = top_illness()
 
-    subjects = data_load_dashboard()
-    subjects = subjects.sort_values(by='start_date')
+    offices_df = MonthlyReportConfig.offices_df
+    # years = offices_df.year.values
+    # breakpoint()
+    # print(list(set(years)))
+    # years = list(set(years))
+    office_count = offices_df.groupby('year').size()
+    # type(office_count)
+    office_numbers = list(office_count.values)
+    # office_count.index
+    # type(office_count.index)
+    # dir(office_count.index)
+    # office_count.index.array
+    office_years = list(office_count.index.values)
+    # breakpoint()
 
-    # pre-process/modify dataframe
-    a_tim = subjects['診察時間（分）']
+    # series_obj_p1, dis_series_obj, dis_list, year_s, year_e = top_illness()
 
-    # converting timestamp to minute range
-    a_tot_tim = timelist(a_tim)
-    subjects['time'] = a_tot_tim
+    # subjects = data_load_dashboard()
+    # subjects = subjects.sort_values(by='start_date')
 
-    year_col = [d[:4] for d in subjects['start_date']]
-    year_mon = [d[5:7] for d in subjects['start_date']]
+    # # pre-process/modify dataframe
+    # a_tim = subjects['診察時間（分）']
 
-    subjects['year_col'] = year_col
-    subjects['year_mon'] = year_mon
+    # # converting timestamp to minute range
+    # a_tot_tim = timelist(a_tim)
+    # subjects['time'] = a_tot_tim
 
-    analyze_waiting_time(subjects)
-    analyze_patients_count(subjects)
-    analyze_department_visit(subjects)
-    analyze_department_visit_monthly(subjects)
-    analyze_monthly_patients_visit_by_clinic(subjects)
-    analyze_staff_count_by_clinic(subjects)
-    analyze_waiting_time_by_clinic(subjects)
-    analyze_doctor_patients_count(subjects)
+    # year_col = [d[:4] for d in subjects['start_date']]
+    # year_mon = [d[5:7] for d in subjects['start_date']]
 
+    # subjects['year_col'] = year_col
+    # subjects['year_mon'] = year_mon
+
+    # analyze_waiting_time(subjects)
+    # analyze_patients_count(subjects)
+    # analyze_department_visit(subjects)
+    # analyze_department_visit_monthly(subjects)
+    # analyze_monthly_patients_visit_by_clinic(subjects)
+    # analyze_staff_count_by_clinic(subjects)
+    # analyze_waiting_time_by_clinic(subjects)
+    # analyze_doctor_patients_count(subjects)
+
+    # context = {
+    #     'series_obj': json.dumps(series_obj_p1),
+    #     'dis_series_obj': json.dumps(dis_series_obj),
+    #     'dis_list': json.dumps(dis_list),
+    #     'year_s': json.dumps(year_s),
+    #     'year_e': json.dumps(year_e),
+    #     'waiting_time_json': waiting_time_json,
+    #     'waiting_time_by_clinic': json.dumps(waiting_time_by_clinic),
+    #     'patients': patients,
+    #     'department_visits': json.dumps(department_visits),
+    #     'department_visits_monthly': json.dumps(department_visits_monthly),
+    #     'monthly_patient_visit_count': json.dumps(monthly_patient_visit_count),
+    #     'staff_count_by_clinic': json.dumps(staff_count),
+    #     'doctor_patients_count': json.dumps(doctor_patients_count),
+    # }
     context = {
-        'series_obj': json.dumps(series_obj_p1),
-        'dis_series_obj': json.dumps(dis_series_obj),
-        'dis_list': json.dumps(dis_list),
-        'year_s': json.dumps(year_s),
-        'year_e': json.dumps(year_e),
-        'waiting_time_json': waiting_time_json,
-        'waiting_time_by_clinic': json.dumps(waiting_time_by_clinic),
-        'patients': patients,
-        'department_visits': json.dumps(department_visits),
-        'department_visits_monthly': json.dumps(department_visits_monthly),
-        'monthly_patient_visit_count': json.dumps(monthly_patient_visit_count),
-        'staff_count_by_clinic': json.dumps(staff_count),
-        'doctor_patients_count': json.dumps(doctor_patients_count),
+        "office_years": json.dumps(office_years, cls=NpEncoder),
+        "office_numbers": json.dumps(office_numbers, cls=NpEncoder),
     }
+    # breakpoint()
 
     return render(request, 'monthly_report/dashboard.html', context)
 

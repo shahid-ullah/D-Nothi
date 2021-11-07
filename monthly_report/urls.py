@@ -7,9 +7,14 @@ from django.conf.urls import url
 from django.urls import path, re_path
 
 from . import views
+from .api import ReportListAPI
 
 urlpatterns = [
     path('', views.dashboard, name="dashboard"),
+    path('report/', ReportListAPI.as_view(), name='report'),
+    path('report/<query_year>/', ReportListAPI.as_view(), name='report'),
+    # path('report/edit/', reportEdit, name='report_edit'),
+    # path('report/new/', new_report, name='new_report'),
     path('analyze/', views.dashboard, name="analyze"),
     path('analyze_disease/', views.analyze_disease, name="disease"),
     path(

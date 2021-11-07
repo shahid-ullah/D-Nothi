@@ -3,3 +3,6 @@ Django
 pandas
 django-environ
 mysqlclient
+djangorestframework
+markdown
+django-filter
