@@ -5,6 +5,30 @@ from django.conf import settings
 from django.db import models
 
 
+class TableNameModel(models.Model):
+    name = models.CharField(max_length=50)
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"table name: {self.name}"
+
+
+def user_directory_path(instance, filename):
+    return '{0}/{1}'.format(instance.table_name.name, filename)
+
+
+class CSVDataStorageModel(models.Model):
+    table_name = models.ForeignKey(TableNameModel, on_delete=models.CASCADE)
+    file_name = models.FileField(upload_to=user_directory_path)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"file: {self.file_name}"
+
+
 class YearModel(models.Model):
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
