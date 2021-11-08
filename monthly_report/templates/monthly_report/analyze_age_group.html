@@ -40,7 +40,7 @@
         </div>
     </div>
     <div id="container" style="height:600px">
-        <script src="https://code.highcharts.com/highcharts.src.js"></script>
+        {# <script src="https://code.highcharts.com/highcharts.src.js"></script> #}
         <script src="https://code.highcharts.com/highcharts.js"></script>
         <script src="https://code.highcharts.com/modules/data.js"></script>
         <script src="https://code.highcharts.com/modules/drilldown.js"></script>
@@ -57,7 +57,7 @@
                 const toDate = $('#toDate').val();
                 const data = {illness: illness, fromDate: fromDate, toDate: toDate}
                 // you can verify the data in the browser console
-                console.log(data);
+                {# console.log(data); #}
                 $.ajax({
                     url: '/monthly_report/age_group_drilldown/',
                     data: data,
@@ -137,4 +137,7 @@
             });
         });
     </script>
+{% endblock %}
+
+{% block local_js %}
 {% endblock %}

@@ -12,6 +12,30 @@ from ..apps import MonthlyReportConfig
 from ..utils import load_nisponno_records_table, load_office_table
 from .data_loader import data_load, data_load_dashboard
 
+month_map = {
+    '1': 'January',
+    '01': 'January',
+    '2': 'February',
+    '02': 'February',
+    '3': 'March',
+    '03': 'March',
+    '4': 'April',
+    '04': 'April',
+    '5': 'May',
+    '05': 'May',
+    '6': 'June',
+    '06': 'June',
+    '7': 'July',
+    '07': 'July',
+    '8': 'August',
+    '08': 'August',
+    '9': 'Septembr',
+    '09': 'Septermber',
+    '10': 'October',
+    '11': 'November',
+    '12': 'December',
+}
+
 
 class NpEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -558,3 +582,44 @@ def nispottikritto_nothi_yearwise(request):
         'record_years': json.dumps(records_years, cls=NpEncoder),
     }
     return render(request, 'monthly_report/nispottikritto_nothi_yearwise.html', context)
+
+
+def nispottikritto_nothi(request):
+    load_nisponno_records_table()
+    nisponno_records_df = settings.NISPONNO_RECORDS_CSV_FILE_PATH
+    nisponno_records_year_by = nisponno_records_df.groupby('year')
+    context = {}
+    general_series = [
+        {
+            'name': 'offices',
+            'colorByPoint': True,
+            'data': [],
+        }
+    ]
+    drilldown_series = []
+    for year, year_frame in nisponno_records_year_by:
+        # group, frame.shape[0]
+        year = str(year)
+
+        t_dict_ge = {'name': year, 'y': year_frame.shape[0], 'drilldown': year}
+        general_series[0]['data'].append(t_dict_ge)
+        t_dict_dr = {
+            'name': year,
+            'id': year,
+            'data': [],
+        }
+        month_group_by = year_frame.groupby('month')
+        for month, month_frame in month_group_by:
+            # mg, mf.shape[0]
+            month = str(month)
+            month = month_map[month]
+
+            lst = [month, month_frame.shape[0]]
+            t_dict_dr['data'].append(lst)
+            drilldown_series.append(t_dict_dr)
+
+    context = {
+        'general_series': json.dumps(general_series, cls=NpEncoder),
+        'drilldown_series': json.dumps(drilldown_series),
+    }
+    return render(request, 'monthly_report/nispottikritto_nothi.html', context)

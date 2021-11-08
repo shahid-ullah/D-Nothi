@@ -1,0 +1,92 @@
+{% extends 'monthly_report/base.html' %}
+
+{% block title %}Nispottikritto Nothi{% endblock %}
+{% block inline_css %}
+
+{% endblock inline_css %}
+
+{% block body_block %}
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <div class="card">
+          <div class="card-header card-header-custom2">
+            Nispottikritto Nothi
+          </div>
+          <div class="card-body">
+            <div id="chart_top_illness">
+
+              <figure class="highcharts-figure">
+                <div id="container"></div>
+                <p class="highcharts-description">
+                  Chat showing offices number statistics
+                </p>
+              </figure>
+
+              <canvas id="bar-chart" width="800" height="400"></canvas>
+              {# <script src="https://code.highcharts.com/highcharts.src.js"> </script> #}
+              <script src="https://code.highcharts.com/highcharts.js"></script>
+              <script src="https://code.highcharts.com/modules/data.js"></script>
+              <script src="https://code.highcharts.com/modules/drilldown.js"></script>
+              <script src="https://code.highcharts.com/modules/exporting.js"></script>
+              <script src="https://code.highcharts.com/modules/export-data.js"></script>
+              <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+              <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+              <script>
+                // Create the chart
+                Highcharts.chart('container', {
+                  chart: {
+                    type: 'column'
+                  },
+                  title: {
+                    text: 'Number of offices in recent years'
+                  },
+                  subtitle: {
+                    text: ''
+                  },
+                  accessibility: {
+                    announceNewData: {
+                      enabled: true
+                    }
+                  },
+                  xAxis: {
+                    type: 'category'
+                  },
+                  yAxis: {
+                    title: {
+                      text: 'Total Number of offices'
+                    }
+
+                  },
+                  legend: {
+                    enabled: false
+                  },
+                  plotOptions: {
+                    series: {
+                      borderWidth: 0,
+                      dataLabels: {
+                        enabled: true,
+                      }
+                    }
+                  },
+
+                  tooltip: {
+                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+                  },
+
+                  series: {{ general_series | safe }},
+                  drilldown: {
+                    series:{{ drilldown_series | safe }}
+                  }
+                });
+              </script>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+
+{% block local_js %}
+{%  endblock local_js %}

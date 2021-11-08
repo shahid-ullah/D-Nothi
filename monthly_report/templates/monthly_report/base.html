@@ -39,6 +39,8 @@
       {# <script src="{% static '\vendors\js\jquery.min.js' %}"></script> #}
 
     {% endblock %}
+    {% block inline_css %}
+    {% endblock inline_css %}
 
 
     {% block internal_css %}
@@ -100,11 +102,11 @@
             </li>
 
             <li class="nav-title">Nothi</li>
+            {# <li class="nav-item"> #}
+            {#   <a href="{% url "nispottikritto_nothi_yearwise" %}" class="nav-link"><i class="icon-drop"></i> নিষ্পত্তিকৃত নথি বার্ষিক </a> #}
+            {# </li> #}
             <li class="nav-item">
-              <a href="{% url "nispottikritto_nothi_yearwise" %}" class="nav-link"><i class="icon-drop"></i> নিষ্পত্তিকৃত নথি বার্ষিক </a>
-            </li>
-            <li class="nav-item">
-              <a href="" class="nav-link"><i class="icon-drop"></i> নিষ্পত্তিকৃত নথি মাসিক </a>
+              <a href="{% url 'nispottikritto_nothi' %}" class="nav-link"><i class="icon-drop"></i>নিষ্পত্তিকৃত নথি</a>
             </li>
             <li class="nav-item">
               <a href="" class="nav-link"><i class="icon-drop"></i> Nothi users(male) yearly </a>

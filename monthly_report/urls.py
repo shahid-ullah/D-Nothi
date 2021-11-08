@@ -21,6 +21,11 @@ urlpatterns = [
         views.nispottikritto_nothi_yearwise,
         name="nispottikritto_nothi_yearwise",
     ),
+    path(
+        'nispottikritto_nothi/',
+        views.nispottikritto_nothi,
+        name="nispottikritto_nothi",
+    ),
     path('analyze/', views.dashboard, name="analyze"),
     path('analyze_disease/', views.analyze_disease, name="disease"),
     path(
