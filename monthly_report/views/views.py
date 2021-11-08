@@ -9,7 +9,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 from ..apps import MonthlyReportConfig
-from ..utils import load_office_table
+from ..utils import load_nisponno_records_table, load_office_table
 from .data_loader import data_load, data_load_dashboard
 
 
@@ -122,9 +122,7 @@ def analyze(request):
 
 
 def dashboard(request):
-    if not settings.OFFICES_CSV_FILE_LOADED:
-        print('loading office table data')
-        load_office_table()
+    load_office_table()
 
     # offices_df = MonthlyReportConfig.offices_df
     offices_df = settings.OFFICES_CSV_FILE_PATH
@@ -547,3 +545,16 @@ def analyze_doctor_patients_count(subjects):
     d_hist = list(subjects.groupby('姓').count()['time'])
 
     doctor_patients_count = [[(a[0]), int(a[1])] for a in list(zip(doct_nam, d_hist))]
+
+
+def nispottikritto_nothi_yearwise(request):
+    load_nisponno_records_table()
+    nisponno_records_df = settings.NISPONNO_RECORDS_CSV_FILE_PATH
+    nisponno_records_count = nisponno_records_df.groupby('year').size()
+    records_numbers = list(nisponno_records_count.values)
+    records_years = list(nisponno_records_count.index.values)
+    context = {
+        'record_numbers': json.dumps(records_numbers, cls=NpEncoder),
+        'record_years': json.dumps(records_years, cls=NpEncoder),
+    }
+    return render(request, 'monthly_report/nispottikritto_nothi_yearwise.html', context)

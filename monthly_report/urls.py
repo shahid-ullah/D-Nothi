@@ -15,6 +15,12 @@ urlpatterns = [
     path('report/<query_year>/', ReportListAPI.as_view(), name='report'),
     # path('report/edit/', reportEdit, name='report_edit'),
     # path('report/new/', new_report, name='new_report'),
+    # Nothi section
+    path(
+        'nispottikritto_nothi_yearwise/',
+        views.nispottikritto_nothi_yearwise,
+        name="nispottikritto_nothi_yearwise",
+    ),
     path('analyze/', views.dashboard, name="analyze"),
     path('analyze_disease/', views.analyze_disease, name="disease"),
     path(

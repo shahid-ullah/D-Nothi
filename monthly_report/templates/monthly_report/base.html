@@ -31,10 +31,10 @@
       <link rel="stylesheet" href="{% static 'css/custom-style.css' %}">
 
       {# <!-- Styles required by this views --> #}
-      {# <link rel="stylesheet" href="{% static '\vendors\css\daterangepicker.min.css' %}"> #}
-      {# <link rel="stylesheet" href="{% static '\vendors\css\gauge.min.css' %}"> #}
-      {# <link rel="stylesheet" href="{% static '\vendors\css\toastr.min.css' %}"> #}
-      {# <link rel="stylesheet" href="{% static '\vendors\css\select2.min.css' %}"> #}
+      <link rel="stylesheet" href="{% static 'vendors/css/daterangepicker.min.css' %}">
+      <link rel="stylesheet" href="{% static 'vendors/css/gauge.min.css' %}">
+      <link rel="stylesheet" href="{% static 'vendors/css/toastr.min.css' %}">
+      <link rel="stylesheet" href="{% static 'vendors/css/select2.min.css' %}">
 
       {# <script src="{% static '\vendors\js\jquery.min.js' %}"></script> #}
 
@@ -98,6 +98,21 @@
             <li class="nav-item">
               <a href="{%url 'dashboard' %}" class="nav-link"><i class="icon-speedometer"></i> Dashboard </a>
             </li>
+
+            <li class="nav-title">Nothi</li>
+            <li class="nav-item">
+              <a href="{% url "nispottikritto_nothi_yearwise" %}" class="nav-link"><i class="icon-drop"></i> নিষ্পত্তিকৃত নথি বার্ষিক </a>
+            </li>
+            <li class="nav-item">
+              <a href="" class="nav-link"><i class="icon-drop"></i> নিষ্পত্তিকৃত নথি মাসিক </a>
+            </li>
+            <li class="nav-item">
+              <a href="" class="nav-link"><i class="icon-drop"></i> Nothi users(male) yearly </a>
+            <li class="nav-item">
+              <a href="" class="nav-link"><i class="icon-drop"></i> Nothi users(female) yearly </a>
+            </li>
+            </li>
+
             <li class="nav-title">
               Basic Analysis
             </li>
@@ -108,17 +123,17 @@
               <a href="{%url 'compare_disease' %}" class="nav-link"><i class="icon-drop"></i> Illness Monthly </a>
             </li>
             <li class="nav-title">
-              {# Feature Analysis #}
+              Feature Analysis
             </li>
             <li class="nav-item">
               <a href="{%url 'age_group_analysis' %}" class="nav-link"><i class="icon-drop"></i> Age Group </a>
             </li>
-            <!--<li class="nav-title">-->
-            <!--Predict-->
-            <!--</li>-->
-            <!--<li class="nav-item">-->
-            <!--<a href="{%url 'analyze_consultation' %}" class="nav-link"><i class="icon-drop"></i> Consultation Analysis </a>-->
-            <!--</li>-->
+            <li class="nav-title">
+            Predict
+            </li>
+            <li class="nav-item">
+            <a href="{%url 'analyze_consultation' %}" class="nav-link"><i class="icon-drop"></i> Consultation Analysis </a>
+            </li>
           </ul>
         </nav>
         <button class="sidebar-minimizer brand-minimizer" type="button"></button>
