@@ -28,3 +28,12 @@ def load_nisponno_records_table():
         path = load_csv(table)
         settings.NISPONNO_RECORDS_CSV_FILE_PATH = path
         settings.NISPONNO_RECORDS_CSV_FILE_LOADED = True
+
+
+def load_users_table():
+    if not settings.USERS_TABLE_CSV_FILE_LOADED:
+        print('loading users table data')
+        table = TableNameModel.objects.filter(name='users').first()
+        path = load_csv(table)
+        settings.USERS_TABLE_CSV_FILE_PATH = path
+        settings.USERS_TABLE_CSV_FILE_LOADED = True

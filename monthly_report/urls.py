@@ -26,6 +26,11 @@ urlpatterns = [
         views.nispottikritto_nothi,
         name="nispottikritto_nothi",
     ),
+    path(
+        'nothi_users_total/',
+        views.nothi_users_total,
+        name="nothi_users_total",
+    ),
     path('analyze/', views.dashboard, name="analyze"),
     path('analyze_disease/', views.analyze_disease, name="disease"),
     path(

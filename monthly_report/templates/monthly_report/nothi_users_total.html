@@ -1,6 +1,6 @@
 {% extends 'monthly_report/base.html' %}
 
-{% block title %}Nispottikritto Nothi{% endblock %}
+{% block title %}Total Nothi Users{% endblock %}
 {% block inline_css %}
 
 {% endblock inline_css %}
@@ -10,7 +10,7 @@
       <div class="col-sm-12 col-md-12">
         <div class="card">
           <div class="card-header card-header-custom2">
-              নিষ্পত্তিকৃত নথি
+            মোট নথি ব্যবহারকারী
           </div>
           <div class="card-body">
             <div id="chart_top_illness">
@@ -18,7 +18,7 @@
               <figure class="highcharts-figure">
                 <div id="container"></div>
                 <p class="highcharts-description">
-                  বার্ষিক এবং মাসিক নিষ্পত্তিকৃত নথি
+                  বার্ষিক এবং মাসিক নথি ব্যবহারকারী
                 </p>
               </figure>
 
@@ -39,7 +39,7 @@
                     type: 'column'
                   },
                   title: {
-                    text: 'বার্ষিক এবং মাসিক নিষ্পত্তিকৃত নথি'
+                    text: 'বার্ষিক এবং মাসিক নথি ব্যবহারকারী'
                   },
                   subtitle: {
                     text: ''

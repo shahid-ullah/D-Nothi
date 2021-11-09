@@ -9,7 +9,8 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 from ..apps import MonthlyReportConfig
-from ..utils import load_nisponno_records_table, load_office_table
+from ..utils import (load_nisponno_records_table, load_office_table,
+                     load_users_table)
 from .data_loader import data_load, data_load_dashboard
 
 month_map = {
@@ -34,6 +35,7 @@ month_map = {
     '10': 'October',
     '11': 'November',
     '12': 'December',
+    'unknown': 'Unknown',
 }
 
 
@@ -623,3 +625,45 @@ def nispottikritto_nothi(request):
         'drilldown_series': json.dumps(drilldown_series),
     }
     return render(request, 'monthly_report/nispottikritto_nothi.html', context)
+
+
+def nothi_users_total(request):
+    load_users_table()
+    users_df = settings.USERS_TABLE_CSV_FILE_PATH
+    users_df_year_by = users_df.groupby('year')
+    context = {}
+    general_series = [
+        {
+            'name': 'users',
+            'colorByPoint': True,
+            'data': [],
+        }
+    ]
+    drilldown_series = []
+
+    for year, year_frame in users_df_year_by:
+        year = str(year)
+        # year, year_frame.shape
+        t_dict_ge = {'name': year, 'y': year_frame.shape[0], 'drilldown': year}
+        general_series[0]['data'].append(t_dict_ge)
+
+        t_dict_dr = {
+            'name': year,
+            'id': year,
+            'data': [],
+        }
+        month_group_by = year_frame.groupby('month')
+        for month, month_frame in month_group_by:
+            # mg, mf.shape[0]
+            month = str(month)
+            month = month_map[month]
+
+            lst = [month, month_frame.shape[0]]
+            t_dict_dr['data'].append(lst)
+            drilldown_series.append(t_dict_dr)
+
+    context = {
+        'general_series': json.dumps(general_series, cls=NpEncoder),
+        'drilldown_series': json.dumps(drilldown_series),
+    }
+    return render(request, 'monthly_report/nothi_users_total.html', context)
