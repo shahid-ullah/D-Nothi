@@ -37,3 +37,12 @@ def load_users_table():
         path = load_csv(table)
         settings.USERS_TABLE_CSV_FILE_PATH = path
         settings.USERS_TABLE_CSV_FILE_LOADED = True
+
+
+def load_users_gender_male_table():
+    if not settings.USERS_GENDER_MALE_TABLE_CSV_FILE_LOADED:
+        print('loading users table data')
+        table = TableNameModel.objects.filter(name='users_gender_male').first()
+        path = load_csv(table)
+        settings.USERS_GENDER_MALE_TABLE_CSV_FILE_PATH = path
+        settings.USERS_GENDER_MALE_TABLE_CSV_FILE_LOADED = True

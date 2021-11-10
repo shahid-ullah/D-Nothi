@@ -31,6 +31,11 @@ urlpatterns = [
         views.nothi_users_total,
         name="nothi_users_total",
     ),
+    path(
+        'nothi_users_male/',
+        views.nothi_users_male,
+        name="nothi_users_male",
+    ),
     path('analyze/', views.dashboard, name="analyze"),
     path('analyze_disease/', views.analyze_disease, name="disease"),
     path(
