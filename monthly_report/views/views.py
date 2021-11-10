@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from ..apps import MonthlyReportConfig
 from ..utils import (load_nisponno_records_table, load_office_table,
+                     load_users_gender_female_table,
                      load_users_gender_male_table, load_users_table)
 from .data_loader import data_load, data_load_dashboard
 
@@ -153,7 +154,6 @@ def dashboard(request):
     # offices_df = MonthlyReportConfig.offices_df
     offices_df = settings.OFFICES_CSV_FILE_PATH
     # years = offices_df.year.values
-    # breakpoint()
     # print(list(set(years)))
     # years = list(set(years))
     office_count = offices_df.groupby('year').size()
@@ -164,7 +164,6 @@ def dashboard(request):
     # dir(office_count.index)
     # office_count.index.array
     office_years = list(office_count.index.values)
-    # breakpoint()
 
     # series_obj_p1, dis_series_obj, dis_list, year_s, year_e = top_illness()
 
@@ -212,7 +211,6 @@ def dashboard(request):
         "office_years": json.dumps(office_years, cls=NpEncoder),
         "office_numbers": json.dumps(office_numbers, cls=NpEncoder),
     }
-    # breakpoint()
 
     return render(request, 'monthly_report/dashboard.html', context)
 
@@ -708,3 +706,44 @@ def nothi_users_male(request):
         'drilldown_series': json.dumps(drilldown_series),
     }
     return render(request, 'monthly_report/nothi_users_male.html', context)
+
+
+def nothi_users_female(request):
+    load_users_gender_female_table()
+    users_female_df = settings.USERS_GENDER_FEMALE_TABLE_CSV_FILE_PATH
+    users_female_df_year_by = users_female_df.groupby('year')
+
+    general_series = [
+        {
+            'name': 'users',
+            'colorByPoint': True,
+            'data': [],
+        }
+    ]
+    drilldown_series = []
+
+    for year, year_frame in users_female_df_year_by:
+        year = str(year)
+        # year, year_frame.shape
+        t_dict_ge = {'name': year, 'y': year_frame.shape[0], 'drilldown': year}
+        general_series[0]['data'].append(t_dict_ge)
+
+        t_dict_dr = {
+            'name': year,
+            'id': year,
+            'data': [],
+        }
+        month_group_by = year_frame.groupby('month')
+        for month, month_frame in month_group_by:
+            # mg, mf.shape[0]
+            month = str(month)
+            month = month_map[month]
+
+            lst = [month, month_frame.shape[0]]
+            t_dict_dr['data'].append(lst)
+            drilldown_series.append(t_dict_dr)
+    context = {
+        'general_series': json.dumps(general_series, cls=NpEncoder),
+        'drilldown_series': json.dumps(drilldown_series),
+    }
+    return render(request, 'monthly_report/nothi_users_female.html', context)
