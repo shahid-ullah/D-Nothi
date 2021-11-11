@@ -41,29 +41,29 @@ urlpatterns = [
         views.nothi_users_female,
         name="nothi_users_female",
     ),
-    path('analyze/', views.dashboard, name="analyze"),
-    path('analyze_disease/', views.analyze_disease, name="disease"),
-    path(
-        'analyze_disease_monthwise/',
-        views.analyze_disease_monthwise,
-        name="analyze_disease_monthwise",
-    ),
-    path('compare_disease/', views.compare_diseases, name="compare_disease"),
-    path(
-        'compare_diseases_monthwise/',
-        views.compare_diseases_monthwise,
-        name="compare_diseases_monthwise",
-    ),
-    path('analyze_age_group/', views.analyze_age_group, name="age_group_analysis"),
-    path('age_group_drilldown/', views.age_group_drilldown, name="age_group_drilldown"),
-    path(
-        'analyze_consultation/', views.analyze_consultation, name="analyze_consultation"
-    ),
-    path(
-        'analyze_consultation_detail/',
-        views.analyze_consultation_detail,
-        name="analyze_consultation_detail",
-    ),
+    # path('analyze/', views.dashboard, name="analyze"),
+    # path('analyze_disease/', views.analyze_disease, name="disease"),
+    # path(
+    #     'analyze_disease_monthwise/',
+    #     views.analyze_disease_monthwise,
+    #     name="analyze_disease_monthwise",
+    # ),
+    # path('compare_disease/', views.compare_diseases, name="compare_disease"),
+    # path(
+    #     'compare_diseases_monthwise/',
+    #     views.compare_diseases_monthwise,
+    #     name="compare_diseases_monthwise",
+    # ),
+    # path('analyze_age_group/', views.analyze_age_group, name="age_group_analysis"),
+    # path('age_group_drilldown/', views.age_group_drilldown, name="age_group_drilldown"),
+    # path(
+    #     'analyze_consultation/', views.analyze_consultation, name="analyze_consultation"
+    # ),
+    # path(
+    #     'analyze_consultation_detail/',
+    #     views.analyze_consultation_detail,
+    #     name="analyze_consultation_detail",
+    # ),
     # # predict by month
     # path('predict_monthly_visit/', views.predict_monthly_visit, name='predict_monthly_visit'),
     # path('predict_monthly_visitor_count/', views.predict_monthly_visitor_count),

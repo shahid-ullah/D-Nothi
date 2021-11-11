@@ -58,7 +58,7 @@
       <button class="navbar-toggler mobile-sidebar-toggler d-lg-none" type="button">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <a class="navbar-brand font-weight-bold" href="#">D-Nothi</a>
+      <a class="navbar-brand font-weight-bold" href="#">ডি-নথি</a>
       <button class="navbar-toggler sidebar-toggler d-md-down-none" type="button">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -66,31 +66,31 @@
 
       </ul>
 
-      <ul class="nav navbar-nav ml-auto">
-        <li class="nav-item dropdown">
-          <a class="nav-link nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-            <img src="{% static 'img/avatars/6.jpg' %}" class="img-avatar" alt="admin@capsclinic.jp">
-          </a>
-          <div class="dropdown-menu dropdown-menu-right">
-            <div class="dropdown-header text-center">
-              <strong>Account</strong>
-            </div>
-            <a class="dropdown-item" href="#"><i class="fa fa-bell-o"></i> Updates<span class="badge badge-info">42</span></a>
-            <a class="dropdown-item" href="#"><i class="fa fa-envelope-o"></i> Messages<span class="badge badge-success">42</span></a>
-            <div class="dropdown-header text-center">
-              <strong>Settings</strong>
-            </div>
-            <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Profile</a>
-            <a class="dropdown-item" href="#"><i class="fa fa-wrench"></i> Settings</a>
-            <div class="divider"></div>
-            <a class="dropdown-item" href="#"><i class="fa fa-shield"></i> Lock Account</a>
-            <a class="dropdown-item" href="#"><i class="fa fa-lock"></i> Logout</a>
-          </div>
-        </li>
-        <button class="navbar-toggler aside-menu-toggler" type="button">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      </ul>
+      {# <ul class="nav navbar-nav ml-auto"> #}
+      {#   <li class="nav-item dropdown"> #}
+      {#     <a class="nav-link nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"> #}
+      {#       <img src="{% static 'img/avatars/6.jpg' %}" class="img-avatar" alt="admin@capsclinic.jp"> #}
+      {#     </a> #}
+      {#     <div class="dropdown-menu dropdown-menu-right"> #}
+      {#       <div class="dropdown-header text-center"> #}
+      {#         <strong>Account</strong> #}
+      {#       </div> #}
+      {#       <a class="dropdown-item" href="#"><i class="fa fa-bell-o"></i> Updates<span class="badge badge-info">42</span></a> #}
+      {#       <a class="dropdown-item" href="#"><i class="fa fa-envelope-o"></i> Messages<span class="badge badge-success">42</span></a> #}
+      {#       <div class="dropdown-header text-center"> #}
+      {#         <strong>Settings</strong> #}
+      {#       </div> #}
+      {#       <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Profile</a> #}
+      {#       <a class="dropdown-item" href="#"><i class="fa fa-wrench"></i> Settings</a> #}
+      {#       <div class="divider"></div> #}
+      {#       <a class="dropdown-item" href="#"><i class="fa fa-shield"></i> Lock Account</a> #}
+      {#       <a class="dropdown-item" href="#"><i class="fa fa-lock"></i> Logout</a> #}
+      {#     </div> #}
+      {#   </li> #}
+      {#   <button class="navbar-toggler aside-menu-toggler" type="button"> #}
+      {#     <span class="navbar-toggler-icon"></span> #}
+      {#   </button> #}
+      {# </ul> #}
     </header>
 
     <div class="app-body">
@@ -98,10 +98,10 @@
         <nav class="sidebar-nav">
           <ul class="nav">
             <li class="nav-item">
-              <a href="{%url 'dashboard' %}" class="nav-link"><i class="icon-speedometer"></i> Dashboard </a>
+              <a href="{%url 'dashboard' %}" class="nav-link"><i class="icon-speedometer"></i>ড্যাশবোর্ড</a>
             </li>
 
-            <li class="nav-title">Nothi</li>
+            <li class="nav-title">নথি</li>
             {# <li class="nav-item"> #}
             {#   <a href="{% url "nispottikritto_nothi_yearwise" %}" class="nav-link"><i class="icon-drop"></i> নিষ্পত্তিকৃত নথি বার্ষিক </a> #}
             {# </li> #}
@@ -119,25 +119,19 @@
             </li>
 
             <li class="nav-title">
-              Basic Analysis
+              পত্রজারি
             </li>
             <li class="nav-item">
-              <a href="{%url 'disease' %}" class="nav-link"><i class="icon-drop"></i> Illness Yearly </a>
+              <!-- <a href="" class="nav-link"><i class="icon-drop"></i> Illness Yearly </a> -->
             </li>
             <li class="nav-item">
-              <a href="{%url 'compare_disease' %}" class="nav-link"><i class="icon-drop"></i> Illness Monthly </a>
+              <!-- <a href="" class="nav-link"><i class="icon-drop"></i> Illness Monthly </a> -->
             </li>
             <li class="nav-title">
-              Feature Analysis
+              ডাক
             </li>
             <li class="nav-item">
-              <a href="{%url 'age_group_analysis' %}" class="nav-link"><i class="icon-drop"></i> Age Group </a>
-            </li>
-            <li class="nav-title">
-            Predict
-            </li>
-            <li class="nav-item">
-            <a href="{%url 'analyze_consultation' %}" class="nav-link"><i class="icon-drop"></i> Consultation Analysis </a>
+            <!-- <a href="" class="nav-link"><i class="icon-drop"></i> Consultation Analysis </a> -->
             </li>
           </ul>
         </nav>
