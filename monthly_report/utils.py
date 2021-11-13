@@ -55,3 +55,10 @@ def load_users_gender_female_table():
         path = load_csv(table)
         settings.USERS_GENDER_FEMALE_TABLE_CSV_FILE_PATH = path
         settings.USERS_GENDER_FEMALE_TABLE_CSV_FILE_LOADED = True
+
+
+def load_mobile_users_dataframe():
+    print('loading users gender female table data')
+    table = TableNameModel.objects.filter(name='mobile_users').first()
+    path = load_csv(table)
+    return path

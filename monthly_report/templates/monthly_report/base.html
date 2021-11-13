@@ -2,9 +2,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title> D-nothi
-      {% block title %} Title goes here {% endblock %}
-    </title>
+    <title>ডি-নথি - {% block title %}{% endblock %}</title>
 
     {% block metadata %}
       <meta charset="utf-8">
@@ -116,6 +114,10 @@
             </li>
             <li class="nav-item">
               <a href="{%  url 'nothi_users_female' %}" class="nav-link"><i class="icon-drop"></i>নথি ব্যবহারকারী (মহিলা)</a>
+            </li>
+
+            <li class="nav-item">
+              <a href="{% url 'mobile_app_users' %}" class="nav-link"><i class="icon-drop"></i>মোবাইল অ্যাপ ব্যবহারকারী</a>
             </li>
 
             <li class="nav-title">

@@ -9,8 +9,8 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 from ..apps import MonthlyReportConfig
-from ..utils import (load_nisponno_records_table, load_office_table,
-                     load_users_gender_female_table,
+from ..utils import (load_mobile_users_dataframe, load_nisponno_records_table,
+                     load_office_table, load_users_gender_female_table,
                      load_users_gender_male_table, load_users_table)
 from .data_loader import data_load, data_load_dashboard
 
@@ -703,7 +703,7 @@ def nothi_users_male(request):
             drilldown_series.append(t_dict_dr)
     context = {
         'general_series': json.dumps(general_series, cls=NpEncoder),
-        'drilldown_series': json.dumps(drilldown_series),
+        'drilldown_series': json.dumps(drilldown_series, cls=NpEncoder),
     }
     return render(request, 'monthly_report/nothi_users_male.html', context)
 
@@ -747,3 +747,68 @@ def nothi_users_female(request):
         'drilldown_series': json.dumps(drilldown_series),
     }
     return render(request, 'monthly_report/nothi_users_female.html', context)
+
+
+mobile_users_general_series = None
+mobile_users_drilldown_series = None
+
+
+def mobile_app_users(request):
+    global mobile_users_general_series, mobile_users_drilldown_series
+
+    if mobile_users_general_series and mobile_users_drilldown_series:
+        context = {
+            'general_series': json.dumps(mobile_users_general_series, cls=NpEncoder),
+            'drilldown_series': json.dumps(
+                mobile_users_drilldown_series, cls=NpEncoder
+            ),
+        }
+        return render(request, 'monthly_report/mobile_app_users.html', context)
+
+    mobile_users_dataframe = load_mobile_users_dataframe()
+    mobile_app_users_year_by = mobile_users_dataframe.groupby('year')
+
+    general_series, drilldown_series = genereate_general_series_drilldown_series(
+        mobile_app_users_year_by, 'users'
+    )
+    mobile_users_general_series = general_series
+    mobile_users_drilldown_series = drilldown_series
+    context = {
+        'general_series': json.dumps(mobile_users_general_series, cls=NpEncoder),
+        'drilldown_series': json.dumps(mobile_users_drilldown_series, cls=NpEncoder),
+    }
+    mobile_users_dataframe = None
+    return render(request, 'monthly_report/mobile_app_users.html', context)
+
+
+def genereate_general_series_drilldown_series(dataframe_year_by, general_series_name):
+    general_series = [
+        {
+            'name': general_series_name,
+            'colorByPoint': True,
+            'data': [],
+        }
+    ]
+    drilldown_series = []
+
+    for year, year_frame in dataframe_year_by:
+        year = str(year)
+        # year, year_frame.shape
+        t_dict_ge = {'name': year, 'y': year_frame.shape[0], 'drilldown': year}
+        general_series[0]['data'].append(t_dict_ge)
+
+        t_dict_dr = {
+            'name': year,
+            'id': year,
+            'data': [],
+        }
+        month_group_by = year_frame.groupby('month')
+        for month, month_frame in month_group_by:
+            # mg, mf.shape[0]
+            month = str(month)
+            month = month_map[month]
+
+            lst = [month, month_frame.shape[0]]
+            t_dict_dr['data'].append(lst)
+            drilldown_series.append(t_dict_dr)
+    return general_series, drilldown_series

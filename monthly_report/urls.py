@@ -41,6 +41,11 @@ urlpatterns = [
         views.nothi_users_female,
         name="nothi_users_female",
     ),
+    path(
+        'mobile_app_users/',
+        views.mobile_app_users,
+        name="mobile_app_users",
+    ),
     # path('analyze/', views.dashboard, name="analyze"),
     # path('analyze_disease/', views.analyze_disease, name="disease"),
     # path(
