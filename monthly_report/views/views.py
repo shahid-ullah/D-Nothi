@@ -7,16 +7,16 @@ from django.conf import settings
 from django.shortcuts import render
 
 from ..utils import (NpEncoder, generate_general_series_drilldown_series,
-                     load_mobile_users_dataframe, load_nisponno_records_table,
-                     load_office_table, load_users_gender_female_table,
-                     load_users_gender_male_table, load_users_table)
+                     load_mobile_users_dataframe,
+                     load_nisponno_records_dataframe, load_office_dataframe,
+                     load_users_dataframe, load_users_gender_female_dataframe,
+                     load_users_gender_male_dataframe)
 
 
 def dashboard(request):
-    load_office_table()
+    dataframe = load_office_dataframe()
 
-    offices_df = settings.OFFICES_CSV_FILE_PATH
-    office_count = offices_df.groupby('year').size()
+    office_count = dataframe.groupby('year').size()
     office_numbers = list(office_count.values)
     office_years = list(office_count.index.values)
 
@@ -29,7 +29,7 @@ def dashboard(request):
 
 
 def nispottikritto_nothi_yearwise(request):
-    load_nisponno_records_table()
+    load_nisponno_records_dataframe()
     nisponno_records_df = settings.NISPONNO_RECORDS_CSV_FILE_PATH
     nisponno_records_count = nisponno_records_df.groupby('year').size()
     records_numbers = list(nisponno_records_count.values)
@@ -58,7 +58,7 @@ def nispottikritto_nothi(request):
         }
         return render(request, 'monthly_report/nispottikritto_nothi.html', context)
 
-    dataframe = load_nisponno_records_table()
+    dataframe = load_nisponno_records_dataframe()
     dataframe_year_by = dataframe.groupby('year')
     general_series, drilldown_series = generate_general_series_drilldown_series(
         dataframe_year_by, 'offices'
@@ -100,7 +100,7 @@ def nothi_users_total(request):
         }
         return render(request, 'monthly_report/nothi_users_total.html', context)
 
-    dataframe = load_users_table()
+    dataframe = load_users_dataframe()
     dataframe_year_by = dataframe.groupby('year')
 
     general_series, drilldown_series = generate_general_series_drilldown_series(
@@ -138,7 +138,7 @@ def nothi_users_male(request):
         }
         return render(request, 'monthly_report/nothi_users_male.html', context)
 
-    dataframe = load_users_gender_male_table()
+    dataframe = load_users_gender_male_dataframe()
     dataframe_year_by = dataframe.groupby('year')
     general_series, drilldown_series = generate_general_series_drilldown_series(
         dataframe_year_by, 'users'
@@ -175,7 +175,7 @@ def nothi_users_female(request):
         }
         return render(request, 'monthly_report/nothi_users_female.html', context)
 
-    dataframe = load_users_gender_female_table()
+    dataframe = load_users_gender_female_dataframe()
     dataframe_year_by = dataframe.groupby('year')
     general_series, drilldown_series = generate_general_series_drilldown_series(
         dataframe_year_by, 'users'

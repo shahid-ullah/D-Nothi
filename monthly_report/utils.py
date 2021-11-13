@@ -4,9 +4,8 @@ import json
 
 import numpy as np
 import pandas as pd
-from django.conf import settings
 
-from .models import CSVDataStorageModel, TableNameModel
+from .models import CSVDataStorageModel, DataframeRecord
 
 month_map = {
     '1': 'January',
@@ -34,58 +33,65 @@ month_map = {
 }
 
 
-def load_csv(table_name=None):
-    csv_data = CSVDataStorageModel.objects.filter(table_name=table_name).first()
+def load_csv(dataframe=None):
+    csv_data = CSVDataStorageModel.objects.filter(dataframe=dataframe).first()
     dataframe = pd.read_csv(csv_data.file_name.path)
 
     return dataframe
 
 
-def load_office_table():
-    if not settings.OFFICES_CSV_FILE_LOADED:
-        print('loading office table ...')
-        table = TableNameModel.objects.filter(name='offices').first()
-        path = load_csv(table)
-        settings.OFFICES_CSV_FILE_PATH = path
-        settings.OFFICES_CSV_FILE_LOADED = True
-
-
-def load_nisponno_records_table():
-    print('loading nisponno_records table ...')
-    table = TableNameModel.objects.filter(name='nisponno_records').first()
-    dataframe = load_csv(table)
+def load_office_dataframe():
+    print('loading offices dataframe ...')
+    dataframe_object = DataframeRecord.objects.filter(dataframe_name='offices').first()
+    dataframe = load_csv(dataframe_object)
 
     return dataframe
 
 
-def load_users_table():
-    print('loading users table ...')
-    table = TableNameModel.objects.filter(name='users').first()
-    dataframe = load_csv(table)
+def load_nisponno_records_dataframe():
+    print('loading nisponno_records dataframe ...')
+    dataframe_object = DataframeRecord.objects.filter(
+        dataframe_name='nisponno_records'
+    ).first()
+    dataframe = load_csv(dataframe_object)
 
     return dataframe
 
 
-def load_users_gender_male_table():
-    print('loading users gender male table ...')
-    table = TableNameModel.objects.filter(name='users_gender_male').first()
-    dataframe = load_csv(table)
+def load_users_dataframe():
+    print('loading users dataframe ...')
+    dataframe_object = DataframeRecord.objects.filter(dataframe_name='users').first()
+    dataframe = load_csv(dataframe_object)
 
     return dataframe
 
 
-def load_users_gender_female_table():
-    print('loading users gender female table')
-    table = TableNameModel.objects.filter(name='users_gender_female').first()
-    dataframe = load_csv(table)
+def load_users_gender_male_dataframe():
+    print('loading users gender male dataframe ...')
+    dataframe_object = DataframeRecord.objects.filter(
+        dataframe_name='users_gender_male'
+    ).first()
+    dataframe = load_csv(dataframe_object)
+
+    return dataframe
+
+
+def load_users_gender_female_dataframe():
+    print('loading users gender female dataframe')
+    dataframe_object = DataframeRecord.objects.filter(
+        dataframe_name='users_gender_female'
+    ).first()
+    dataframe = load_csv(dataframe_object)
 
     return dataframe
 
 
 def load_mobile_users_dataframe():
-    print('loading users gender female table ...')
-    table = TableNameModel.objects.filter(name='mobile_users').first()
-    dataframe = load_csv(table)
+    print('loading users gender female dataframe ...')
+    dataframe_object = DataframeRecord.objects.filter(
+        dataframe_name='mobile_users'
+    ).first()
+    dataframe = load_csv(dataframe_object)
 
     return dataframe
 
