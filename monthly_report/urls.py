@@ -46,6 +46,11 @@ urlpatterns = [
         views.mobile_app_users,
         name="mobile_app_users",
     ),
+    path(
+        'total_nisponno/',
+        views.total_nisponno,
+        name="total_nisponno",
+    ),
     # path('analyze/', views.dashboard, name="analyze"),
     # path('analyze_disease/', views.analyze_disease, name="disease"),
     # path(

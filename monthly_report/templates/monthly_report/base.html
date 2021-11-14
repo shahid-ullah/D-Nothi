@@ -110,6 +110,9 @@
               <a href="{% url 'nothi_users_total' %}" class="nav-link"><i class="icon-drop"></i>মোট নথি ব্যবহারকারী</a>
             </li>
             <li class="nav-item">
+              <a href="" class="nav-link"><i class="icon-drop"></i>মোট উপকারভোগী</a>
+            </li>
+            <li class="nav-item">
               <a href="{% url 'nothi_users_male' %}" class="nav-link"><i class="icon-drop"></i>নথি ব্যবহারকারী (পুরুষ)</a>
             </li>
             <li class="nav-item">
@@ -125,9 +128,10 @@
             </li>
             <li class="nav-item">
               <!-- <a href="" class="nav-link"><i class="icon-drop"></i> Illness Yearly </a> -->
+              <a href="{% url 'total_nisponno' %}" class="nav-link"><i class="icon-drop"></i>মোট নিষ্পন্ন</a>
             </li>
             <li class="nav-item">
-              <!-- <a href="" class="nav-link"><i class="icon-drop"></i> Illness Monthly </a> -->
+              <a href="" class="nav-link"><i class="icon-drop"></i>পত্রজারি</a>
             </li>
             <li class="nav-title">
               ডাক
@@ -172,21 +176,23 @@
       {# <script src="https://code.highcharts.com/highcharts.src.js"></script> #}
     {% endblock %}
 
-    {% block local_js %}
+    {% block common_local_js %}
       <!-- Bootstrap and necessary plugins -->
-      {# <script src="{% static "\vendors\js\popper.min.js" %}"></script> #}
-      {# <script src="{% static "\vendors\js\bootstrap.min.js" %}"></script> #}
-      <script src="{% static "\vendors\js\pace.min.js" %}"></script>
+      {# <script src="{% static "vendors/js/popper.min.js" %}"></script> #}
+      {# <script src="{% static "vendors/js/bootstrap.min.js" %}"></script> #}
+      <script src="{% static "vendors/js/pace.min.js" %}"></script>
 
       <!-- Plugins and scripts required by this views -->
-      {# <script src="{% static "\vendors\js\jquery.maskedinput.min.js" %}"></script> #}
-      {# <script src="{% static "\vendors\js\toastr.min.js" %}"></script> #}
-      {# <script src="{% static "\vendors\js\gauge.min.js" %}"></script> #}
-      {# <script src="{% static "\vendors\js\moment.min.js" %}"></script> #}
-      {# <script src="{% static "\vendors\js\daterangepicker.min.js" %}"></script> #}
-      {# <script src="{% static "\vendors\js\select2.min.js" %}"></script> #}
+      <script src="{% static "vendors/js/jquery.maskedinput.min.js" %}"></script>
+      <script src="{% static "vendors/js/toastr.min.js" %}"></script>
+      <script src="{% static "vendors/js/gauge.min.js" %}"></script>
+      <script src="{% static "vendors/js/moment.min.js" %}"></script>
+      <script src="{% static "vendors/js/daterangepicker.min.js" %}"></script>
+      <script src="{% static "vendors/js/select2.min.js" %}"></script>
 
-      {# <script src="{% static "\js\app.js" %}"></script> #}
+    {% endblock %}
+
+    {% block local_js %}
       <script src="{% static 'js/monthly_report.js' %}"></script>
       <!-- other cdn javascript links -->
     {% endblock %}

@@ -9,7 +9,8 @@ from django.shortcuts import render
 from ..utils import (NpEncoder, generate_general_series_drilldown_series,
                      load_mobile_users_dataframe,
                      load_nisponno_records_dataframe, load_office_dataframe,
-                     load_users_dataframe, load_users_gender_female_dataframe,
+                     load_total_nisponno_dataframe, load_users_dataframe,
+                     load_users_gender_female_dataframe,
                      load_users_gender_male_dataframe)
 
 
@@ -232,3 +233,41 @@ def mobile_app_users(request):
     }
 
     return render(request, 'monthly_report/mobile_app_users.html', context)
+
+
+total_nisponno_general_series = None
+total_nisponno_drilldown_series = None
+
+
+def total_nisponno(request):
+    global total_nisponno_general_series, total_nisponno_drilldown_series
+
+    if total_nisponno_general_series and total_nisponno_drilldown_series:
+        context = {
+            'general_series': json.dumps(total_nisponno_general_series, cls=NpEncoder),
+            'drilldown_series': json.dumps(
+                total_nisponno_drilldown_series, cls=NpEncoder
+            ),
+        }
+        return render(request, 'monthly_report/total_nisponno.html', context)
+
+    dataframe = load_total_nisponno_dataframe()
+    dataframe_year_by = dataframe.groupby('year')
+
+    general_series, drilldown_series = generate_general_series_drilldown_series(
+        dataframe_year_by, 'years'
+    )
+    total_nisponno_general_series = copy.deepcopy(general_series)
+    total_nisponno_drilldown_series = copy.deepcopy(drilldown_series)
+
+    dataframe = None
+    dataframe_year_by = None
+    general_series = None
+    drilldown_series = None
+
+    context = {
+        'general_series': json.dumps(total_nisponno_general_series, cls=NpEncoder),
+        'drilldown_series': json.dumps(total_nisponno_drilldown_series, cls=NpEncoder),
+    }
+
+    return render(request, 'monthly_report/total_nisponno.html', context)

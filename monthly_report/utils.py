@@ -96,6 +96,16 @@ def load_mobile_users_dataframe():
     return dataframe
 
 
+def load_total_nisponno_dataframe():
+    print('loading total_nisponno dataframe ...')
+    dataframe_object = DataframeRecord.objects.filter(
+        dataframe_name='total_nisponno'
+    ).first()
+    dataframe = load_csv(dataframe_object)
+
+    return dataframe
+
+
 class NpEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, np.integer):
