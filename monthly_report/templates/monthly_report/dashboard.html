@@ -165,151 +165,80 @@
         </div>
       </div>
     </div>
-    {# <div class="row"> #}
-    {#   <div class="col-sm-6 col-md-6"> #}
-    {#     <div class="card"> #}
-    {#       <div class="card-header card-header-custom"> #}
-    {#         Visit Summary #}
-    {#       </div> #}
-    {#       <!--{"min": 0.05, "max": 59.983333333333334, "avg": 9.316894636825742, "median": 5.95} --> #}
-    {#       <div class="card-body"> #}
-    {#         <ul class="icons-list"> #}
-    {#           <li> #}
-    {#             <i class="icon-chart bg-primary"></i> #}
-    {#             <div class="desc"> #}
-    {#               <div class="title">Patients</div> #}
-    {#               <small>Total visited patients</small> #}
-    {#             </div> #}
-    {#             <div class="value"> #}
-    {#               <strong>{{patients.total_visit|floatformat:"0"}}</strong> #}
-    {#             </div> #}
-    {#           </li> #}
-    {#           <li> #}
-    {#             <i class="icon-chart bg-primary"></i> #}
-    {#             <div class="desc"> #}
-    {#               <div class="title">Busy Month</div> #}
-    {#               <small>Most Busiest Month</small> #}
-    {#             </div> #}
-    {#             <div class="value"> #}
-    {#               <strong>{{patients.max_visit_month}}</strong> #}
-    {#             </div> #}
-    {#           </li> #}
-    {#           <li> #}
-    {#             <i class="icon-chart bg-primary"></i> #}
-    {#             <div class="desc"> #}
-    {#               <div class="title">Doctor Ratio</div> #}
-    {#               <small>Average Patients per Doctor</small> #}
-    {#             </div> #}
-    {#             <div class="value"> #}
-    {#               <strong>{{patients.patient_doctor_ratio|floatformat:"2"}}</strong> #}
-    {#             </div> #}
-    {#           </li> #}
-    {#           <li> #}
-    {#             <i class="icon-chart bg-primary"></i> #}
-    {#             <div class="desc"> #}
-    {#               <div class="title">Busy Doctor</div> #}
-    {#               <small>Most Busiest Doctor</small> #}
-    {#             </div> #}
-    {#             <div class="value"> #}
-    {#               <strong>{{patients.busiest_doctor}}</strong> #}
-    {#             </div> #}
-    {#           </li> #}
-    {#         </ul> #}
-    {#       </div> #}
-    {#     </div> #}
-    {#   </div> #}
-    {#   <div class="col-sm-6 col-md-6"> #}
-    {#     <div class="card"> #}
-    {#       <div class="card-header card-header-custom"> #}
-    {#         Waiting Summary #}
-    {#       </div> #}
-    {#       <!--{"min": 0.05, "max": 59.983333333333334, "avg": 9.316894636825742, "median": 5.95} --> #}
-    {#       <div class="card-body"> #}
-    {#         <ul class="icons-list"> #}
-    {#           <li> #}
-    {#             <i class="icon-hourglass bg-primary"></i> #}
-    {#             <div class="desc"> #}
-    {#               <div class="title">Minimum</div> #}
-    {#               <small>Minimum Waiting Time</small> #}
-    {#             </div> #}
-    {#             <div class="value"> #}
-    {#               <strong>{{waiting_time_json.min|floatformat:"2"}} min</strong> #}
-    {#             </div> #}
-    {#           </li> #}
-    {#           <li> #}
-    {#             <i class="icon-hourglass bg-primary"></i> #}
-    {#             <div class="desc"> #}
-    {#               <div class="title">Average</div> #}
-    {#               <small>Average Waiting Time</small> #}
-    {#             </div> #}
-    {#             <div class="value"> #}
-    {#               <strong>{{waiting_time_json.avg|floatformat:"2"}} min</strong> #}
-    {#             </div> #}
-    {#           </li> #}
-    {#           <li> #}
-    {#             <i class="icon-hourglass bg-primary"></i> #}
-    {#             <div class="desc"> #}
-    {#               <div class="title">Maximum</div> #}
-    {#               <small>Maximum Waiting Time</small> #}
-    {#             </div> #}
-    {#             <div class="value"> #}
-    {#               <strong>{{waiting_time_json.max|floatformat:"2"}} min</strong> #}
-    {#             </div> #}
-    {#           </li> #}
-    {#           <li> #}
-    {#             <i class="icon-hourglass bg-primary"></i> #}
-    {#             <div class="desc"> #}
-    {#               <div class="title">Median</div> #}
-    {#               <small>Median of total waiting time</small> #}
-    {#             </div> #}
-    {#             <div class="value"> #}
-    {#               <strong>{{waiting_time_json.median}} min</strong> #}
-    {#             </div> #}
-    {#           </li> #}
-    {#         </ul> #}
-    {#       </div> #}
-    {#     </div> #}
-    {#   </div> #}
-    {# </div> #}
+
+
     <div class="row">
       <div class="col-sm-12 col-md-12">
         <div class="card">
           <div class="card-header card-header-custom2">
-            officers per year
+            <!-- মোট নথি ব্যবহারকারী -->
           </div>
           <div class="card-body">
             <div id="chart_top_illness">
 
-              <canvas id="bar-chart" width="800" height="450"></canvas>
-              <script
-                src="https://code.highcharts.com/highcharts.src.js">
-              </script>
+              <figure class="highcharts-figure">
+                <div id="container"></div>
+                <p class="highcharts-description">
+                  বার্ষিক এবং মাসিক অফিস পরিসংখ্যান
+                </p>
+              </figure>
+
+              <canvas id="bar-chart" width="800" height="400"></canvas>
+              {# <script src="https://code.highcharts.com/highcharts.src.js"> </script> #}
+              <script src="https://code.highcharts.com/highcharts.js"></script>
+              <script src="https://code.highcharts.com/modules/data.js"></script>
+              <script src="https://code.highcharts.com/modules/drilldown.js"></script>
+              <script src="https://code.highcharts.com/modules/exporting.js"></script>
+              <script src="https://code.highcharts.com/modules/export-data.js"></script>
+              <script src="https://code.highcharts.com/modules/accessibility.js"></script>
               <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
               <script>
-                // Bar chart
-                var office_years = {{ office_years|safe }};
-                var office_numbers = {{ office_numbers|safe }};
-                console.log('years ', office_years)
-                console.log('office_numbers ', office_numbers)
-                new Chart(document.getElementById("bar-chart"), {
-                  type: 'bar',
-                  data: {
-                    labels: office_years,
-                    datasets: [
-                      {
-                        label: "offices (thousands)",
-                        backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-                        data: office_numbers
-                      }
-                    ]
+                // Create the chart
+                Highcharts.chart('container', {
+                  chart: {
+                    type: 'column'
                   },
-                  options: {
-                    legend: { display: false },
-                    title: {
-                      display: true,
-                      text: 'offices per years'
+                  title: {
+                    text: 'বার্ষিক এবং মাসিক অফিস পরিসংখ্যান'
+                  },
+                  subtitle: {
+                    text: ''
+                  },
+                  accessibility: {
+                    announceNewData: {
+                      enabled: true
                     }
+                  },
+                  xAxis: {
+                    type: 'category'
+                  },
+                  yAxis: {
+                    title: {
+                      text: 'অফিস সংখ্যা'
+                    }
+
+                  },
+                  legend: {
+                    enabled: false
+                  },
+                  plotOptions: {
+                    series: {
+                      borderWidth: 0,
+                      dataLabels: {
+                        enabled: true,
+                      }
+                    }
+                  },
+
+                  tooltip: {
+                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+                  },
+
+                  series: {{ general_series | safe }},
+                  drilldown: {
+                    series:{{ drilldown_series | safe }}
                   }
                 });
               </script>
@@ -317,311 +246,7 @@
           </div>
         </div>
       </div>
-      <!-- /.modal-dialog -->
     </div>
-    {# <div class="row"> #}
-    {#   <div class="col-sm-12 col-md-12"> #}
-    {#     <div class="card"> #}
-    {#       <div class="card-header card-header-custom2"> #}
-    {#         Most Common Diseases #}
-    {#       </div> #}
-    {#       <div class="card-body"> #}
-    {#         <div id="chart_top_illness"> #}
-    {#           <script #}
-    {#             src="https://code.highcharts.com/highcharts.src.js"> #}
-    {#           </script> #}
-
-    {#           <script> #}
-    {#             Highcharts.chart('chart_top_illness', { #}
-    {#               chart: { #}
-    {#                 type: 'line' #}
-    {#               }, #}
-    {#               title: { #}
-    {#                 text: '' #}
-    {#               }, #}
-    {#               subtitle: { #}
-    {#                 text: 'Disease wise Monthly Patient Count (Data from Year {{ year_s }} to {{ year_e }} ) ' #}
-    {#               }, #}
-    {#               xAxis: { #}
-    {#                 categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] #}
-    {#               }, #}
-    {#               yAxis: { #}
-    {#                 title: { #}
-    {#                   text: 'Number of Patients' #}
-    {#                 } #}
-    {#               }, #}
-    {#               plotOptions: { #}
-    {#                 series: { #}
-    {#                   marker: { #}
-    {#                     symbol: 'circle' #}
-    {#                   } #}
-    {#                 }, #}
-    {#                 areaspline: { #}
-    {#                   fillOpacity: 0.8 #}
-    {#                 } #}
-    {#               }, #}
-    {#               series: {{ series_obj|safe }} #}
-    {#             }); #}
-    {#           </script> #}
-    {#         </div> #}
-    {#       </div> #}
-    {#     </div> #}
-    {#   </div> #}
-    {#   <!-- /.modal-dialog --> #}
-    {# </div> #}
-
-    {# <div class="row"> #}
-    {#   <div class="col-sm-12 col-md-12"> #}
-    {#     <div class="card"> #}
-    {#       <div class="card-header card-header-custom2"> #}
-    {#         Monthly Average Waiting Time #}
-    {#       </div> #}
-    {#       <div class="card-body"> #}
-    {#         <div id="chart_waiting_time_by_clinic"> #}
-    {#           <script> #}
-    {#             var data = {{ waiting_time_by_clinic|safe }}; #}
-    {#             Highcharts.chart('chart_waiting_time_by_clinic', { #}
-    {#               chart: { #}
-    {#                 type: 'bar' #}
-    {#               }, #}
-    {#               title: { #}
-    {#                 text: '' #}
-    {#               }, #}
-    {#               xAxis: { #}
-    {#                 categories: data.clinics #}
-    {#               }, #}
-    {#               yAxis: { #}
-    {#                 min: 0, #}
-    {#                 title: { #}
-    {#                   text: '' #}
-    {#                 } #}
-    {#               }, #}
-    {#               legend: { #}
-    {#                 reversed: true #}
-    {#               }, #}
-    {#               plotOptions: { #}
-    {#                 series: { #}
-    {#                   stacking: 'normal' #}
-    {#                 } #}
-    {#               }, #}
-    {#               series: data.data #}
-    {#             }); #}
-    {#           </script> #}
-    {#         </div> #}
-    {#       </div> #}
-    {#     </div> #}
-    {#   </div> #}
-    {#   <!-- /.modal-dialog --> #}
-    {# </div> #}
-
-    {# <div class="row"> #}
-    {#   <div class="col-sm-5 col-md-5"> #}
-    {#     <div class="card"> #}
-    {#       <div class="card-header card-header-custom2"> #}
-    {#         Department Summary #}
-    {#       </div> #}
-    {#       <div class="card-body"> #}
-    {#         <div id="chart_department_visit"> #}
-    {#           <script> #}
-    {#             var dept_data = {{ department_visits|safe }}; #}
-    {#             Highcharts.chart('chart_department_visit', { #}
-    {#               chart: { #}
-    {#                 plotBackgroundColor: null, #}
-    {#                 plotBorderWidth: null, #}
-    {#                 plotShadow: false, #}
-    {#                 type: 'pie' #}
-    {#               }, #}
-    {#               title: { #}
-    {#                 text: '' #}
-    {#               }, #}
-    {#               tooltip: { #}
-    {#                 //pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>' #}
-    {#               }, #}
-    {#               plotOptions: { #}
-    {#                 pie: { #}
-    {#                   allowPointSelect: true, #}
-    {#                   cursor: 'pointer', #}
-    {#                   dataLabels: { #}
-    {#                     enabled: true, #}
-    {#                     format: '<b>{point.name}</b>: {point.percentage:.1f} %', #}
-    {#                     style: { #}
-    {#                       color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black' #}
-    {#                     } #}
-    {#                   } #}
-    {#                 } #}
-    {#               }, #}
-    {#               series: [{ #}
-    {#                 name: 'Medical Examination Department', #}
-    {#                 colorByPoint: true, #}
-    {#                 data: dept_data #}
-    {#               }] #}
-    {#             }); #}
-    {#           </script> #}
-    {#         </div> #}
-    {#       </div> #}
-    {#     </div> #}
-    {#   </div> #}
-    {#   <!-- /.modal-dialog --> #}
-    {#   <!--</div>--> #}
-
-    {#   <!--<div class="row">--> #}
-    {#   <div class="col-sm-7 col-md-7"> #}
-    {#     <div class="card"> #}
-    {#       <div class="card-header card-header-custom2"> #}
-    {#         Monthly Department Visit #}
-    {#       </div> #}
-    {#       <div class="card-body"> #}
-    {#         <div id="chart_monthly_departments_visit"> #}
-    {#           <script> #}
-    {#             var data = {{ department_visits_monthly|safe }}; #}
-    {#             Highcharts.chart('chart_monthly_departments_visit', { #}
-    {#               chart: { #}
-    {#                 type: 'column' #}
-    {#               }, #}
-    {#               title: { #}
-    {#                 text: '' #}
-    {#               }, #}
-    {#               subtitle: { #}
-    {#                 text: '' #}
-    {#               }, #}
-    {#               xAxis: { #}
-    {#                 categories: data.months, #}
-    {#                 crosshair: true #}
-    {#               }, #}
-    {#               yAxis: { #}
-    {#                 min: 0, #}
-    {#                 title: { #}
-    {#                   text: 'Patient visit' #}
-    {#                 } #}
-    {#               }, #}
-    {#               tooltip: { #}
-    {#                 headerFormat: '<span style="font-size:10px">{point.key}</span><table>', #}
-    {#                 pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' + #}
-    {#                 '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>', #}
-    {#                 footerFormat: '</table>', #}
-    {#                 shared: true, #}
-    {#                 useHTML: true #}
-    {#               }, #}
-    {#               plotOptions: { #}
-    {#                 column: { #}
-    {#                   pointPadding: 0.2, #}
-    {#                   borderWidth: 0 #}
-    {#                 } #}
-    {#               }, #}
-    {#               series: data.data #}
-    {#             }); #}
-    {#           </script> #}
-    {#         </div> #}
-    {#       </div> #}
-    {#     </div> #}
-    {#   </div> #}
-    {#   <!-- /.modal-dialog --> #}
-    {#   </div> #}
-
-      {# <div class="row"> #}
-      {#   <div class="col-sm-6 col-md-6"> #}
-      {#     <div class="card"> #}
-      {#       <div class="card-header card-header-custom2"> #}
-      {#         Monthly Patients Visit by Clinic #}
-      {#       </div> #}
-      {#       <div class="card-body"> #}
-      {#         <div id="chart_monthly_patient_visit_count"> #}
-      {#           <script> #}
-      {#             var data = {{ monthly_patient_visit_count|safe }}; #}
-      {#             Highcharts.chart('chart_monthly_patient_visit_count', { #}
-      {#               chart: { #}
-      {#                 type: 'column' #}
-      {#               }, #}
-      {#               title: { #}
-      {#                 text: '' #}
-      {#               }, #}
-      {#               subtitle: { #}
-      {#                 text: '' #}
-      {#               }, #}
-      {#               xAxis: { #}
-      {#                 categories: data.months, #}
-      {#                 crosshair: true #}
-      {#               }, #}
-      {#               yAxis: { #}
-      {#                 min: 0, #}
-      {#                 title: { #}
-      {#                   text: 'Patients visit' #}
-      {#                 } #}
-      {#               }, #}
-      {#               tooltip: { #}
-      {#                 headerFormat: '<span style="font-size:10px">{point.key}</span><table>', #}
-      {#                 pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' + #}
-      {#                 '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>', #}
-      {#                 footerFormat: '</table>', #}
-      {#                 shared: true, #}
-      {#                 useHTML: true #}
-      {#               }, #}
-      {#               plotOptions: { #}
-      {#                 column: { #}
-      {#                   pointPadding: 0.2, #}
-      {#                   borderWidth: 0 #}
-      {#                 } #}
-      {#               }, #}
-      {#               series: data.data #}
-      {#             }); #}
-
-      {#           </script> #}
-      {#         </div> #}
-      {#       </div> #}
-      {#     </div> #}
-      {#   </div> #}
-      {#   <!-- /.modal-dialog --> #}
-      {#   <!--</div>--> #}
-
-      {#   <!--<div class="row">--> #}
-      {#   <div class="col-sm-6 col-md-6"> #}
-      {#     <div class="card"> #}
-      {#       <div class="card-header card-header-custom2"> #}
-      {#         Doctor Count by Clinics #}
-      {#       </div> #}
-      {#       <div class="card-body"> #}
-      {#         <div id="chart_staff_count_by_clinic"> #}
-      {#           <script> #}
-      {#             var data = {{ staff_count_by_clinic|safe }}; #}
-      {#             Highcharts.chart('chart_staff_count_by_clinic', { #}
-      {#               chart: { #}
-      {#                 plotBackgroundColor: null, #}
-      {#                 plotBorderWidth: null, #}
-      {#                 plotShadow: false, #}
-      {#                 type: 'pie' #}
-      {#               }, #}
-      {#               title: { #}
-      {#                 text: '' #}
-      {#               }, #}
-      {#               tooltip: { #}
-      {#                 //pointFormat: '{series.name}: <b>{point.count:.1f}%</b>' #}
-      {#               }, #}
-      {#               plotOptions: { #}
-      {#                 pie: { #}
-      {#                   allowPointSelect: true, #}
-      {#                   cursor: 'pointer', #}
-      {#                   dataLabels: { #}
-      {#                     enabled: true, #}
-      {#                     format: '<b>{point.name}</b>: {point.percentage:.1f} %', #}
-      {#                     style: { #}
-      {#                       color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black' #}
-      {#                     } #}
-      {#                   } #}
-      {#                 } #}
-      {#               }, #}
-      {#               series: [{ #}
-      {#                 name: 'Staffs', #}
-      {#                 colorByPoint: true, #}
-      {#                 data: data #}
-      {#               }] #}
-      {#             }); #}
-      {#           </script> #}
-      {#         </div> #}
-      {#       </div> #}
-      {#     </div> #}
-      {#   </div> #}
-      {#   <!-- /.modal-dialog --> #}
-      {#   </div> #}
 
   </div>
 {% endblock %}

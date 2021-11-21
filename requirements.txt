@@ -21,7 +21,7 @@ djangorestframework==3.12.4
     # via -r requirements.in
 markdown==3.3.4
     # via -r requirements.in
-mysqlclient==2.0.3
+mysqlclient==2.1.0
     # via -r requirements.in
 numpy==1.21.3
     # via pandas

@@ -10,21 +10,40 @@ from ..utils import (NpEncoder, generate_general_series_drilldown_series,
                      load_mobile_users_dataframe,
                      load_nisponno_records_dataframe, load_office_dataframe,
                      load_potrojari_dataframe, load_total_nisponno_dataframe,
-                     load_users_dataframe, load_users_gender_female_dataframe,
+                     load_total_upokarvogi_dateframe, load_users_dataframe,
+                     load_users_gender_female_dataframe,
                      load_users_gender_male_dataframe)
+
+offices_general_series = None
+offices_drilldown_series = None
 
 
 def dashboard(request):
-    dataframe = load_office_dataframe()
+    global offices_general_series, offices_drilldown_series
+    if offices_general_series and offices_drilldown_series:
+        context = {
+            'general_series': json.dumps(offices_general_series, cls=NpEncoder),
+            'drilldown_series': json.dumps(offices_drilldown_series, cls=NpEncoder),
+        }
+        return render(request, 'monthly_report/dashboard.html', context)
 
-    office_count = dataframe.groupby('year').size()
-    office_numbers = list(office_count.values)
-    office_years = list(office_count.index.values)
+    dataframe = load_office_dataframe()
+    dataframe_year_by = dataframe.groupby('year')
+    general_series, drilldown_series = generate_general_series_drilldown_series(
+        dataframe_year_by, 'offices'
+    )
+    offices_general_series = copy.deepcopy(general_series)
+    offices_drilldown_series = copy.deepcopy(drilldown_series)
 
     context = {
-        "office_years": json.dumps(office_years, cls=NpEncoder),
-        "office_numbers": json.dumps(office_numbers, cls=NpEncoder),
+        'general_series': json.dumps(offices_general_series, cls=NpEncoder),
+        'drilldown_series': json.dumps(offices_drilldown_series, cls=NpEncoder),
     }
+
+    dataframe = None
+    dataframe_year_by = None
+    general_series = None
+    drilldown_series = None
 
     return render(request, 'monthly_report/dashboard.html', context)
 
@@ -307,3 +326,45 @@ def potrojari(request):
     }
 
     return render(request, 'monthly_report/potrojari.html', context)
+
+
+total_upokarvogi_general_series = None
+total_upokarvogi_drilldown_series = None
+
+
+def total_upokarvogi(request):
+    global total_upokarvogi_general_series, total_upokarvogi_drilldown_series
+
+    if total_upokarvogi_general_series and total_upokarvogi_drilldown_series:
+        context = {
+            'general_series': json.dumps(
+                total_upokarvogi_general_series, cls=NpEncoder
+            ),
+            'drilldown_series': json.dumps(
+                total_upokarvogi_drilldown_series, cls=NpEncoder
+            ),
+        }
+        return render(request, 'monthly_report/total_upokarvogi.html', context)
+
+    dataframe = load_total_upokarvogi_dateframe()
+    dataframe_year_by = dataframe.groupby('year')
+
+    general_series, drilldown_series = generate_general_series_drilldown_series(
+        dataframe_year_by, 'upokarvogi'
+    )
+    total_upokarvogi_general_series = copy.deepcopy(general_series)
+    total_upokarvogi_drilldown_series = copy.deepcopy(drilldown_series)
+
+    dataframe = None
+    dataframe_year_by = None
+    general_series = None
+    drilldown_series = None
+
+    context = {
+        'general_series': json.dumps(total_upokarvogi_general_series, cls=NpEncoder),
+        'drilldown_series': json.dumps(
+            total_upokarvogi_drilldown_series, cls=NpEncoder
+        ),
+    }
+
+    return render(request, 'monthly_report/total_upokarvogi.html', context)

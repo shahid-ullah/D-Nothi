@@ -56,6 +56,11 @@ urlpatterns = [
         views.potrojari,
         name="potrojari",
     ),
+    path(
+        'total_upokarvogi',
+        views.total_upokarvogi,
+        name="total_upokarvogi",
+    ),
     # path('analyze/', views.dashboard, name="analyze"),
     # path('analyze_disease/', views.analyze_disease, name="disease"),
     # path(
