@@ -76,6 +76,20 @@ def load_users_gender_male_dataframe():
     return dataframe
 
 
+def load_users_gender_male_graph_data():
+
+    print('loading users gender male dataframe ...')
+    dataframe_object = DataframeRecord.objects.filter(
+        dataframe_name='users_gender_male'
+    ).first()
+    csv_data = CSVDataStorageModel.objects.filter(dataframe=dataframe_object).first()
+
+    with open(csv_data.file_name.path, 'r', encoding='utf-8') as json_file:
+        data = json.load(json_file)
+
+    return generate_general_series_and_drilldown_series(data, 'years')
+
+
 def load_users_gender_female_dataframe():
     print('loading users gender female dataframe')
     dataframe_object = DataframeRecord.objects.filter(
@@ -167,8 +181,80 @@ def generate_general_series_drilldown_series(dataframe_year_by, general_series_n
             # mg, mf.shape[0]
             month = str(month)
             month = month_map[month]
-
             lst = [month, month_frame.shape[0]]
+
             temporary_dict_drilldown['data'].append(lst)
         drilldown_series.append(temporary_dict_drilldown)
+    return general_series, drilldown_series
+
+
+def upokarvogi_generate_general_series_drilldown_series(
+    dataframe_year_by, general_series_name
+):
+    general_series = [
+        {
+            'name': general_series_name,
+            'colorByPoint': True,
+            'data': [],
+        }
+    ]
+    drilldown_series = []
+
+    for year, year_frame in dataframe_year_by:
+        year = str(year)
+        temporary_dict_general = {
+            'name': year,
+            'y': year_frame['upokarvogi'].sum(),
+            'drilldown': year,
+        }
+        general_series[0]['data'].append(temporary_dict_general)
+        temporary_dict_drilldown = {
+            'name': year,
+            'id': year,
+            'data': [],
+        }
+        month_group_by = year_frame.groupby('month')
+        for month, month_frame in month_group_by:
+
+            # mg, mf.shape[0]
+            month = str(month)
+            month = month_map[month]
+            lst = [month, month_frame['upokarvogi'].sum()]
+
+            temporary_dict_drilldown['data'].append(lst)
+        drilldown_series.append(temporary_dict_drilldown)
+    return general_series, drilldown_series
+
+
+def generate_general_series_and_drilldown_series(data, general_series_name):
+    general_series = [
+        {
+            'name': general_series_name,
+            'colorByPoint': True,
+            'data': [],
+        }
+    ]
+    drilldown_series = []
+    for year in data:
+        year = str(year)
+        count = data[year]['count']
+        month_map = data[year]['month_map']
+
+        temporary_dict_general = {
+            'name': year,
+            'y': count,
+            'drilldown': year,
+        }
+        general_series[0]['data'].append(temporary_dict_general)
+
+        temporary_dict_drilldown = {
+            'name': year,
+            'id': year,
+            'data': [],
+        }
+        for month in month_map:
+            lst = [month, month_map[month]]
+            temporary_dict_drilldown['data'].append(lst)
+        drilldown_series.append(temporary_dict_drilldown)
+
     return general_series, drilldown_series
