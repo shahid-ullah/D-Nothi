@@ -76,18 +76,28 @@ def load_users_gender_male_dataframe():
     return dataframe
 
 
+def load_file_object(file_name):
+    file_obj_type = DataframeRecord.objects.filter(dataframe_name=file_name).first()
+    file_obj = CSVDataStorageModel.objects.filter(dataframe=file_obj_type).first()
+
+    return file_obj
+
+
+def load_file_content(file_obj):
+
+    with open(file_obj.file_name.path, 'r', encoding='utf-8') as json_file:
+        data = json.load(json_file)
+
+    return data
+
+
 def load_users_gender_male_graph_data():
 
     print('loading users gender male dataframe ...')
-    dataframe_object = DataframeRecord.objects.filter(
-        dataframe_name='users_gender_male'
-    ).first()
-    csv_data = CSVDataStorageModel.objects.filter(dataframe=dataframe_object).first()
+    file_obj = load_file_object('users_gender_male')
+    file_content = load_file_content(file_obj)
 
-    with open(csv_data.file_name.path, 'r', encoding='utf-8') as json_file:
-        data = json.load(json_file)
-
-    return generate_general_series_and_drilldown_series(data, 'years')
+    return generate_general_series_and_drilldown_series(file_content, 'years')
 
 
 def load_users_gender_female_dataframe():

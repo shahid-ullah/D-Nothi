@@ -12,7 +12,6 @@ from ..utils import (NpEncoder, generate_general_series_drilldown_series,
                      load_potrojari_dataframe, load_total_nisponno_dataframe,
                      load_total_upokarvogi_dateframe, load_users_dataframe,
                      load_users_gender_female_dataframe,
-                     load_users_gender_male_dataframe,
                      load_users_gender_male_graph_data,
                      upokarvogi_generate_general_series_drilldown_series)
 
