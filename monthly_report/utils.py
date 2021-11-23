@@ -167,6 +167,15 @@ def load_potrojari_dataframe():
     return dataframe
 
 
+def load_upokarvogi_graph_data():
+
+    print('loading total_upokarvogi graph data ...')
+    file_obj = load_file_object('upokarvogi')
+    file_content = load_file_content(file_obj)
+
+    return generate_general_series_and_drilldown_series(file_content, 'years')
+
+
 def load_total_upokarvogi_dateframe():
     print('loading total_upokarvogi dataframe ...')
     dataframe_object = DataframeRecord.objects.filter(

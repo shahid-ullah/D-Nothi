@@ -12,7 +12,8 @@ from ..utils import (NpEncoder, generate_general_series_drilldown_series,
                      load_nispottikritto_nothi_graph_data,
                      load_nothi_users_total_graph_data, load_office_dataframe,
                      load_potrojari_dataframe, load_total_nisponno_dataframe,
-                     load_total_upokarvogi_dateframe, load_users_dataframe,
+                     load_total_upokarvogi_dateframe,
+                     load_upokarvogi_graph_data, load_users_dataframe,
                      load_users_gender_female_dataframe,
                      load_users_gender_female_graph_data,
                      load_users_gender_male_graph_data,
@@ -327,20 +328,11 @@ def total_upokarvogi(request):
         }
         return render(request, 'monthly_report/total_upokarvogi.html', context)
 
-    dataframe = load_total_upokarvogi_dateframe()
-    dataframe_year_by = dataframe.groupby('year')
+    general_series, drilldown_series = load_upokarvogi_graph_data()
 
-    (
-        general_series,
-        drilldown_series,
-    ) = upokarvogi_generate_general_series_drilldown_series(
-        dataframe_year_by, 'upokarvogi'
-    )
     total_upokarvogi_general_series = copy.deepcopy(general_series)
     total_upokarvogi_drilldown_series = copy.deepcopy(drilldown_series)
 
-    dataframe = None
-    dataframe_year_by = None
     general_series = None
     drilldown_series = None
 
