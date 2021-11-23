@@ -12,7 +12,8 @@ from ..utils import (NpEncoder, generate_general_series_drilldown_series,
                      load_nisponno_records_dataframe,
                      load_nispottikritto_nothi_graph_data,
                      load_nothi_users_total_graph_data, load_office_dataframe,
-                     load_potrojari_dataframe, load_total_nisponno_dataframe,
+                     load_potrojari_dataframe, load_potrojari_graph_data,
+                     load_total_nisponno_dataframe,
                      load_total_nisponno_graph_data,
                      load_total_upokarvogi_dateframe,
                      load_upokarvogi_graph_data, load_users_dataframe,
@@ -278,17 +279,11 @@ def potrojari(request):
         }
         return render(request, 'monthly_report/potrojari.html', context)
 
-    dataframe = load_potrojari_dataframe()
-    dataframe_year_by = dataframe.groupby('year')
+    general_series, drilldown_series = load_potrojari_graph_data()
 
-    general_series, drilldown_series = generate_general_series_drilldown_series(
-        dataframe_year_by, 'years'
-    )
     potrojari_general_series = copy.deepcopy(general_series)
     potrojari_drilldown_series = copy.deepcopy(drilldown_series)
 
-    dataframe = None
-    dataframe_year_by = None
     general_series = None
     drilldown_series = None
 
