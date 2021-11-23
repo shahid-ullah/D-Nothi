@@ -12,6 +12,7 @@ from ..utils import (NpEncoder, generate_general_series_drilldown_series,
                      load_potrojari_dataframe, load_total_nisponno_dataframe,
                      load_total_upokarvogi_dateframe, load_users_dataframe,
                      load_users_gender_female_dataframe,
+                     load_users_gender_female_graph_data,
                      load_users_gender_male_graph_data,
                      upokarvogi_generate_general_series_drilldown_series)
 
@@ -190,16 +191,11 @@ def nothi_users_female(request):
         }
         return render(request, 'monthly_report/nothi_users_female.html', context)
 
-    dataframe = load_users_gender_female_dataframe()
-    dataframe_year_by = dataframe.groupby('year')
-    general_series, drilldown_series = generate_general_series_drilldown_series(
-        dataframe_year_by, 'users'
-    )
+    general_series, drilldown_series = load_users_gender_female_graph_data()
+
     female_users_general_series = copy.deepcopy(general_series)
     female_users_drilldown_series = copy.deepcopy(drilldown_series)
 
-    dataframe = None
-    dataframe_year_by = None
     general_series = None
     drilldown_series = None
 

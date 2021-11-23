@@ -100,6 +100,15 @@ def load_users_gender_male_graph_data():
     return generate_general_series_and_drilldown_series(file_content, 'years')
 
 
+def load_users_gender_female_graph_data():
+
+    print('loading users gender male dataframe ...')
+    file_obj = load_file_object('users_gender_female')
+    file_content = load_file_content(file_obj)
+
+    return generate_general_series_and_drilldown_series(file_content, 'years')
+
+
 def load_users_gender_female_dataframe():
     print('loading users gender female dataframe')
     dataframe_object = DataframeRecord.objects.filter(
