@@ -48,6 +48,15 @@ def load_office_dataframe():
     return dataframe
 
 
+def load_total_offices_graph_data():
+
+    print('loading offices graph data ...')
+    file_obj = load_file_object('total_offices')
+    file_content = load_file_content(file_obj)
+
+    return generate_general_series_and_drilldown_series(file_content, 'years')
+
+
 def load_nisponno_records_dataframe():
     print('loading nisponno_records dataframe ...')
     dataframe_object = DataframeRecord.objects.filter(

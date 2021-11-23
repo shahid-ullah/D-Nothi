@@ -15,6 +15,7 @@ from ..utils import (NpEncoder, generate_general_series_drilldown_series,
                      load_potrojari_dataframe, load_potrojari_graph_data,
                      load_total_nisponno_dataframe,
                      load_total_nisponno_graph_data,
+                     load_total_offices_graph_data,
                      load_total_upokarvogi_dateframe,
                      load_upokarvogi_graph_data, load_users_dataframe,
                      load_users_gender_female_dataframe,
@@ -35,23 +36,18 @@ def dashboard(request):
         }
         return render(request, 'monthly_report/dashboard.html', context)
 
-    dataframe = load_office_dataframe()
-    dataframe_year_by = dataframe.groupby('year')
-    general_series, drilldown_series = generate_general_series_drilldown_series(
-        dataframe_year_by, 'offices'
-    )
+    general_series, drilldown_series = load_total_offices_graph_data()
+
     offices_general_series = copy.deepcopy(general_series)
     offices_drilldown_series = copy.deepcopy(drilldown_series)
+
+    general_series = None
+    drilldown_series = None
 
     context = {
         'general_series': json.dumps(offices_general_series, cls=NpEncoder),
         'drilldown_series': json.dumps(offices_drilldown_series, cls=NpEncoder),
     }
-
-    dataframe = None
-    dataframe_year_by = None
-    general_series = None
-    drilldown_series = None
 
     return render(request, 'monthly_report/dashboard.html', context)
 
