@@ -66,6 +66,15 @@ def load_users_dataframe():
     return dataframe
 
 
+def load_nothi_users_total_graph_data():
+
+    print('loading users gender male dataframe ...')
+    file_obj = load_file_object('total_users')
+    file_content = load_file_content(file_obj)
+
+    return generate_general_series_and_drilldown_series(file_content, 'years')
+
+
 def load_users_gender_male_dataframe():
     print('loading users gender male dataframe ...')
     dataframe_object = DataframeRecord.objects.filter(

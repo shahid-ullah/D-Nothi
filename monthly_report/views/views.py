@@ -10,8 +10,8 @@ from ..utils import (NpEncoder, generate_general_series_drilldown_series,
                      load_mobile_users_dataframe,
                      load_nisponno_records_dataframe,
                      load_nispottikritto_nothi_graph_data,
-                     load_office_dataframe, load_potrojari_dataframe,
-                     load_total_nisponno_dataframe,
+                     load_nothi_users_total_graph_data, load_office_dataframe,
+                     load_potrojari_dataframe, load_total_nisponno_dataframe,
                      load_total_upokarvogi_dateframe, load_users_dataframe,
                      load_users_gender_female_dataframe,
                      load_users_gender_female_graph_data,
@@ -119,15 +119,13 @@ def nothi_users_total(request):
         }
         return render(request, 'monthly_report/nothi_users_total.html', context)
 
-    dataframe = load_users_dataframe()
-    dataframe_year_by = dataframe.groupby('year')
-
-    general_series, drilldown_series = generate_general_series_drilldown_series(
-        dataframe_year_by, 'users'
-    )
+    general_series, drilldown_series = load_nothi_users_total_graph_data()
 
     nothi_users_total_general_series = copy.deepcopy(general_series)
     nothi_users_total_drilldown_series = copy.deepcopy(drilldown_series)
+
+    general_series = None
+    drilldown_series = None
 
     context = {
         'general_series': json.dumps(nothi_users_total_general_series, cls=NpEncoder),
@@ -135,11 +133,6 @@ def nothi_users_total(request):
             nothi_users_total_drilldown_series, cls=NpEncoder
         ),
     }
-
-    dataframe = None
-    dataframe_year_by = None
-    general_series = None
-    drilldown_series = None
 
     return render(request, 'monthly_report/nothi_users_total.html', context)
 
