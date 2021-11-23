@@ -8,8 +8,10 @@ from django.shortcuts import render
 
 from ..utils import (NpEncoder, generate_general_series_drilldown_series,
                      load_mobile_users_dataframe,
-                     load_nisponno_records_dataframe, load_office_dataframe,
-                     load_potrojari_dataframe, load_total_nisponno_dataframe,
+                     load_nisponno_records_dataframe,
+                     load_nispottikritto_nothi_graph_data,
+                     load_office_dataframe, load_potrojari_dataframe,
+                     load_total_nisponno_dataframe,
                      load_total_upokarvogi_dateframe, load_users_dataframe,
                      load_users_gender_female_dataframe,
                      load_users_gender_female_graph_data,
@@ -80,13 +82,13 @@ def nispottikritto_nothi(request):
         }
         return render(request, 'monthly_report/nispottikritto_nothi.html', context)
 
-    dataframe = load_nisponno_records_dataframe()
-    dataframe_year_by = dataframe.groupby('year')
-    general_series, drilldown_series = generate_general_series_drilldown_series(
-        dataframe_year_by, 'offices'
-    )
+    general_series, drilldown_series = load_nispottikritto_nothi_graph_data()
+
     nispottikritto_nothi_general_series = copy.deepcopy(general_series)
     nispottikritto_nothi_drilldown_series = copy.deepcopy(drilldown_series)
+
+    general_series = None
+    drilldown_series = None
 
     context = {
         'general_series': json.dumps(
@@ -96,11 +98,6 @@ def nispottikritto_nothi(request):
             nispottikritto_nothi_drilldown_series, cls=NpEncoder
         ),
     }
-
-    dataframe = None
-    dataframe_year_by = None
-    general_series = None
-    drilldown_series = None
 
     return render(request, 'monthly_report/nispottikritto_nothi.html', context)
 

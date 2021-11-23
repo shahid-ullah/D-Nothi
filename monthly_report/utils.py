@@ -139,6 +139,15 @@ def load_total_nisponno_dataframe():
     return dataframe
 
 
+def load_nispottikritto_nothi_graph_data():
+
+    print('loading users gender male dataframe ...')
+    file_obj = load_file_object('nispottikritto_nothi')
+    file_content = load_file_content(file_obj)
+
+    return generate_general_series_and_drilldown_series(file_content, 'years')
+
+
 def load_potrojari_dataframe():
     print('loading potrojari dataframe ...')
     dataframe_object = DataframeRecord.objects.filter(
