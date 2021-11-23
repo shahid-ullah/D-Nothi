@@ -7,6 +7,7 @@ from django.conf import settings
 from django.shortcuts import render
 
 from ..utils import (NpEncoder, generate_general_series_drilldown_series,
+                     load_mobile_app_users_graph_data,
                      load_mobile_users_dataframe,
                      load_nisponno_records_dataframe,
                      load_nispottikritto_nothi_graph_data,
@@ -214,17 +215,11 @@ def mobile_app_users(request):
         }
         return render(request, 'monthly_report/mobile_app_users.html', context)
 
-    dataframe = load_mobile_users_dataframe()
-    dataframe_year_by = dataframe.groupby('year')
+    general_series, drilldown_series = load_mobile_app_users_graph_data()
 
-    general_series, drilldown_series = generate_general_series_drilldown_series(
-        dataframe_year_by, 'users'
-    )
     mobile_users_general_series = copy.deepcopy(general_series)
     mobile_users_drilldown_series = copy.deepcopy(drilldown_series)
 
-    dataframe = None
-    dataframe_year_by = None
     general_series = None
     drilldown_series = None
 

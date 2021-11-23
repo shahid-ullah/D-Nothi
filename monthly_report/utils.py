@@ -138,6 +138,15 @@ def load_mobile_users_dataframe():
     return dataframe
 
 
+def load_mobile_app_users_graph_data():
+
+    print('loading mobile app users graph data ...')
+    file_obj = load_file_object('mobile_app_users')
+    file_content = load_file_content(file_obj)
+
+    return generate_general_series_and_drilldown_series(file_content, 'years')
+
+
 def load_total_nisponno_dataframe():
     print('loading total_nisponno dataframe ...')
     dataframe_object = DataframeRecord.objects.filter(
