@@ -262,34 +262,34 @@ def total_nisponno(request):
     return render(request, 'monthly_report/total_nisponno.html', context)
 
 
-# potrojari_general_series = None
-# potrojari_drilldown_series = None
+potrojari_general_series = None
+potrojari_drilldown_series = None
 
 
-# def potrojari(request):
-#     global potrojari_general_series, potrojari_drilldown_series
+def potrojari(request):
+    global potrojari_general_series, potrojari_drilldown_series
 
-#     if potrojari_general_series and potrojari_drilldown_series:
-#         context = {
-#             'general_series': json.dumps(potrojari_general_series, cls=NpEncoder),
-#             'drilldown_series': json.dumps(potrojari_drilldown_series, cls=NpEncoder),
-#         }
-#         return render(request, 'monthly_report/potrojari.html', context)
+    if potrojari_general_series and potrojari_drilldown_series:
+        context = {
+            'general_series': json.dumps(potrojari_general_series, cls=NpEncoder),
+            'drilldown_series': json.dumps(potrojari_drilldown_series, cls=NpEncoder),
+        }
+        return render(request, 'monthly_report/potrojari.html', context)
 
-#     general_series, drilldown_series = load_potrojari_graph_data()
+    general_series, drilldown_series = load_potrojari_graph_data()
 
-#     potrojari_general_series = copy.deepcopy(general_series)
-#     potrojari_drilldown_series = copy.deepcopy(drilldown_series)
+    potrojari_general_series = copy.deepcopy(general_series)
+    potrojari_drilldown_series = copy.deepcopy(drilldown_series)
 
-#     general_series = None
-#     drilldown_series = None
+    general_series = None
+    drilldown_series = None
 
-#     context = {
-#         'general_series': json.dumps(potrojari_general_series, cls=NpEncoder),
-#         'drilldown_series': json.dumps(potrojari_drilldown_series, cls=NpEncoder),
-#     }
+    context = {
+        'general_series': json.dumps(potrojari_general_series, cls=NpEncoder),
+        'drilldown_series': json.dumps(potrojari_drilldown_series, cls=NpEncoder),
+    }
 
-#     return render(request, 'monthly_report/potrojari.html', context)
+    return render(request, 'monthly_report/potrojari.html', context)
 
 
 total_upokarvogi_general_series = None

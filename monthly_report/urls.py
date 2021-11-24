@@ -51,11 +51,11 @@ urlpatterns = [
         views.total_nisponno,
         name="total_nisponno",
     ),
-    #     path(
-    #         'potrojari/',
-    #         views.potrojari,
-    #         name="potrojari",
-    #     ),
+    path(
+        'potrojari/',
+        views.potrojari,
+        name="potrojari",
+    ),
     path(
         'total_upokarvogi',
         views.total_upokarvogi,
