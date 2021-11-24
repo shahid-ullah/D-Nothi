@@ -6,22 +6,22 @@ import json
 from django.conf import settings
 from django.shortcuts import render
 
-# from ..utils import (NpEncoder, generate_general_series_drilldown_series,
-#                      load_mobile_app_users_graph_data,
-#                      load_mobile_users_dataframe,
-#                      load_nisponno_records_dataframe,
-#                      load_nispottikritto_nothi_graph_data,
-#                      load_nothi_users_total_graph_data, load_office_dataframe,
-#                      load_potrojari_dataframe, load_potrojari_graph_data,
-#                      load_total_nisponno_dataframe,
-#                      load_total_nisponno_graph_data,
-#                      load_total_offices_graph_data,
-#                      load_total_upokarvogi_dateframe,
-#                      load_upokarvogi_graph_data, load_users_dataframe,
-#                      load_users_gender_female_dataframe,
-#                      load_users_gender_female_graph_data,
-#                      load_users_gender_male_graph_data,
-#                      upokarvogi_generate_general_series_drilldown_series)
+from ..utils import (NpEncoder, generate_general_series_drilldown_series,
+                     load_mobile_app_users_graph_data,
+                     load_mobile_users_dataframe,
+                     load_nisponno_records_dataframe,
+                     load_nispottikritto_nothi_graph_data,
+                     load_nothi_users_total_graph_data, load_office_dataframe,
+                     load_potrojari_dataframe, load_potrojari_graph_data,
+                     load_total_nisponno_dataframe,
+                     load_total_nisponno_graph_data,
+                     load_total_offices_graph_data,
+                     load_total_upokarvogi_dateframe,
+                     load_upokarvogi_graph_data, load_users_dataframe,
+                     load_users_gender_female_dataframe,
+                     load_users_gender_female_graph_data,
+                     load_users_gender_male_graph_data,
+                     upokarvogi_generate_general_series_drilldown_series)
 
 # offices_general_series = None
 # offices_drilldown_series = None
@@ -66,41 +66,41 @@ def dashboard(request):
 #     return render(request, 'monthly_report/nispottikritto_nothi_yearwise.html', context)
 
 
-# nispottikritto_nothi_general_series = None
-# nispottikritto_nothi_drilldown_series = None
+nispottikritto_nothi_general_series = None
+nispottikritto_nothi_drilldown_series = None
 
 
-# def nispottikritto_nothi(request):
-#     global nispottikritto_nothi_general_series, nispottikritto_nothi_drilldown_series
-#     if nispottikritto_nothi_general_series and nispottikritto_nothi_drilldown_series:
-#         context = {
-#             'general_series': json.dumps(
-#                 nispottikritto_nothi_general_series, cls=NpEncoder
-#             ),
-#             'drilldown_series': json.dumps(
-#                 nispottikritto_nothi_drilldown_series, cls=NpEncoder
-#             ),
-#         }
-#         return render(request, 'monthly_report/nispottikritto_nothi.html', context)
+def nispottikritto_nothi(request):
+    global nispottikritto_nothi_general_series, nispottikritto_nothi_drilldown_series
+    if nispottikritto_nothi_general_series and nispottikritto_nothi_drilldown_series:
+        context = {
+            'general_series': json.dumps(
+                nispottikritto_nothi_general_series, cls=NpEncoder
+            ),
+            'drilldown_series': json.dumps(
+                nispottikritto_nothi_drilldown_series, cls=NpEncoder
+            ),
+        }
+        return render(request, 'monthly_report/nispottikritto_nothi.html', context)
 
-#     general_series, drilldown_series = load_nispottikritto_nothi_graph_data()
+    general_series, drilldown_series = load_nispottikritto_nothi_graph_data()
 
-#     nispottikritto_nothi_general_series = copy.deepcopy(general_series)
-#     nispottikritto_nothi_drilldown_series = copy.deepcopy(drilldown_series)
+    nispottikritto_nothi_general_series = copy.deepcopy(general_series)
+    nispottikritto_nothi_drilldown_series = copy.deepcopy(drilldown_series)
 
-#     general_series = None
-#     drilldown_series = None
+    general_series = None
+    drilldown_series = None
 
-#     context = {
-#         'general_series': json.dumps(
-#             nispottikritto_nothi_general_series, cls=NpEncoder
-#         ),
-#         'drilldown_series': json.dumps(
-#             nispottikritto_nothi_drilldown_series, cls=NpEncoder
-#         ),
-#     }
+    context = {
+        'general_series': json.dumps(
+            nispottikritto_nothi_general_series, cls=NpEncoder
+        ),
+        'drilldown_series': json.dumps(
+            nispottikritto_nothi_drilldown_series, cls=NpEncoder
+        ),
+    }
 
-#     return render(request, 'monthly_report/nispottikritto_nothi.html', context)
+    return render(request, 'monthly_report/nispottikritto_nothi.html', context)
 
 
 # nothi_users_total_general_series = None

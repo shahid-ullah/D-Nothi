@@ -21,11 +21,11 @@ urlpatterns = [
     #         views.nispottikritto_nothi_yearwise,
     #         name="nispottikritto_nothi_yearwise",
     #     ),
-    #     path(
-    #         'nispottikritto_nothi/',
-    #         views.nispottikritto_nothi,
-    #         name="nispottikritto_nothi",
-    #     ),
+    path(
+        'nispottikritto_nothi/',
+        views.nispottikritto_nothi,
+        name="nispottikritto_nothi",
+    ),
     #     path(
     #         'nothi_users_total/',
     #         views.nothi_users_total,

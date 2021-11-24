@@ -33,7 +33,7 @@ class ReportTypeModel(models.Model):
 
 def gdjd_upload_path(instance, filename):
     now = datetime.now()
-    current_day = str(now.year) + "/" + str(now.month) + "/" + str(now.day)
+    current_day = str(now.year) + "_" + str(now.month) + "_" + str(now.day)
 
     return '{0}/{1}/{2}'.format(instance.report_type.type_name, current_day, filename)
 
@@ -56,7 +56,7 @@ class GeneralDrilldownJSONDataModel(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"file: {self.dataframe.dataframe_name}"
+        return f"file: {self.report_type.type_name}"
 
     class Meta:
         ordering = ['-created']
