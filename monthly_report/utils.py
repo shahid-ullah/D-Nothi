@@ -50,7 +50,7 @@ def load_office_dataframe():
 
 def load_total_offices_graph_data():
 
-    print('loading offices graph data ...')
+    print('loading total offices graph data ...')
     file_obj = load_file_object('total_offices')
     file_content = load_file_content(file_obj)
 
