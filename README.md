@@ -7,6 +7,8 @@
   - $ source venv/bin/activate
 - Install project dependencies
   -  pip install -r requirements.txt
+- Run migration
+    - python manage.py migrate
 - collect static files
   - python manage.py collectstatic
 - Start development server
