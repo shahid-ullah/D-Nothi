@@ -1,5 +1,6 @@
 # monthly_report/models.py
 import uuid
+from datetime import datetime
 
 from django.conf import settings
 from django.db import models
@@ -30,8 +31,11 @@ class ReportTypeModel(models.Model):
         return f"type: {self.type_name}"
 
 
-# def upload_path(instance, filename):
-#     return '{0}/{1}'.format(instance.dataframe.dataframe_name, filename)
+def gdjd_upload_path(instance, filename):
+    now = datetime.now()
+    current_day = str(now.year) + "/" + str(now.month) + "/" + str(now.day)
+
+    return '{0}/{1}/{2}'.format(instance.report_type.type_name, current_day, filename)
 
 
 # class CSVDataStorageModel(models.Model):
@@ -45,6 +49,17 @@ class ReportTypeModel(models.Model):
 
 #     class Meta:
 #         ordering = ['-created']
+class GeneralDrilldownJSONDataModel(models.Model):
+    report_type = models.ForeignKey(ReportTypeModel, on_delete=models.CASCADE)
+    file_name = models.FileField(upload_to=gdjd_upload_path)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"file: {self.dataframe.dataframe_name}"
+
+    class Meta:
+        ordering = ['-created']
 
 
 class YearModel(models.Model):
