@@ -41,11 +41,11 @@ urlpatterns = [
         views.nothi_users_female,
         name="nothi_users_female",
     ),
-    #     path(
-    #         'mobile_app_users/',
-    #         views.mobile_app_users,
-    #         name="mobile_app_users",
-    #     ),
+    path(
+        'mobile_app_users/',
+        views.mobile_app_users,
+        name="mobile_app_users",
+    ),
     #     path(
     #         'total_nisponno/',
     #         views.total_nisponno,

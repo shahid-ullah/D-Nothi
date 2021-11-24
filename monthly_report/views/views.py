@@ -198,36 +198,36 @@ def nothi_users_female(request):
     return render(request, 'monthly_report/nothi_users_female.html', context)
 
 
-# mobile_users_general_series = None
-# mobile_users_drilldown_series = None
+mobile_users_general_series = None
+mobile_users_drilldown_series = None
 
 
-# def mobile_app_users(request):
-#     global mobile_users_general_series, mobile_users_drilldown_series
+def mobile_app_users(request):
+    global mobile_users_general_series, mobile_users_drilldown_series
 
-#     if mobile_users_general_series and mobile_users_drilldown_series:
-#         context = {
-#             'general_series': json.dumps(mobile_users_general_series, cls=NpEncoder),
-#             'drilldown_series': json.dumps(
-#                 mobile_users_drilldown_series, cls=NpEncoder
-#             ),
-#         }
-#         return render(request, 'monthly_report/mobile_app_users.html', context)
+    if mobile_users_general_series and mobile_users_drilldown_series:
+        context = {
+            'general_series': json.dumps(mobile_users_general_series, cls=NpEncoder),
+            'drilldown_series': json.dumps(
+                mobile_users_drilldown_series, cls=NpEncoder
+            ),
+        }
+        return render(request, 'monthly_report/mobile_app_users.html', context)
 
-#     general_series, drilldown_series = load_mobile_app_users_graph_data()
+    general_series, drilldown_series = load_mobile_app_users_graph_data()
 
-#     mobile_users_general_series = copy.deepcopy(general_series)
-#     mobile_users_drilldown_series = copy.deepcopy(drilldown_series)
+    mobile_users_general_series = copy.deepcopy(general_series)
+    mobile_users_drilldown_series = copy.deepcopy(drilldown_series)
 
-#     general_series = None
-#     drilldown_series = None
+    general_series = None
+    drilldown_series = None
 
-#     context = {
-#         'general_series': json.dumps(mobile_users_general_series, cls=NpEncoder),
-#         'drilldown_series': json.dumps(mobile_users_drilldown_series, cls=NpEncoder),
-#     }
+    context = {
+        'general_series': json.dumps(mobile_users_general_series, cls=NpEncoder),
+        'drilldown_series': json.dumps(mobile_users_drilldown_series, cls=NpEncoder),
+    }
 
-#     return render(request, 'monthly_report/mobile_app_users.html', context)
+    return render(request, 'monthly_report/mobile_app_users.html', context)
 
 
 # total_nisponno_general_series = None
