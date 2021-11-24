@@ -46,11 +46,11 @@ urlpatterns = [
         views.mobile_app_users,
         name="mobile_app_users",
     ),
-    #     path(
-    #         'total_nisponno/',
-    #         views.total_nisponno,
-    #         name="total_nisponno",
-    #     ),
+    path(
+        'total_nisponno/',
+        views.total_nisponno,
+        name="total_nisponno",
+    ),
     #     path(
     #         'potrojari/',
     #         views.potrojari,

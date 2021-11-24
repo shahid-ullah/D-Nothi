@@ -230,36 +230,36 @@ def mobile_app_users(request):
     return render(request, 'monthly_report/mobile_app_users.html', context)
 
 
-# total_nisponno_general_series = None
-# total_nisponno_drilldown_series = None
+total_nisponno_general_series = None
+total_nisponno_drilldown_series = None
 
 
-# def total_nisponno(request):
-#     global total_nisponno_general_series, total_nisponno_drilldown_series
+def total_nisponno(request):
+    global total_nisponno_general_series, total_nisponno_drilldown_series
 
-#     if total_nisponno_general_series and total_nisponno_drilldown_series:
-#         context = {
-#             'general_series': json.dumps(total_nisponno_general_series, cls=NpEncoder),
-#             'drilldown_series': json.dumps(
-#                 total_nisponno_drilldown_series, cls=NpEncoder
-#             ),
-#         }
-#         return render(request, 'monthly_report/total_nisponno.html', context)
+    if total_nisponno_general_series and total_nisponno_drilldown_series:
+        context = {
+            'general_series': json.dumps(total_nisponno_general_series, cls=NpEncoder),
+            'drilldown_series': json.dumps(
+                total_nisponno_drilldown_series, cls=NpEncoder
+            ),
+        }
+        return render(request, 'monthly_report/total_nisponno.html', context)
 
-#     general_series, drilldown_series = load_total_nisponno_graph_data()
+    general_series, drilldown_series = load_total_nisponno_graph_data()
 
-#     total_nisponno_general_series = copy.deepcopy(general_series)
-#     total_nisponno_drilldown_series = copy.deepcopy(drilldown_series)
+    total_nisponno_general_series = copy.deepcopy(general_series)
+    total_nisponno_drilldown_series = copy.deepcopy(drilldown_series)
 
-#     general_series = None
-#     drilldown_series = None
+    general_series = None
+    drilldown_series = None
 
-#     context = {
-#         'general_series': json.dumps(total_nisponno_general_series, cls=NpEncoder),
-#         'drilldown_series': json.dumps(total_nisponno_drilldown_series, cls=NpEncoder),
-#     }
+    context = {
+        'general_series': json.dumps(total_nisponno_general_series, cls=NpEncoder),
+        'drilldown_series': json.dumps(total_nisponno_drilldown_series, cls=NpEncoder),
+    }
 
-#     return render(request, 'monthly_report/total_nisponno.html', context)
+    return render(request, 'monthly_report/total_nisponno.html', context)
 
 
 # potrojari_general_series = None
