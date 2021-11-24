@@ -138,33 +138,33 @@ def nispottikritto_nothi(request):
 #     return render(request, 'monthly_report/nothi_users_total.html', context)
 
 
-# male_users_general_series = None
-# male_users_drilldown_series = None
+male_users_general_series = None
+male_users_drilldown_series = None
 
 
-# def nothi_users_male(request):
-#     global male_users_general_series, male_users_drilldown_series
-#     if male_users_general_series and male_users_drilldown_series:
-#         context = {
-#             'general_series': json.dumps(male_users_general_series, cls=NpEncoder),
-#             'drilldown_series': json.dumps(male_users_drilldown_series, cls=NpEncoder),
-#         }
-#         return render(request, 'monthly_report/nothi_users_male.html', context)
+def nothi_users_male(request):
+    global male_users_general_series, male_users_drilldown_series
+    if male_users_general_series and male_users_drilldown_series:
+        context = {
+            'general_series': json.dumps(male_users_general_series, cls=NpEncoder),
+            'drilldown_series': json.dumps(male_users_drilldown_series, cls=NpEncoder),
+        }
+        return render(request, 'monthly_report/nothi_users_male.html', context)
 
-#     general_series, drilldown_series = load_users_gender_male_graph_data()
+    general_series, drilldown_series = load_users_gender_male_graph_data()
 
-#     male_users_general_series = copy.deepcopy(general_series)
-#     male_users_drilldown_series = copy.deepcopy(drilldown_series)
+    male_users_general_series = copy.deepcopy(general_series)
+    male_users_drilldown_series = copy.deepcopy(drilldown_series)
 
-#     general_series = None
-#     drilldown_series = None
+    general_series = None
+    drilldown_series = None
 
-#     context = {
-#         'general_series': json.dumps(male_users_general_series, cls=NpEncoder),
-#         'drilldown_series': json.dumps(male_users_drilldown_series, cls=NpEncoder),
-#     }
+    context = {
+        'general_series': json.dumps(male_users_general_series, cls=NpEncoder),
+        'drilldown_series': json.dumps(male_users_drilldown_series, cls=NpEncoder),
+    }
 
-#     return render(request, 'monthly_report/nothi_users_male.html', context)
+    return render(request, 'monthly_report/nothi_users_male.html', context)
 
 
 # female_users_general_series = None

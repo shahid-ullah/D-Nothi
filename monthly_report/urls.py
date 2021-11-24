@@ -31,11 +31,11 @@ urlpatterns = [
     #         views.nothi_users_total,
     #         name="nothi_users_total",
     #     ),
-    #     path(
-    #         'nothi_users_male/',
-    #         views.nothi_users_male,
-    #         name="nothi_users_male",
-    #     ),
+    path(
+        'nothi_users_male/',
+        views.nothi_users_male,
+        name="nothi_users_male",
+    ),
     #     path(
     #         'nothi_users_female/',
     #         views.nothi_users_female,

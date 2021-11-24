@@ -113,8 +113,8 @@ def load_file_content(file_obj):
 
 def load_users_gender_male_graph_data():
 
-    print('loading users gender male dataframe ...')
-    file_obj = load_file_object('users_gender_male')
+    print('loading users gender male graph data ...')
+    file_obj = load_file_object('male_nothi_users')
     file_content = load_file_content(file_obj)
 
     return generate_general_series_and_drilldown_series(file_content, 'years')
