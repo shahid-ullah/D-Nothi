@@ -292,37 +292,37 @@ def nispottikritto_nothi(request):
 #     return render(request, 'monthly_report/potrojari.html', context)
 
 
-# total_upokarvogi_general_series = None
-# total_upokarvogi_drilldown_series = None
+total_upokarvogi_general_series = None
+total_upokarvogi_drilldown_series = None
 
 
-# def total_upokarvogi(request):
-#     global total_upokarvogi_general_series, total_upokarvogi_drilldown_series
+def total_upokarvogi(request):
+    global total_upokarvogi_general_series, total_upokarvogi_drilldown_series
 
-#     if total_upokarvogi_general_series and total_upokarvogi_drilldown_series:
-#         context = {
-#             'general_series': json.dumps(
-#                 total_upokarvogi_general_series, cls=NpEncoder
-#             ),
-#             'drilldown_series': json.dumps(
-#                 total_upokarvogi_drilldown_series, cls=NpEncoder
-#             ),
-#         }
-#         return render(request, 'monthly_report/total_upokarvogi.html', context)
+    if total_upokarvogi_general_series and total_upokarvogi_drilldown_series:
+        context = {
+            'general_series': json.dumps(
+                total_upokarvogi_general_series, cls=NpEncoder
+            ),
+            'drilldown_series': json.dumps(
+                total_upokarvogi_drilldown_series, cls=NpEncoder
+            ),
+        }
+        return render(request, 'monthly_report/total_upokarvogi.html', context)
 
-#     general_series, drilldown_series = load_upokarvogi_graph_data()
+    general_series, drilldown_series = load_upokarvogi_graph_data()
 
-#     total_upokarvogi_general_series = copy.deepcopy(general_series)
-#     total_upokarvogi_drilldown_series = copy.deepcopy(drilldown_series)
+    total_upokarvogi_general_series = copy.deepcopy(general_series)
+    total_upokarvogi_drilldown_series = copy.deepcopy(drilldown_series)
 
-#     general_series = None
-#     drilldown_series = None
+    general_series = None
+    drilldown_series = None
 
-#     context = {
-#         'general_series': json.dumps(total_upokarvogi_general_series, cls=NpEncoder),
-#         'drilldown_series': json.dumps(
-#             total_upokarvogi_drilldown_series, cls=NpEncoder
-#         ),
-#     }
+    context = {
+        'general_series': json.dumps(total_upokarvogi_general_series, cls=NpEncoder),
+        'drilldown_series': json.dumps(
+            total_upokarvogi_drilldown_series, cls=NpEncoder
+        ),
+    }
 
-#     return render(request, 'monthly_report/total_upokarvogi.html', context)
+    return render(request, 'monthly_report/total_upokarvogi.html', context)
