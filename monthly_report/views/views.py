@@ -27,29 +27,30 @@ from django.shortcuts import render
 # offices_drilldown_series = None
 
 
-# def dashboard(request):
-#     global offices_general_series, offices_drilldown_series
-#     if offices_general_series and offices_drilldown_series:
-#         context = {
-#             'general_series': json.dumps(offices_general_series, cls=NpEncoder),
-#             'drilldown_series': json.dumps(offices_drilldown_series, cls=NpEncoder),
-#         }
-#         return render(request, 'monthly_report/dashboard.html', context)
+def dashboard(request):
+    # global offices_general_series, offices_drilldown_series
+    # if offices_general_series and offices_drilldown_series:
+    #     context = {
+    #         'general_series': json.dumps(offices_general_series, cls=NpEncoder),
+    #         'drilldown_series': json.dumps(offices_drilldown_series, cls=NpEncoder),
+    #     }
+    #     return render(request, 'monthly_report/dashboard.html', context)
 
-#     general_series, drilldown_series = load_total_offices_graph_data()
+    # general_series, drilldown_series = load_total_offices_graph_data()
 
-#     offices_general_series = copy.deepcopy(general_series)
-#     offices_drilldown_series = copy.deepcopy(drilldown_series)
+    # offices_general_series = copy.deepcopy(general_series)
+    # offices_drilldown_series = copy.deepcopy(drilldown_series)
 
-#     general_series = None
-#     drilldown_series = None
+    # general_series = None
+    # drilldown_series = None
 
-#     context = {
-#         'general_series': json.dumps(offices_general_series, cls=NpEncoder),
-#         'drilldown_series': json.dumps(offices_drilldown_series, cls=NpEncoder),
-#     }
+    # context = {
+    #     'general_series': json.dumps(offices_general_series, cls=NpEncoder),
+    #     'drilldown_series': json.dumps(offices_drilldown_series, cls=NpEncoder),
+    # }
+    context = {}
 
-#     return render(request, 'monthly_report/dashboard.html', context)
+    return render(request, 'monthly_report/dashboard.html', context)
 
 
 # def nispottikritto_nothi_yearwise(request):
