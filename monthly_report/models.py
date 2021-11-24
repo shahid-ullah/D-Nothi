@@ -17,6 +17,19 @@ from django.db import models
 #         return f"dataframe name: {self.dataframe_name}"
 
 
+class ReportTypeModel(models.Model):
+    type_name = models.CharField(max_length=50, unique=True)
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created']
+
+    def __str__(self):
+        return f"type: {self.type_name}"
+
+
 # def upload_path(instance, filename):
 #     return '{0}/{1}'.format(instance.dataframe.dataframe_name, filename)
 
