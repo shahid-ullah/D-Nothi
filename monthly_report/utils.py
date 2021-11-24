@@ -78,7 +78,7 @@ def load_users_dataframe():
 def load_nothi_users_total_graph_data():
 
     print('loading users gender male dataframe ...')
-    file_obj = load_file_object('total_users')
+    file_obj = load_file_object('total_nothi_users')
     file_content = load_file_content(file_obj)
 
     return generate_general_series_and_drilldown_series(file_content, 'years')
