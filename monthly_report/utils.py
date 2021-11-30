@@ -1,5 +1,6 @@
 # monthly_report/utils.py
 
+import copy
 import json
 
 import numpy as np
@@ -7,6 +8,21 @@ import pandas as pd
 
 from .models import GeneralDrilldownJSONDataModel, ReportTypeModel
 
+MONTH_SEQUENCE_LIST = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+    'unknown',
+]
 month_map = {
     '1': 'January',
     '01': 'January',
@@ -235,43 +251,6 @@ class NpEncoder(json.JSONEncoder):
         return super(NpEncoder, self).default(obj)
 
 
-def generate_general_series_drilldown_series(dataframe_year_by, general_series_name):
-    general_series = [
-        {
-            'name': general_series_name,
-            'colorByPoint': True,
-            'data': [],
-        }
-    ]
-    drilldown_series = []
-
-    for year, year_frame in dataframe_year_by:
-        year = str(year)
-        # year, year_frame.shape
-        temporary_dict_general = {
-            'name': year,
-            'y': year_frame.shape[0],
-            'drilldown': year,
-        }
-        general_series[0]['data'].append(temporary_dict_general)
-        temporary_dict_drilldown = {
-            'name': year,
-            'id': year,
-            'data': [],
-        }
-        month_group_by = year_frame.groupby('month')
-        for month, month_frame in month_group_by:
-
-            # mg, mf.shape[0]
-            month = str(month)
-            month = month_map[month]
-            lst = [month, month_frame.shape[0]]
-
-            temporary_dict_drilldown['data'].append(lst)
-        drilldown_series.append(temporary_dict_drilldown)
-    return general_series, drilldown_series
-
-
 def upokarvogi_generate_general_series_drilldown_series(
     dataframe_year_by, general_series_name
 ):
@@ -300,7 +279,6 @@ def upokarvogi_generate_general_series_drilldown_series(
         month_group_by = year_frame.groupby('month')
         for month, month_frame in month_group_by:
 
-            # mg, mf.shape[0]
             month = str(month)
             month = month_map[month]
             lst = [month, month_frame['upokarvogi'].sum()]
@@ -311,34 +289,78 @@ def upokarvogi_generate_general_series_drilldown_series(
 
 
 def generate_general_series_and_drilldown_series(data, general_series_name):
-    general_series = [
+    initialize_day_list = []
+    for i in range(31):
+        lst = [i + 1, 0]
+        initialize_day_list.append(lst)
+
+    GENERAL_SERIES = [
         {
             'name': general_series_name,
             'colorByPoint': True,
             'data': [],
         }
     ]
-    drilldown_series = []
-    for year in data:
-        year = str(year)
-        count = data[year]['count']
-        month_map = data[year]['month_map']
+    DRILLDOWN_SERIES = []
+
+    for year_dict in data:
+        year = year_dict['year']
+        count = year_dict['count']
+        month_data = year_dict['month_data']
 
         temporary_dict_general = {
             'name': year,
             'y': count,
             'drilldown': year,
         }
-        general_series[0]['data'].append(temporary_dict_general)
+        GENERAL_SERIES[0]['data'].append(temporary_dict_general)
 
         temporary_dict_drilldown = {
             'name': year,
             'id': year,
             'data': [],
         }
-        for month in month_map:
-            lst = [month, month_map[month]]
-            temporary_dict_drilldown['data'].append(lst)
-        drilldown_series.append(temporary_dict_drilldown)
 
-    return general_series, drilldown_series
+        for month_dict in month_data:
+            month = month_dict['month']
+            count = month_dict['count']
+            day_data = month_dict['day_data']
+
+            dic = {}
+            dic['name'] = month_map[month]
+            dic['y'] = count
+            dic['drilldown'] = year + month
+
+            temporary_dict_drilldown['data'].append(dic)
+
+            temporary_day_dict = {
+                'id': year + month,
+                'data': copy.deepcopy(initialize_day_list),
+            }
+
+            for day_dict in day_data:
+                day = day_dict['day']
+                count = day_dict['count']
+                day = int(day)
+
+                lst = [day, count]
+
+                temporary_day_dict['data'].remove([day, 0])
+                temporary_day_dict['data'].append(lst)
+
+            # sort days
+            sorted_days = sorted(temporary_day_dict['data'], key=lambda x: x[0])
+            temporary_day_dict['data'] = sorted_days
+
+            DRILLDOWN_SERIES.append(temporary_day_dict)
+
+        # sort month
+        sorted_month = sorted(
+            temporary_dict_drilldown['data'],
+            key=lambda x: MONTH_SEQUENCE_LIST.index(x['name']),
+        )
+        temporary_dict_drilldown['data'] = sorted_month
+
+        DRILLDOWN_SERIES.append(temporary_dict_drilldown)
+
+    return GENERAL_SERIES, DRILLDOWN_SERIES

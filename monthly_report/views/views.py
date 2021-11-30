@@ -6,8 +6,7 @@ import json
 from django.conf import settings
 from django.shortcuts import render
 
-from ..utils import (NpEncoder, generate_general_series_drilldown_series,
-                     load_mobile_app_users_graph_data,
+from ..utils import (NpEncoder, load_mobile_app_users_graph_data,
                      load_mobile_users_dataframe,
                      load_nisponno_records_dataframe,
                      load_nispottikritto_nothi_graph_data,
