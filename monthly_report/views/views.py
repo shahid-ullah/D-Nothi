@@ -3,24 +3,16 @@
 import copy
 import json
 
-from django.conf import settings
 from django.shortcuts import render
 
 from ..utils import (NpEncoder, load_mobile_app_users_graph_data,
-                     load_mobile_users_dataframe,
-                     load_nisponno_records_dataframe,
                      load_nispottikritto_nothi_graph_data,
-                     load_nothi_users_total_graph_data, load_office_dataframe,
-                     load_potrojari_dataframe, load_potrojari_graph_data,
-                     load_total_nisponno_dataframe,
+                     load_nothi_users_total_graph_data,
+                     load_potrojari_graph_data, load_report_storage_table,
                      load_total_nisponno_graph_data,
-                     load_total_offices_graph_data,
-                     load_total_upokarvogi_dateframe,
-                     load_upokarvogi_graph_data, load_users_dataframe,
-                     load_users_gender_female_dataframe,
+                     load_total_offices_graph_data, load_upokarvogi_graph_data,
                      load_users_gender_female_graph_data,
-                     load_users_gender_male_graph_data,
-                     upokarvogi_generate_general_series_drilldown_series)
+                     load_users_gender_male_graph_data)
 
 offices_general_series = None
 offices_drilldown_series = None
@@ -203,14 +195,14 @@ mobile_users_drilldown_series = None
 def mobile_app_users(request):
     global mobile_users_general_series, mobile_users_drilldown_series
 
-    if mobile_users_general_series and mobile_users_drilldown_series:
-        context = {
-            'general_series': json.dumps(mobile_users_general_series, cls=NpEncoder),
-            'drilldown_series': json.dumps(
-                mobile_users_drilldown_series, cls=NpEncoder
-            ),
-        }
-        return render(request, 'monthly_report/mobile_app_users.html', context)
+    # if mobile_users_general_series and mobile_users_drilldown_series:
+    #     context = {
+    #         'general_series': json.dumps(mobile_users_general_series, cls=NpEncoder),
+    #         'drilldown_series': json.dumps(
+    #             mobile_users_drilldown_series, cls=NpEncoder
+    #         ),
+    #     }
+    #     return render(request, 'monthly_report/mobile_app_users.html', context)
 
     general_series, drilldown_series = load_mobile_app_users_graph_data()
 
@@ -220,9 +212,38 @@ def mobile_app_users(request):
     general_series = None
     drilldown_series = None
 
+    # load user_login_history table
+    user_login_history_table = load_report_storage_table(
+        table_name='user_login_history'
+    )
+
+    with open(
+        user_login_history_table.file_name.path, 'r', encoding='utf-8'
+    ) as json_file:
+        data = json.load(json_file)
+
+    android_ios_users = data['android_ios_users']
+
+    # calculate percentage of android users and ios users
+    total = 0
+
+    for dict_ in android_ios_users:
+
+        for category, value in dict_.items():
+            total = total + int(value)
+
+    android_ios_users_percentage = []
+    for dict_ in android_ios_users:
+        dic = {}
+
+        for category, value in dict_.items():
+            dic[category] = int(round((int(value) * 100.0) / total))
+            android_ios_users_percentage.append(dic)
+
     context = {
         'general_series': json.dumps(mobile_users_general_series, cls=NpEncoder),
         'drilldown_series': json.dumps(mobile_users_drilldown_series, cls=NpEncoder),
+        'android_ios_users': json.dumps(android_ios_users_percentage, cls=NpEncoder),
     }
 
     return render(request, 'monthly_report/mobile_app_users.html', context)

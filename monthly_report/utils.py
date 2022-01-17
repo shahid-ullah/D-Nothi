@@ -6,7 +6,8 @@ import json
 import numpy as np
 import pandas as pd
 
-from .models import GeneralDrilldownJSONDataModel, ReportTypeModel
+from .models import (GeneralDrilldownJSONDataModel, ReportStorageModel,
+                     ReportTypeModel, TableNameModel)
 
 MONTH_SEQUENCE_LIST = [
     'January',
@@ -364,3 +365,10 @@ def generate_general_series_and_drilldown_series(data, general_series_name):
         DRILLDOWN_SERIES.append(temporary_dict_drilldown)
 
     return GENERAL_SERIES, DRILLDOWN_SERIES
+
+
+def load_report_storage_table(table_name):
+    table_obj = TableNameModel.objects.filter(name=table_name).first()
+    report_table = ReportStorageModel.objects.filter(table_name=table_obj).first()
+
+    return report_table
