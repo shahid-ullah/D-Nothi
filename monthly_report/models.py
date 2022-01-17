@@ -123,3 +123,21 @@ class TableNameModel(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+
+def file_upload_path(instance, filename):
+    now = datetime.now()
+    current_day = str(now.year) + "_" + str(now.month) + "_" + str(now.day)
+
+    return '{0}/{1}/{2}'.format(instance.table_name.name, current_day, filename)
+
+
+class ReportStorageModel(models.Model):
+    table_name = models.ForeignKey(TableNameModel, on_delete=models.CASCADE)
+    file_name = models.FileField(upload_to=file_upload_path)
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'{self.table_name.name} {self.file_name}'
