@@ -112,3 +112,14 @@ class ReportModel(models.Model):
 
     def __str__(self):
         return f"{self.year}, {self.month}"
+
+
+class TableNameModel(models.Model):
+    name = models.CharField(max_length=200)
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name}"
