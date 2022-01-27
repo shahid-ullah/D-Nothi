@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     # local apps
     'monthly_report.apps.MonthlyReportConfig',
     'users.apps.UsersConfig',
+    'automate_process.apps.AutomateProcessConfig',
 ]
 
 MIDDLEWARE = [
