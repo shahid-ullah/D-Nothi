@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # third party app
     'rest_framework',
+    'django_extensions',
     # local apps
     'monthly_report.apps.MonthlyReportConfig',
     'users.apps.UsersConfig',

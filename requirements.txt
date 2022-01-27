@@ -11,9 +11,12 @@ click==8.0.3
 django==3.2.9
     # via
     #   -r requirements.in
+    #   django-extensions
     #   django-filter
     #   djangorestframework
 django-environ==0.8.1
+    # via -r requirements.in
+django-extensions==3.1.5
     # via -r requirements.in
 django-filter==21.1
     # via -r requirements.in
