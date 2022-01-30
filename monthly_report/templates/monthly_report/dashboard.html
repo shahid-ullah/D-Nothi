@@ -3,6 +3,32 @@
 {% block title %}Analytic Dashboard{% endblock %}
 
 {% block body_block %}
+  <div class="update_dashboard" style='background-color:red;'>
+    update Dashbaoard
+  </div>
+  <div>
+    <script>
+
+      let update_report = document.querySelector('.update_dashboard');
+      update_report.addEventListener("click", updateReport);
+
+      function updateReport(){
+        console.log('update_dashboard/');
+        var jqxhr = $.get( "/update_dashboard/", function(data) {
+          console.log('');
+        })
+          .done(function () {
+            console.log('');
+          })
+          .fail(function () {
+            console.log("");
+          })
+          .always(function () {
+            console.log("");
+          });
+      }
+    </script>
+  </div>
   <!-- Breadcrumb -->
   <ol class="breadcrumb">
     Following analysis based on sample data
