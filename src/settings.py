@@ -98,7 +98,16 @@ DATABASES = {
         'HOST': env('DB_HOST'),
         'PORT': env('DB_PORT'),
         'OPTIONS': {'charset': 'utf8mb4'},
-    }
+    },
+    'source_db': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': env('SOURCE_DB_NAME'),
+        'USER': env('SOURCE_DB_USER'),
+        'PASSWORD': env('SOURCE_DB_PASSWORD'),
+        'HOST': env('SOURCE_DB_HOST'),
+        'PORT': env('SOURCE_DB_PORT'),
+        'OPTIONS': {'charset': 'utf8mb4'},
+    },
 }
 
 
@@ -171,3 +180,5 @@ USERS_GENDER_MALE_TABLE_CSV_FILE_LOADED = False
 
 USERS_GENDER_FEMALE_TABLE_CSV_FILE_PATH = None
 USERS_GENDER_FEMALE_TABLE_CSV_FILE_LOADED = False
+
+SYSTEM_UPDATE_RUNNING = False

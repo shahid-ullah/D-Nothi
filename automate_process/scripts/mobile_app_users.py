@@ -2,12 +2,16 @@ import json
 import os
 
 import pandas as pd
+from django.conf import settings
 
 
 def update():
     from ..models import UserLoginHistory
 
-    objs = UserLoginHistory.objects.all()
+    if settings.DEBUG:
+        objs = UserLoginHistory.objects.using('source_db').all()[:1000000]
+    else:
+        objs = UserLoginHistory.objects.using('source_db').all()
 
     try:
         values = objs.values('id', 'is_mobile', 'created')

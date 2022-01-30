@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.files.base import File
 from rest_framework import authentication
 from rest_framework.response import Response
@@ -24,11 +25,24 @@ class updateDashboard(APIView):
         """
         Return a list of all users.
         """
-        fd = open('temporary_data/mobile_app_users.json')
-        f = File(fd)
-        data = mobile_app_users.update()
-        obj1 = ReportTypeModel.objects.filter(type_name='mobile_app_users').first()
-        GeneralDrilldownJSONDataModel.objects.create(report_type=obj1, file_name=f)
-        f.close()
-        fd.close()
+
+        if settings.SYSTEM_UPDATE_RUNNING:
+            print('system update running. please request later')
+            return Response({'status': 'system update running. Please request later'})
+
+        settings.SYSTEM_UPDATE_RUNNING = True
+        # updating mobile app users
+        try:
+            data = mobile_app_users.update()
+            fd = open('temporary_data/mobile_app_users.json')
+            f = File(fd)
+            obj1 = ReportTypeModel.objects.filter(type_name='mobile_app_users').first()
+            GeneralDrilldownJSONDataModel.objects.create(report_type=obj1, file_name=f)
+            f.close()
+            fd.close()
+        except Exception as e:
+            settings.SYSTEM_UPDATE_RUNNING = False
+            return Response({'error': str(e)})
+
+        settings.SYSTEM_UPDATE_RUNNING = False
         return Response(data)

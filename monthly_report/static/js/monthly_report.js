@@ -1,7 +1,7 @@
-let year_select = document.querySelector('.year_select');
-console.log('year_select: ', year_select);
+// let year_select = document.querySelector('.year_select');
+// console.log('year_select: ', year_select);
 
-year_select.addEventListener('change', handleYearSelect);
+// year_select.addEventListener('change', handleYearSelect);
 
 
 function handleYearSelect(event){
@@ -25,7 +25,7 @@ function drawReport(data, year=null){
   else {
     const d = new Date();
     let year = d.getFullYear();
-    document.querySelector(".current_year").innerHTML = "Report year: " + year;
+    // document.querySelector(".current_year").innerHTML = "Report year: " + year;
   }
 
   cleanTableData();
@@ -83,8 +83,8 @@ function cleanTableData(){
 
 
  $(document).ready(function () {
-   $.getJSON( "report/", function( data ) {
-     drawReport(data);
-   });
+   // $.getJSON( "report/", function( data ) {
+   //   drawReport(data);
+   // });
    console.log('monthly report js loaded');
  });
