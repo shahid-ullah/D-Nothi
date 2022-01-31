@@ -8,7 +8,8 @@ from rest_framework.views import APIView
 
 from monthly_report.models import ReportStorageModel, TableNameModel
 
-from .scripts.tables import nisponno_records, offices, user_login_history
+from .scripts.tables import (nisponno_records, offices, user_login_history,
+                             users)
 
 
 class updateDashboard(APIView):
@@ -55,6 +56,14 @@ class updateDashboard(APIView):
             settings.SYSTEM_UPDATE_RUNNING = False
             return Response({'status': status, 'error': str(e)})
 
+        try:
+            status_ = users_table()
+            status['users'] = status_
+
+        except Exception as e:
+            settings.SYSTEM_UPDATE_RUNNING = False
+            return Response({'status': status, 'error': str(e)})
+
         settings.SYSTEM_UPDATE_RUNNING = False
 
         return Response(status)
@@ -91,6 +100,19 @@ def nisponno_records_table():
     table_obj = TableNameModel.objects.filter(name='nisponno_records').last()
 
     fd = open('temporary_data/nisponno_records.json')
+    f = File(fd)
+    ReportStorageModel.objects.create(table_name=table_obj, file_name=f)
+    f.close()
+    fd.close()
+
+    return status
+
+
+def users_table():
+    _, status = users.update()
+    table_obj = TableNameModel.objects.filter(name='users').last()
+
+    fd = open('temporary_data/users.json')
     f = File(fd)
     ReportStorageModel.objects.create(table_name=table_obj, file_name=f)
     f.close()
