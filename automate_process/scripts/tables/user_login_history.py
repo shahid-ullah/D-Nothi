@@ -23,7 +23,7 @@ def update():
         status['mobile_app_users'] = 'success'
     except Exception as e:
         user_login_history['mobile_app_users'] = []
-        status['mobile_app_users'] = 'Fails'
+        status['mobile_app_users'] = 'Failed'
         print(e)
 
     # update Android-IOS users
@@ -33,7 +33,7 @@ def update():
         status['android_ios_users'] = 'success'
     except Exception as e:
         user_login_history['android_ios_users'] = []
-        status['android_ios_users'] = 'Fails'
+        status['android_ios_users'] = 'Failed'
         print(e)
 
     dir_name = 'temporary_data'

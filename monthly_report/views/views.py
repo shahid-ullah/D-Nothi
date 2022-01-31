@@ -101,18 +101,27 @@ nothi_users_total_drilldown_series = None
 
 def nothi_users_total(request):
     global nothi_users_total_general_series, nothi_users_total_drilldown_series
-    if nothi_users_total_general_series and nothi_users_total_drilldown_series:
-        context = {
-            'general_series': json.dumps(
-                nothi_users_total_general_series, cls=NpEncoder
-            ),
-            'drilldown_series': json.dumps(
-                nothi_users_total_drilldown_series, cls=NpEncoder
-            ),
-        }
-        return render(request, 'monthly_report/nothi_users_total.html', context)
+    # if nothi_users_total_general_series and nothi_users_total_drilldown_series:
+    #     context = {
+    #         'general_series': json.dumps(
+    #             nothi_users_total_general_series, cls=NpEncoder
+    #         ),
+    #         'drilldown_series': json.dumps(
+    #             nothi_users_total_drilldown_series, cls=NpEncoder
+    #         ),
+    #     }
+    #     return render(request, 'monthly_report/nothi_users_total.html', context)
 
-    general_series, drilldown_series = load_nothi_users_total_graph_data()
+    # general_series, drilldown_series = load_nothi_users_total_graph_data()
+
+    table_object = load_table_name_object(name='offices')
+    report_object = load_report_storage_model_object(table_name=table_object)
+    data = load_json_data(report_object)
+
+    total_offices = data['total_offices']
+    general_series, drilldown_series = generate_general_series_and_drilldown_series(
+        total_offices, 'years'
+    )
 
     nothi_users_total_general_series = copy.deepcopy(general_series)
     nothi_users_total_drilldown_series = copy.deepcopy(drilldown_series)

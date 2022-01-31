@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 from monthly_report.models import ReportStorageModel, TableNameModel
 
-from .scripts.tables import user_login_history
+from .scripts.tables import offices, user_login_history
 
 
 class updateDashboard(APIView):
@@ -39,7 +39,16 @@ class updateDashboard(APIView):
             settings.SYSTEM_UPDATE_RUNNING = False
             return Response({'status': status, 'error': str(e)})
 
+        try:
+            status_ = offices_table()
+            status['offices'] = status_
+
+        except Exception as e:
+            settings.SYSTEM_UPDATE_RUNNING = False
+            return Response({'status': status, 'error': str(e)})
+
         settings.SYSTEM_UPDATE_RUNNING = False
+
         return Response(status)
 
 
@@ -48,6 +57,19 @@ def user_login_history_table():
     table_obj = TableNameModel.objects.filter(name='user_login_history').last()
 
     fd = open('temporary_data/user_login_history.json')
+    f = File(fd)
+    ReportStorageModel.objects.create(table_name=table_obj, file_name=f)
+    f.close()
+    fd.close()
+
+    return status
+
+
+def offices_table():
+    _, status = offices.update()
+    table_obj = TableNameModel.objects.filter(name='offices').last()
+
+    fd = open('temporary_data/offices.json')
     f = File(fd)
     ReportStorageModel.objects.create(table_name=table_obj, file_name=f)
     f.close()
