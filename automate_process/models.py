@@ -89,7 +89,9 @@ class Offices(models.Model):
     parent_office_id = models.IntegerField()
     active_status = models.IntegerField()
     unit_organogram_edit_option = models.IntegerField(blank=True, null=True)
-    unit_organogram_edit_option_status_updated_at = models.DateTimeField(blank=True, null=True)
+    unit_organogram_edit_option_status_updated_at = models.DateTimeField(
+        blank=True, null=True
+    )
     created_by = models.IntegerField()
     modified_by = models.IntegerField()
     created = models.DateTimeField(blank=True, null=True)
@@ -145,9 +147,13 @@ class Users(models.Model):
     active = models.IntegerField(blank=True, null=True)
     user_status = models.CharField(max_length=255, db_collation='latin1_swedish_ci')
     is_email_verified = models.IntegerField(blank=True, null=True)
-    email_verify_code = models.CharField(max_length=255, db_collation='latin1_swedish_ci', blank=True, null=True)
+    email_verify_code = models.CharField(
+        max_length=255, db_collation='latin1_swedish_ci', blank=True, null=True
+    )
     verification_date = models.DateField(blank=True, null=True)
-    ssn = models.CharField(max_length=255, db_collation='latin1_swedish_ci', blank=True, null=True)
+    ssn = models.CharField(
+        max_length=255, db_collation='latin1_swedish_ci', blank=True, null=True
+    )
     force_password_change = models.IntegerField(blank=True, null=True)
     last_password_change = models.DateTimeField(blank=True, null=True)
     created = models.DateTimeField(blank=True, null=True)
@@ -160,3 +166,28 @@ class Users(models.Model):
     class Meta:
         managed = False
         db_table = 'users'
+
+
+class NisponnoRecords(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    nothi_master_id = models.IntegerField()
+    nothi_part_no = models.IntegerField()
+    type = models.CharField(max_length=100)
+    nothi_onucched_id = models.IntegerField(blank=True, null=True)
+    potrojari_id = models.IntegerField()
+    nothi_office_id = models.IntegerField()
+    office_id = models.IntegerField()
+    unit_id = models.IntegerField()
+    designation_id = models.IntegerField()
+    employee_id = models.IntegerField()
+    upokarvogi = models.IntegerField()
+    potrojari_internal_own = models.IntegerField()
+    potrojari_internal_other = models.IntegerField()
+    dak_srijito = models.IntegerField()
+    operation_date = models.DateTimeField()
+    created = models.DateTimeField()
+    modified = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'nisponno_records'
