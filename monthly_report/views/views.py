@@ -5,7 +5,9 @@ import json
 
 from django.shortcuts import render
 
-from ..utils import (NpEncoder, load_mobile_app_users_graph_data,
+from ..models import ReportStorageModel, TableNameModel
+from ..utils import (NpEncoder, generate_general_series_and_drilldown_series,
+                     load_mobile_app_users_graph_data,
                      load_nispottikritto_nothi_graph_data,
                      load_nothi_users_total_graph_data,
                      load_potrojari_graph_data, load_report_storage_table,
@@ -204,7 +206,15 @@ def mobile_app_users(request):
     #     }
     #     return render(request, 'monthly_report/mobile_app_users.html', context)
 
-    general_series, drilldown_series = load_mobile_app_users_graph_data()
+    table_object = load_table_name_object(name='user_login_history')
+    report_object = load_report_storage_model_object(table_name=table_object)
+    data = load_json_data(report_object)
+
+    mobile_app_users = data['mobile_app_users']
+    general_series, drilldown_series = generate_general_series_and_drilldown_series(
+        mobile_app_users, 'years'
+    )
+    android_ios_users = data['android_ios_users']
 
     mobile_users_general_series = copy.deepcopy(general_series)
     mobile_users_drilldown_series = copy.deepcopy(drilldown_series)
@@ -212,21 +222,7 @@ def mobile_app_users(request):
     general_series = None
     drilldown_series = None
 
-    # load user_login_history table
-    user_login_history_table = load_report_storage_table(
-        table_name='user_login_history'
-    )
-
-    with open(
-        user_login_history_table.file_name.path, 'r', encoding='utf-8'
-    ) as json_file:
-        data = json.load(json_file)
-
-    android_ios_users = data['android_ios_users']
-
-    # calculate percentage of android users and ios users
     total = 0
-
     for dict_ in android_ios_users:
 
         for category, value in dict_.items():
@@ -345,3 +341,32 @@ def total_upokarvogi(request):
     }
 
     return render(request, 'monthly_report/total_upokarvogi.html', context)
+
+
+def load_table_user_login_history():
+    table_obj = TableNameModel.objects.filter(name='user_login_history').last()
+    report_storage_obj = ReportStorageModel.objects.filter(table_name=table_obj).last()
+
+    with open(report_storage_obj.file_name.path, 'r', encoding='utf-8') as json_file:
+        data = json.load(json_file)
+
+    return data
+
+
+def load_table_name_object(name):
+    table_object = TableNameModel.objects.filter(name=name).last()
+
+    return table_object
+
+
+def load_report_storage_model_object(table_name):
+    report_object = ReportStorageModel.objects.filter(table_name=table_name).last()
+
+    return report_object
+
+
+def load_json_data(file_obj):
+    with open(file_obj.file_name.path, 'r', encoding='utf-8') as json_file:
+        data = json.load(json_file)
+
+    return data

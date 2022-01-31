@@ -368,7 +368,7 @@ def generate_general_series_and_drilldown_series(data, general_series_name):
 
 
 def load_report_storage_table(table_name):
-    table_obj = TableNameModel.objects.filter(name=table_name).first()
-    report_table = ReportStorageModel.objects.filter(table_name=table_obj).first()
+    table_obj = TableNameModel.objects.filter(name=table_name).last()
+    report_table = ReportStorageModel.objects.filter(table_name=table_obj).last()
 
     return report_table

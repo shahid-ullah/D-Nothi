@@ -1,13 +1,14 @@
+import json
+
 from django.conf import settings
 from django.core.files.base import File
 from rest_framework import authentication
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from monthly_report.models import (GeneralDrilldownJSONDataModel,
-                                   ReportTypeModel)
+from monthly_report.models import ReportStorageModel, TableNameModel
 
-from .scripts import mobile_app_users
+from .scripts.tables import user_login_history
 
 
 class updateDashboard(APIView):
@@ -22,27 +23,34 @@ class updateDashboard(APIView):
     # permission_classes = [permissions.IsAdminUser]
 
     def get(self, request, format=None):
-        """
-        Return a list of all users.
-        """
+        """ """
 
+        status = {}
         if settings.SYSTEM_UPDATE_RUNNING:
             print('system update running. please request later')
             return Response({'status': 'system update running. Please request later'})
 
         settings.SYSTEM_UPDATE_RUNNING = True
-        # updating mobile app users
         try:
-            data = mobile_app_users.update()
-            fd = open('temporary_data/mobile_app_users.json')
-            f = File(fd)
-            obj1 = ReportTypeModel.objects.filter(type_name='mobile_app_users').first()
-            GeneralDrilldownJSONDataModel.objects.create(report_type=obj1, file_name=f)
-            f.close()
-            fd.close()
+            status_ = user_login_history_table()
+            status['user_login_history'] = status_
+
         except Exception as e:
             settings.SYSTEM_UPDATE_RUNNING = False
-            return Response({'error': str(e)})
+            return Response({'status': status, 'error': str(e)})
 
         settings.SYSTEM_UPDATE_RUNNING = False
-        return Response(data)
+        return Response(status)
+
+
+def user_login_history_table():
+    _, status = user_login_history.update()
+    table_obj = TableNameModel.objects.filter(name='user_login_history').last()
+
+    fd = open('temporary_data/user_login_history.json')
+    f = File(fd)
+    ReportStorageModel.objects.create(table_name=table_obj, file_name=f)
+    f.close()
+    fd.close()
+
+    return status
