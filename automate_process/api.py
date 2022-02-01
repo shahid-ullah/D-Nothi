@@ -37,32 +37,36 @@ class updateDashboard(APIView):
             status['user_login_history'] = status_
 
         except Exception as e:
-            settings.SYSTEM_UPDATE_RUNNING = False
-            return Response({'status': status, 'error': str(e)})
+            # settings.SYSTEM_UPDATE_RUNNING = False
+            # return Response({'status': status, 'error': str(e)})
+            print(e)
 
         try:
             status_ = offices_table()
             status['offices'] = status_
 
         except Exception as e:
-            settings.SYSTEM_UPDATE_RUNNING = False
-            return Response({'status': status, 'error': str(e)})
+            # settings.SYSTEM_UPDATE_RUNNING = False
+            # return Response({'status': status, 'error': str(e)})
+            print(e)
 
         try:
             status_ = nisponno_records_table()
             status['nisponno_records'] = status_
 
         except Exception as e:
-            settings.SYSTEM_UPDATE_RUNNING = False
-            return Response({'status': status, 'error': str(e)})
+            # settings.SYSTEM_UPDATE_RUNNING = False
+            # return Response({'status': status, 'error': str(e)})
+            print(e)
 
         try:
             status_ = users_table()
             status['users'] = status_
 
         except Exception as e:
-            settings.SYSTEM_UPDATE_RUNNING = False
-            return Response({'status': status, 'error': str(e)})
+            # settings.SYSTEM_UPDATE_RUNNING = False
+            # return Response({'status': status, 'error': str(e)})
+            print(e)
 
         settings.SYSTEM_UPDATE_RUNNING = False
 
