@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'monthly_report.apps.MonthlyReportConfig',
     'users.apps.UsersConfig',
     'automate_process.apps.AutomateProcessConfig',
+    'dashboard_generate.apps.DashboardGenerateConfig',
 ]
 
 MIDDLEWARE = [
