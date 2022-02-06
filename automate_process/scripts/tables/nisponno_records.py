@@ -42,26 +42,26 @@ def update(request=None, *args, **kwargs):
     #     print(e)
 
     # update potrojari
-    try:
-        year_report = potrojari.update(objs, request, *args, **kwargs)
-        # year_report = mobile_app_users.update(objs)
-        nisponno_records['potrojari'] = year_report
-        status['potrojari'] = 'success'
-    except Exception as e:
-        nisponno_records['potrojari'] = []
-        status['potrojari'] = 'Failed'
-        print(e)
+    # try:
+    #     year_report = potrojari.update(objs, request, *args, **kwargs)
+    #     # year_report = mobile_app_users.update(objs)
+    #     nisponno_records['potrojari'] = year_report
+    #     status['potrojari'] = 'success'
+    # except Exception as e:
+    #     nisponno_records['potrojari'] = []
+    #     status['potrojari'] = 'Failed'
+    #     print(e)
 
     # update note_nisponno
-    # try:
-    #     year_report = upokarvogi.update(objs)
-    #     # year_report = mobile_app_users.update(objs)
-    #     nisponno_records['note_nisponno'] = year_report
-    #     status['note_nisponno'] = 'success'
-    # except Exception as e:
-    #     nisponno_records['note_nisponno'] = []
-    #     status['note_nisponno'] = 'Failed'
-    #     print(e)
+    try:
+        year_report = note_nisponno.update(objs, request, *args, **kwargs)
+        # year_report = mobile_app_users.update(objs)
+        nisponno_records['note_nisponno'] = year_report
+        status['note_nisponno'] = 'success'
+    except Exception as e:
+        nisponno_records['note_nisponno'] = []
+        status['note_nisponno'] = 'Failed'
+        print(e)
 
     # dir_name = 'temporary_data'
     # if not os.path.exists(dir_name):
