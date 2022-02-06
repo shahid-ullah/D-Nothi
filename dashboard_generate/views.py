@@ -5,9 +5,9 @@ import numpy as np
 import pandas as pd
 from django.shortcuts import render
 
-from .models import (ReportMaleNothiUsersModel, ReportNispottikrittoNothiModel,
-                     ReportTotalOfficesModel, ReportTotalUsersModel,
-                     ReportUpokarvogiModel)
+from .models import (ReportFemaleNothiUsersModel, ReportMaleNothiUsersModel,
+                     ReportNispottikrittoNothiModel, ReportTotalOfficesModel,
+                     ReportTotalUsersModel, ReportUpokarvogiModel)
 
 
 class NpEncoder(json.JSONEncoder):
@@ -162,3 +162,16 @@ def nothi_users_male(request):
     }
 
     return render(request, 'dashboard_generate/nothi_users_male.html', context)
+
+
+def nothi_users_female(request):
+    objs = ReportFemaleNothiUsersModel.objects.all()
+    year_map, month_map, day_map = generate_year_month_and_day_map(objs)
+
+    context = {
+        'year_map': json.dumps(year_map, cls=NpEncoder),
+        'month_map': json.dumps(month_map, cls=NpEncoder),
+        'day_map': json.dumps(day_map, cls=NpEncoder),
+    }
+
+    return render(request, 'dashboard_generate/nothi_users_female.html', context)
