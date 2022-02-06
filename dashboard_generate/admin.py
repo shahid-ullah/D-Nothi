@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import (ReportNispottikrittoNothiModel, ReportTotalOfficesModel,
-                     ReportUpokarvogiModel)
+from .models import (ReportNispottikrittoNothiModel, ReportPotrojariModel,
+                     ReportTotalOfficesModel, ReportUpokarvogiModel)
 
 
 @admin.register(ReportTotalOfficesModel)
@@ -20,3 +20,8 @@ class ReportNispottikrittoNothiModelAdmin(admin.ModelAdmin):
 @admin.register(ReportUpokarvogiModel)
 class ReportUpokarvogiAmdin(admin.ModelAdmin):
     list_display = [field.name for field in ReportUpokarvogiModel._meta.get_fields()]
+
+
+@admin.register(ReportPotrojariModel)
+class ReportPotrojariModelAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in ReportPotrojariModel._meta.get_fields()]
