@@ -32,17 +32,17 @@ class updateDashboard(APIView):
             return Response({'status': 'system update running. Please request later'})
 
         settings.SYSTEM_UPDATE_RUNNING = True
-        try:
-            status_ = user_login_history_table()
-            status['user_login_history'] = status_
+        # try:
+        #     status_ = user_login_history_table()
+        #     status['user_login_history'] = status_
 
-        except Exception as e:
-            # settings.SYSTEM_UPDATE_RUNNING = False
-            # return Response({'status': status, 'error': str(e)})
-            print(e)
+        # except Exception as e:
+        #     # settings.SYSTEM_UPDATE_RUNNING = False
+        #     # return Response({'status': status, 'error': str(e)})
+        #     print(e)
 
         try:
-            status_ = offices_table()
+            status_ = offices_table(request)
             status['offices'] = status_
 
         except Exception as e:
@@ -50,23 +50,23 @@ class updateDashboard(APIView):
             # return Response({'status': status, 'error': str(e)})
             print(e)
 
-        try:
-            status_ = nisponno_records_table()
-            status['nisponno_records'] = status_
+        # try:
+        #     status_ = nisponno_records_table()
+        #     status['nisponno_records'] = status_
 
-        except Exception as e:
-            # settings.SYSTEM_UPDATE_RUNNING = False
-            # return Response({'status': status, 'error': str(e)})
-            print(e)
+        # except Exception as e:
+        #     # settings.SYSTEM_UPDATE_RUNNING = False
+        #     # return Response({'status': status, 'error': str(e)})
+        #     print(e)
 
-        try:
-            status_ = users_table()
-            status['users'] = status_
+        # try:
+        #     status_ = users_table()
+        #     status['users'] = status_
 
-        except Exception as e:
-            # settings.SYSTEM_UPDATE_RUNNING = False
-            # return Response({'status': status, 'error': str(e)})
-            print(e)
+        # except Exception as e:
+        #     # settings.SYSTEM_UPDATE_RUNNING = False
+        #     # return Response({'status': status, 'error': str(e)})
+        #     print(e)
 
         settings.SYSTEM_UPDATE_RUNNING = False
 
@@ -86,15 +86,15 @@ def user_login_history_table():
     return status
 
 
-def offices_table():
-    _, status = offices.update()
-    table_obj = TableNameModel.objects.filter(name='offices').last()
+def offices_table(request, *args, **kwargs):
+    _, status = offices.update(request)
+    # table_obj = TableNameModel.objects.filter(name='offices').last()
 
-    fd = open('temporary_data/offices.json')
-    f = File(fd)
-    ReportStorageModel.objects.create(table_name=table_obj, file_name=f)
-    f.close()
-    fd.close()
+    # fd = open('temporary_data/offices.json')
+    # f = File(fd)
+    # ReportStorageModel.objects.create(table_name=table_obj, file_name=f)
+    # f.close()
+    # fd.close()
 
     return status
 

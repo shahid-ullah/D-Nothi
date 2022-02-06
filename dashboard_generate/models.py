@@ -19,6 +19,10 @@ class ReportTotalOfficesModel(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     report_date = models.CharField(max_length=100)
+    report_day = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        db_table = "report_total_offices"
 
     def __str__(self):
         return f'year: {self.year} month: {self.month}, day: {self.day}, count_or_sum: {self.count_or_sum}'

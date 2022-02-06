@@ -21,7 +21,8 @@ from django.urls import include, path
 from automate_process.api import updateDashboard
 
 urlpatterns = [
-    path('', include('monthly_report.urls')),
+    path('', include('dashboard_generate.urls')),
+    path('monthly_report/', include('monthly_report.urls')),
     path('update_dashboard/', updateDashboard.as_view()),
     path('admin/', admin.site.urls),
 ]
