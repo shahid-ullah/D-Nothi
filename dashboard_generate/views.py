@@ -7,8 +7,8 @@ from django.shortcuts import render
 
 from .models import (ReportFemaleNothiUsersModel, ReportMaleNothiUsersModel,
                      ReportNispottikrittoNothiModel, ReportNoteNisponnoModel,
-                     ReportTotalOfficesModel, ReportTotalUsersModel,
-                     ReportUpokarvogiModel)
+                     ReportPotrojariModel, ReportTotalOfficesModel,
+                     ReportTotalUsersModel, ReportUpokarvogiModel)
 
 
 class NpEncoder(json.JSONEncoder):
@@ -189,3 +189,16 @@ def note_nisponno(request):
     }
 
     return render(request, 'dashboard_generate/note_nisponno.html', context)
+
+
+def potrojari_view(request):
+    objs = ReportPotrojariModel.objects.all()
+    year_map, month_map, day_map = generate_year_month_and_day_map(objs)
+
+    context = {
+        'year_map': json.dumps(year_map, cls=NpEncoder),
+        'month_map': json.dumps(month_map, cls=NpEncoder),
+        'day_map': json.dumps(day_map, cls=NpEncoder),
+    }
+
+    return render(request, 'dashboard_generate/potrojari.html', context)

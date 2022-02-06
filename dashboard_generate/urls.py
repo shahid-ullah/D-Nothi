@@ -35,4 +35,9 @@ urlpatterns = [
         views.note_nisponno,
         name="note_nisponno",
     ),
+    path(
+        'potrojari/',
+        views.potrojari_view,
+        name="potrojari",
+    ),
 ]
