@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from django.shortcuts import render
 
-from .models import ReportTotalOfficesModel
+from .models import ReportNispottikrittoNothiModel, ReportTotalOfficesModel
 
 
 class NpEncoder(json.JSONEncoder):
@@ -79,6 +79,8 @@ nispottikritto_nothi_drilldown_series = None
 
 
 def nispottikritto_nothi_view(request):
+    objs = ReportNispottikrittoNothiModel.objects.all()
+    year_map, month_map, day_map = generate_year_month_and_day_map(objs)
     # global nispottikritto_nothi_general_series, nispottikritto_nothi_drilldown_series
     # if nispottikritto_nothi_general_series and nispottikritto_nothi_drilldown_series:
     #     context = {
@@ -96,12 +98,10 @@ def nispottikritto_nothi_view(request):
     # nispottikritto_nothi_general_series = copy.deepcopy(general_series)
     # nispottikritto_nothi_drilldown_series = copy.deepcopy(drilldown_series)
 
-    general_series = []
-    drilldown_series = []
-
     context = {
-        'general_series': json.dumps(general_series, cls=NpEncoder),
-        'drilldown_series': json.dumps(drilldown_series, cls=NpEncoder),
+        'year_map': json.dumps(year_map, cls=NpEncoder),
+        'month_map': json.dumps(month_map, cls=NpEncoder),
+        'day_map': json.dumps(day_map, cls=NpEncoder),
     }
 
     return render(request, 'dashboard_generate/nispottikritto_nothi.html', context)

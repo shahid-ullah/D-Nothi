@@ -21,46 +21,46 @@ urlpatterns = [
     #         views.nispottikritto_nothi_yearwise,
     #         name="nispottikritto_nothi_yearwise",
     #     ),
-    path(
-        'nispottikritto_nothi/',
-        views.nispottikritto_nothi,
-        name="nispottikritto_nothi",
-    ),
-    path(
-        'nothi_users_total/',
-        views.nothi_users_total,
-        name="nothi_users_total",
-    ),
-    path(
-        'nothi_users_male/',
-        views.nothi_users_male,
-        name="nothi_users_male",
-    ),
-    path(
-        'nothi_users_female/',
-        views.nothi_users_female,
-        name="nothi_users_female",
-    ),
-    path(
-        'mobile_app_users/',
-        views.mobile_app_users,
-        name="mobile_app_users",
-    ),
-    path(
-        'total_nisponno/',
-        views.total_nisponno,
-        name="total_nisponno",
-    ),
-    path(
-        'potrojari/',
-        views.potrojari,
-        name="potrojari",
-    ),
-    path(
-        'total_upokarvogi',
-        views.total_upokarvogi,
-        name="total_upokarvogi",
-    ),
+    # path(
+    #     'nispottikritto_nothi/',
+    #     views.nispottikritto_nothi,
+    #     name="nispottikritto_nothi",
+    # ),
+    # path(
+    #     'nothi_users_total/',
+    #     views.nothi_users_total,
+    #     name="nothi_users_total",
+    # ),
+    # path(
+    #     'nothi_users_male/',
+    #     views.nothi_users_male,
+    #     name="nothi_users_male",
+    # ),
+    # path(
+    #     'nothi_users_female/',
+    #     views.nothi_users_female,
+    #     name="nothi_users_female",
+    # ),
+    # path(
+    #     'mobile_app_users/',
+    #     views.mobile_app_users,
+    #     name="mobile_app_users",
+    # ),
+    # path(
+    #     'total_nisponno/',
+    #     views.total_nisponno,
+    #     name="total_nisponno",
+    # ),
+    # path(
+    #     'potrojari/',
+    #     views.potrojari,
+    #     name="potrojari",
+    # ),
+    # path(
+    #     'total_upokarvogi',
+    #     views.total_upokarvogi,
+    #     name="total_upokarvogi",
+    # ),
     #     # path('analyze/', views.dashboard, name="analyze"),
     #     # path('analyze_disease/', views.analyze_disease, name="disease"),
     #     # path(
