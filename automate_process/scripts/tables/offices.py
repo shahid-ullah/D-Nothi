@@ -23,6 +23,7 @@ def update(request=None, *args, **kwargs):
         offices['total_offices'] = []
         status['total_offices'] = 'Failed'
         print(e)
+        print()
 
     # dir_name = 'temporary_data'
     # if not os.path.exists(dir_name):

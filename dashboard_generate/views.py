@@ -18,7 +18,7 @@ class NpEncoder(json.JSONEncoder):
         return super(NpEncoder, self).default(obj)
 
 
-def generate_year_map(objs):
+def generate_year_month_and_day_map(objs):
     values = objs.values('year', 'month', 'day', 'count_or_sum')
     dataframe = pd.DataFrame(values)
     year_map = {}
@@ -43,13 +43,12 @@ def generate_year_map(objs):
                 day_map[year][month][day] = day_frame['count_or_sum'].sum()
 
     return year_map, month_map, day_map
-    # breakpoint()
 
 
 # Create your views here.
 def total_offices_view(request):
     objs = ReportTotalOfficesModel.objects.all()
-    year_map, month_map, day_map = generate_year_map(objs)
+    year_map, month_map, day_map = generate_year_month_and_day_map(objs)
     # breakpoint()
 
     # global offices_general_series, offices_'drilldown'_series

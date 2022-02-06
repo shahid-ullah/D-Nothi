@@ -64,10 +64,11 @@ def update(objs, request=None, *args, **kwargs):
         dict_['count_or_sum'] = count
         dict_['year_month_day'] = year_month_day
         dict_['report_date'] = report_date
-        if request:
+        # breakpoint()
+        if request.user.is_authenticated:
             dict_['creator'] = request.user
-        else:
-            dict_['creator'] = request
+        # else:
+        #     dict_['creator'] = request
         table_data.append(dict_)
 
         # print(dict_)
@@ -105,39 +106,48 @@ def update(objs, request=None, *args, **kwargs):
                         obj.save()
 
     # END: GLOBAL SECTION
-
     values = objs.values('id', 'active_status', 'created')
-    dataframe = pd.DataFrame(values)
+    step = 1000
+    start_index = 0
+    end_index = start_index + step
 
-    print("Dataframe filtering active_status == 1")
-    dataframe = dataframe[dataframe.active_status == 1]
-    print("Completed\n")
+    while True:
+        new_values = values[start_index:end_index]
+        start_index = end_index
+        end_index = start_index + step
+        if not new_values.exists():
+            break
 
-    print("Dataframe filtering created == notnull")
-    dataframe = dataframe.loc[dataframe.created.notnull()]
-    print("Completed")
+        dataframe = pd.DataFrame(new_values)
 
-    print("Converting created field to datetime field")
-    dataframe['created'] = pd.to_datetime(dataframe['created'], errors='coerce')
-    print("Completed\n")
+        print("Dataframe filtering active_status == 1")
+        dataframe = dataframe[dataframe.active_status == 1]
+        print("Completed\n")
 
-    print("Dataframe filtering created == notnull")
-    dataframe = dataframe.loc[dataframe.created.notnull()]
-    print("Completed")
+        print("Dataframe filtering created == notnull")
+        dataframe = dataframe.loc[dataframe.created.notnull()]
+        print("Completed")
 
-    # Extract years, months and days from created column
-    created_datetime_index = pd.DatetimeIndex(dataframe['created'])
-    years = created_datetime_index.year.values.astype(str)
-    months = created_datetime_index.month.values.astype(str)
-    days = created_datetime_index.day.values.astype(str)
+        print("Converting created field to datetime field")
+        dataframe['created'] = pd.to_datetime(dataframe['created'], errors='coerce')
+        print("Completed\n")
 
-    dataframe['year'] = years
-    dataframe['month'] = months
-    dataframe['day'] = days
+        print("Dataframe filtering created == notnull")
+        dataframe = dataframe.loc[dataframe.created.notnull()]
+        print("Completed")
 
-    print("End\n")
+        # Extract years, months and days from created column
+        created_datetime_index = pd.DatetimeIndex(dataframe['created'])
+        years = created_datetime_index.year.values.astype(str)
+        months = created_datetime_index.month.values.astype(str)
+        days = created_datetime_index.day.values.astype(str)
 
-    dataframe_year_by = dataframe.groupby('year')
+        dataframe['year'] = years
+        dataframe['month'] = months
+        dataframe['day'] = days
 
-    format_and_load_to_mysql_db(dataframe_year_by)
-    # breakpoint()
+        print("End\n")
+
+        dataframe_year_by = dataframe.groupby('year')
+
+        format_and_load_to_mysql_db(dataframe_year_by)
