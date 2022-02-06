@@ -20,4 +20,9 @@ urlpatterns = [
         views.total_upokarvogi,
         name="total_upokarvogi",
     ),
+    path(
+        'nothi_users_male/',
+        views.nothi_users_male,
+        name="nothi_users_male",
+    ),
 ]

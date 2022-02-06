@@ -1,0 +1,161 @@
+{% extends 'monthly_report/base.html' %}
+
+{% block title %}মোট উপকারভোগী{% endblock %}
+{% block inline_css %}
+
+{% endblock inline_css %}
+
+{% block body_block %}
+  <div>
+    <script charset="utf-8">
+      var year_map = {{ year_map | safe }};
+      var month_map = {{ month_map | safe }};
+      var day_map = {{ day_map | safe }};
+      function generateGeneralSeries(maps_data, name=""){
+          general_series = []
+          general_series_dictionary = {
+            name: name,
+            colorByPoint: true,
+            data: []
+          }
+          general_series_data = []
+          for (const [key, value] of Object.entries(maps_data)) {
+            temp_dict ={
+              name: key,
+              y: value,
+              drilldown: key,
+            }
+            general_series_data.push(temp_dict)
+          }
+          general_series_dictionary['data'] = general_series_data
+
+          general_series = [general_series_dictionary]
+
+          return general_series
+      }
+      {# console.log(generateGeneralSeries(year_map, name="Offices Added in years")); #}
+
+      function generateDrilldownSeries(year_map, month_map, day_map){
+        var drilldown_series = []
+        for (const [year, value] of Object.entries(year_map)) {
+          dict = {
+            id: year,
+            data: [],
+          }
+          var month_dict = month_map[year];
+          for (const [month, value] of Object.entries(month_dict)){
+            temp_dict = {};
+            temp_dict['name'] = month;
+            temp_dict['y'] = value;
+            temp_dict['drilldown'] = year + month;
+            dict['data'].push(temp_dict);
+
+
+            {# nested drilldown series #}
+            var day_dict = day_map[year][month];
+            id = year + month;
+            nst_dict = {
+              id: id,
+              data : [],
+            }
+            for (const [day, value] of Object.entries(day_dict)){
+              console.log(day, value);
+              nst_dict['data'].push([day, value]);
+            }
+            drilldown_series.push(nst_dict);
+
+          }
+          drilldown_series.push(dict)
+
+        }
+        return drilldown_series
+      }
+      {# console.log(generateDrilldownSeries(year_map, month_map, day_map)); #}
+      generateDrilldownSeries(year_map, month_map, day_map);
+
+    </script>
+  </div>
+  <div class="row">
+    <div class="col-sm-12 col-md-12">
+      <div class="card">
+        <div class="card-header card-header-custom2">
+            মোট নথি ব্যবহারকারী (পুরুষ) 
+        </div>
+        <div class="card-body">
+          <div id="chart_top_illness">
+
+            <figure class="highcharts-figure">
+              <div id="container"></div>
+              <p class="highcharts-description">
+                  বার্ষিক এবং মাসিক নথি ব্যবহারকারী (পুরুষ)
+              </p>
+            </figure>
+
+            <canvas id="bar-chart" width="800" height="400"></canvas>
+            {# <script src="https://code.highcharts.com/highcharts.src.js"> </script> #}
+            <script src="https://code.highcharts.com/highcharts.js"></script>
+            <script src="https://code.highcharts.com/modules/data.js"></script>
+            <script src="https://code.highcharts.com/modules/drilldown.js"></script>
+            <script src="https://code.highcharts.com/modules/exporting.js"></script>
+            <script src="https://code.highcharts.com/modules/export-data.js"></script>
+            <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+            <script>
+              // Create the chart
+              Highcharts.chart('container', {
+                chart: {
+                  type: 'column'
+                },
+                title: {
+                    text: 'বার্ষিক এবং মাসিক নথি ব্যবহারকারী (পুরুষ)'
+                },
+                subtitle: {
+                  text: ''
+                },
+                accessibility: {
+                  announceNewData: {
+                    enabled: true
+                  }
+                },
+                xAxis: {
+                  type: 'category'
+                },
+                yAxis: {
+                  title: {
+                      text: 'নথি ব্যবহারকারী (পুরুষ)'
+                  }
+
+                },
+                legend: {
+                  enabled: false
+                },
+                plotOptions: {
+                  series: {
+                    borderWidth: 0,
+                    dataLabels: {
+                      enabled: true,
+                    }
+                  }
+                },
+
+                tooltip: {
+                  headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                  pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+                },
+
+                series: generateGeneralSeries(year_map, 'years'),
+                drilldown: {
+                  series: generateDrilldownSeries(year_map, month_map, day_map)
+                }
+              });
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block local_js %}
+{%  endblock local_js %}
