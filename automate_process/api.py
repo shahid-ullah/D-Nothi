@@ -50,23 +50,23 @@ class updateDashboard(APIView):
         #     # return Response({'status': status, 'error': str(e)})
         #     print(e)
 
-        try:
-            status_ = nisponno_records_table(request)
-            status['nisponno_records'] = status_
-
-        except Exception as e:
-            # settings.SYSTEM_UPDATE_RUNNING = False
-            # return Response({'status': status, 'error': str(e)})
-            print(e)
-
         # try:
-        #     status_ = users_table()
-        #     status['users'] = status_
+        #     status_ = nisponno_records_table(request)
+        #     status['nisponno_records'] = status_
 
         # except Exception as e:
         #     # settings.SYSTEM_UPDATE_RUNNING = False
         #     # return Response({'status': status, 'error': str(e)})
         #     print(e)
+
+        try:
+            status_ = users_table(request)
+            status['users'] = status_
+
+        except Exception as e:
+            # settings.SYSTEM_UPDATE_RUNNING = False
+            # return Response({'status': status, 'error': str(e)})
+            print(e)
 
         settings.SYSTEM_UPDATE_RUNNING = False
 
@@ -112,14 +112,14 @@ def nisponno_records_table(request=None, *args, **kwargs):
     return status
 
 
-def users_table():
-    _, status = users.update()
-    table_obj = TableNameModel.objects.filter(name='users').last()
+def users_table(request=None):
+    _, status = users.update(request)
+    # table_obj = TableNameModel.objects.filter(name='users').last()
 
-    fd = open('temporary_data/users.json')
-    f = File(fd)
-    ReportStorageModel.objects.create(table_name=table_obj, file_name=f)
-    f.close()
-    fd.close()
+    # fd = open('temporary_data/users.json')
+    # f = File(fd)
+    # ReportStorageModel.objects.create(table_name=table_obj, file_name=f)
+    # f.close()
+    # fd.close()
 
     return status
