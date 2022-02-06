@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from monthly_report.models import ReportStorageModel, TableNameModel
 
 from .scripts.tables import (nisponno_records, offices, user_login_history,
-                             users)
+                             users, users_employee_records)
 
 
 class updateDashboard(APIView):
@@ -59,9 +59,18 @@ class updateDashboard(APIView):
         #     # return Response({'status': status, 'error': str(e)})
         #     print(e)
 
+        # try:
+        #     status_ = users_table(request)
+        #     status['users'] = status_
+
+        # except Exception as e:
+        #     # settings.SYSTEM_UPDATE_RUNNING = False
+        #     # return Response({'status': status, 'error': str(e)})
+        #     print(e)
+
         try:
-            status_ = users_table(request)
-            status['users'] = status_
+            status_ = users_employee_records_table(request)
+            status['users_employee_records'] = status_
 
         except Exception as e:
             # settings.SYSTEM_UPDATE_RUNNING = False
@@ -114,6 +123,19 @@ def nisponno_records_table(request=None, *args, **kwargs):
 
 def users_table(request=None):
     _, status = users.update(request)
+    # table_obj = TableNameModel.objects.filter(name='users').last()
+
+    # fd = open('temporary_data/users.json')
+    # f = File(fd)
+    # ReportStorageModel.objects.create(table_name=table_obj, file_name=f)
+    # f.close()
+    # fd.close()
+
+    return status
+
+
+def users_employee_records_table(request=None):
+    _, status = users_employee_records.update(request)
     # table_obj = TableNameModel.objects.filter(name='users').last()
 
     # fd = open('temporary_data/users.json')

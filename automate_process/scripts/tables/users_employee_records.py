@@ -4,13 +4,13 @@
 import json
 import os
 
-from django.conf import settings
-
 from ...models import EmployeeRecords, Users
 from ..reports import male_nothi_users
 
+# from django.conf import settings
 
-def update():
+
+def update(request=None, *args, **kwargs):
     users_objs, employee_records_objs = load_dataframe()
     # breakpoint()
 
@@ -20,7 +20,7 @@ def update():
     # update male & female nothi users
     try:
         male_year_report, female_year_report = male_nothi_users.update(
-            users_objs, employee_records_objs
+            request, users_objs, employee_records_objs, *args, **kwargs
         )
         users_employee_records['male_nothi_users'] = male_year_report
         users_employee_records['female_nothi_users'] = female_year_report
@@ -31,15 +31,15 @@ def update():
         status['male_female_nothi_users'] = 'Failed'
         print(e)
 
-    dir_name = 'temporary_data'
-    if not os.path.exists(dir_name):
-        os.makedirs(dir_name)
+    # dir_name = 'temporary_data'
+    # if not os.path.exists(dir_name):
+    #     os.makedirs(dir_name)
 
-    path = dir_name + "/" + "users_employee_records.json"
+    # path = dir_name + "/" + "users_employee_records.json"
 
-    print(f"Saving graph data ...{path}")
-    with open(path, 'w', encoding='utf-8') as f:
-        json.dump(users_employee_records, f, ensure_ascii=False, indent=4)
+    # print(f"Saving graph data ...{path}")
+    # with open(path, 'w', encoding='utf-8') as f:
+    #     json.dump(users_employee_records, f, ensure_ascii=False, indent=4)
     return users_employee_records, status
 
 
