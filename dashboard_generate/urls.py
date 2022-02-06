@@ -15,4 +15,9 @@ urlpatterns = [
         views.nothi_users_total,
         name="nothi_users_total",
     ),
+    path(
+        'total_upokarvogi/',
+        views.total_upokarvogi,
+        name="total_upokarvogi",
+    ),
 ]

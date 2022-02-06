@@ -6,7 +6,7 @@ import pandas as pd
 from django.shortcuts import render
 
 from .models import (ReportNispottikrittoNothiModel, ReportTotalOfficesModel,
-                     ReportTotalUsersModel)
+                     ReportTotalUsersModel, ReportUpokarvogiModel)
 
 
 class NpEncoder(json.JSONEncoder):
@@ -135,3 +135,16 @@ def nothi_users_total(request):
     }
 
     return render(request, 'dashboard_generate/nothi_users_total.html', context)
+
+
+def total_upokarvogi(request):
+    objs = ReportUpokarvogiModel.objects.all()
+    year_map, month_map, day_map = generate_year_month_and_day_map(objs)
+
+    context = {
+        'year_map': json.dumps(year_map, cls=NpEncoder),
+        'month_map': json.dumps(month_map, cls=NpEncoder),
+        'day_map': json.dumps(day_map, cls=NpEncoder),
+    }
+
+    return render(request, 'dashboard_generate/total_upokarvogi.html', context)
