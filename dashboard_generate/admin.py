@@ -1,10 +1,10 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import (ReportMaleNothiUsersModel, ReportNispottikrittoNothiModel,
-                     ReportNoteNisponnoModel, ReportPotrojariModel,
-                     ReportTotalOfficesModel, ReportTotalUsersModel,
-                     ReportUpokarvogiModel)
+from .models import (ReportFemaleNothiUsersModel, ReportMaleNothiUsersModel,
+                     ReportNispottikrittoNothiModel, ReportNoteNisponnoModel,
+                     ReportPotrojariModel, ReportTotalOfficesModel,
+                     ReportTotalUsersModel, ReportUpokarvogiModel)
 
 
 @admin.register(ReportTotalOfficesModel)
@@ -43,4 +43,11 @@ class ReportTotalUsersModelAdmin(admin.ModelAdmin):
 class ReportMaleNothiUsersModelAdmin(admin.ModelAdmin):
     list_display = [
         field.name for field in ReportMaleNothiUsersModel._meta.get_fields()
+    ]
+
+
+@admin.register(ReportFemaleNothiUsersModel)
+class ReportFemaleNothiUsersModelAdmin(admin.ModelAdmin):
+    list_display = [
+        field.name for field in ReportFemaleNothiUsersModel._meta.get_fields()
     ]
