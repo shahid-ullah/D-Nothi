@@ -21,25 +21,25 @@ def update(request=None, *args, **kwargs):
     nisponno_records = {}
     status = {}
     # update Nispottikritto nothi
-    try:
-        year_report = nispottikritto_nothi.update(objs, request, *args, **kwargs)
-        # year_report = mobile_app_users.update(objs)
-        nisponno_records['nispottikritto_nothi'] = year_report
-        status['nispottikritto_nothi'] = 'success'
-    except Exception as e:
-        nisponno_records['nispottikritto_nothi'] = []
-        status['nispottikritto_nothi'] = 'Failed'
-        print(e)
+    # try:
+    #     year_report = nispottikritto_nothi.update(objs, request, *args, **kwargs)
+    #     # year_report = mobile_app_users.update(objs)
+    #     nisponno_records['nispottikritto_nothi'] = year_report
+    #     status['nispottikritto_nothi'] = 'success'
+    # except Exception as e:
+    #     nisponno_records['nispottikritto_nothi'] = []
+    #     status['nispottikritto_nothi'] = 'Failed'
+    #     print(e)
 
     # update upokarvogi
-    # try:
-    #     year_report = upokarvogi.update(objs)
-    #     nisponno_records['upokarvogi'] = year_report
-    #     status['upokarvogi'] = 'success'
-    # except Exception as e:
-    #     nisponno_records['upokarvogi'] = []
-    #     status['upokarvogi'] = 'Failed'
-    #     print(e)
+    try:
+        year_report = upokarvogi.update(objs, request, *args, **kwargs)
+        nisponno_records['upokarvogi'] = year_report
+        status['upokarvogi'] = 'success'
+    except Exception as e:
+        nisponno_records['upokarvogi'] = []
+        status['upokarvogi'] = 'Failed'
+        print(e)
 
     # update potrojari
     # try:
