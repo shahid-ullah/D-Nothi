@@ -30,4 +30,9 @@ urlpatterns = [
         views.nothi_users_female,
         name="nothi_users_female",
     ),
+    path(
+        'note_nisponno/',
+        views.note_nisponno,
+        name="note_nisponno",
+    ),
 ]
