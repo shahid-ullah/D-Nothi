@@ -1,3 +1,4 @@
+import copy
 import json
 
 import numpy as np
@@ -71,3 +72,36 @@ def total_offices_view(request):
     }
 
     return render(request, 'dashboard_generate/total_offices.html', context)
+
+
+nispottikritto_nothi_general_series = None
+nispottikritto_nothi_drilldown_series = None
+
+
+def nispottikritto_nothi_view(request):
+    # global nispottikritto_nothi_general_series, nispottikritto_nothi_drilldown_series
+    # if nispottikritto_nothi_general_series and nispottikritto_nothi_drilldown_series:
+    #     context = {
+    #         'general_series': json.dumps(
+    #             nispottikritto_nothi_general_series, cls=NpEncoder
+    #         ),
+    #         'drilldown_series': json.dumps(
+    #             nispottikritto_nothi_drilldown_series, cls=NpEncoder
+    #         ),
+    #     }
+    #     return render(request, 'monthly_report/nispottikritto_nothi.html', context)
+
+    # general_series, drilldown_series = load_nispottikritto_nothi_graph_data()
+
+    # nispottikritto_nothi_general_series = copy.deepcopy(general_series)
+    # nispottikritto_nothi_drilldown_series = copy.deepcopy(drilldown_series)
+
+    general_series = []
+    drilldown_series = []
+
+    context = {
+        'general_series': json.dumps(general_series, cls=NpEncoder),
+        'drilldown_series': json.dumps(drilldown_series, cls=NpEncoder),
+    }
+
+    return render(request, 'dashboard_generate/nispottikritto_nothi.html', context)

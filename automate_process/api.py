@@ -41,23 +41,23 @@ class updateDashboard(APIView):
         #     # return Response({'status': status, 'error': str(e)})
         #     print(e)
 
-        try:
-            status_ = offices_table(request)
-            status['offices'] = status_
-
-        except Exception as e:
-            # settings.SYSTEM_UPDATE_RUNNING = False
-            # return Response({'status': status, 'error': str(e)})
-            print(e)
-
         # try:
-        #     status_ = nisponno_records_table()
-        #     status['nisponno_records'] = status_
+        #     status_ = offices_table(request)
+        #     status['offices'] = status_
 
         # except Exception as e:
         #     # settings.SYSTEM_UPDATE_RUNNING = False
         #     # return Response({'status': status, 'error': str(e)})
         #     print(e)
+
+        try:
+            status_ = nisponno_records_table(request)
+            status['nisponno_records'] = status_
+
+        except Exception as e:
+            # settings.SYSTEM_UPDATE_RUNNING = False
+            # return Response({'status': status, 'error': str(e)})
+            print(e)
 
         # try:
         #     status_ = users_table()
@@ -86,7 +86,7 @@ def user_login_history_table():
     return status
 
 
-def offices_table(request, *args, **kwargs):
+def offices_table(request=None, *args, **kwargs):
     _, status = offices.update(request)
     # table_obj = TableNameModel.objects.filter(name='offices').last()
 
@@ -99,15 +99,15 @@ def offices_table(request, *args, **kwargs):
     return status
 
 
-def nisponno_records_table():
-    _, status = nisponno_records.update()
-    table_obj = TableNameModel.objects.filter(name='nisponno_records').last()
+def nisponno_records_table(request=None, *args, **kwargs):
+    _, status = nisponno_records.update(request)
+    # table_obj = TableNameModel.objects.filter(name='nisponno_records').last()
 
-    fd = open('temporary_data/nisponno_records.json')
-    f = File(fd)
-    ReportStorageModel.objects.create(table_name=table_obj, file_name=f)
-    f.close()
-    fd.close()
+    # fd = open('temporary_data/nisponno_records.json')
+    # f = File(fd)
+    # ReportStorageModel.objects.create(table_name=table_obj, file_name=f)
+    # f.close()
+    # fd.close()
 
     return status
 
