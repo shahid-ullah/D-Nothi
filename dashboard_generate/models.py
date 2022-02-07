@@ -12,9 +12,9 @@ class ReportTotalOfficesModel(models.Model):
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
     )
-    year = models.PositiveIntegerField(blank=False, null=False)
-    month = models.PositiveIntegerField(blank=False, null=False)
-    day = models.PositiveIntegerField(blank=False, null=False)
+    year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
+    month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
+    day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     count_or_sum = models.PositiveIntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -35,9 +35,9 @@ class ReportNispottikrittoNothiModel(models.Model):
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
     )
-    year = models.PositiveIntegerField(blank=False, null=False)
-    month = models.PositiveIntegerField(blank=False, null=False)
-    day = models.PositiveIntegerField(blank=False, null=False)
+    year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
+    month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
+    day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     count_or_sum = models.PositiveIntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -58,9 +58,9 @@ class ReportUpokarvogiModel(models.Model):
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
     )
-    year = models.PositiveIntegerField(blank=False, null=False)
-    month = models.PositiveIntegerField(blank=False, null=False)
-    day = models.PositiveIntegerField(blank=False, null=False)
+    year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
+    month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
+    day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     count_or_sum = models.PositiveIntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -81,9 +81,9 @@ class ReportPotrojariModel(models.Model):
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
     )
-    year = models.PositiveIntegerField(blank=False, null=False)
-    month = models.PositiveIntegerField(blank=False, null=False)
-    day = models.PositiveIntegerField(blank=False, null=False)
+    year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
+    month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
+    day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     count_or_sum = models.PositiveIntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -104,9 +104,9 @@ class ReportNoteNisponnoModel(models.Model):
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
     )
-    year = models.PositiveIntegerField(blank=False, null=False)
-    month = models.PositiveIntegerField(blank=False, null=False)
-    day = models.PositiveIntegerField(blank=False, null=False)
+    year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
+    month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
+    day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     count_or_sum = models.PositiveIntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -127,9 +127,9 @@ class ReportTotalUsersModel(models.Model):
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
     )
-    year = models.PositiveIntegerField(blank=False, null=False)
-    month = models.PositiveIntegerField(blank=False, null=False)
-    day = models.PositiveIntegerField(blank=False, null=False)
+    year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
+    month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
+    day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     count_or_sum = models.PositiveIntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -150,9 +150,9 @@ class ReportMaleNothiUsersModel(models.Model):
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
     )
-    year = models.PositiveIntegerField(blank=False, null=False)
-    month = models.PositiveIntegerField(blank=False, null=False)
-    day = models.PositiveIntegerField(blank=False, null=False)
+    year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
+    month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
+    day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     count_or_sum = models.PositiveIntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -173,9 +173,9 @@ class ReportFemaleNothiUsersModel(models.Model):
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
     )
-    year = models.PositiveIntegerField(blank=False, null=False)
-    month = models.PositiveIntegerField(blank=False, null=False)
-    day = models.PositiveIntegerField(blank=False, null=False)
+    year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
+    month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
+    day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     count_or_sum = models.PositiveIntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
