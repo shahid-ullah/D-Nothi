@@ -40,4 +40,9 @@ urlpatterns = [
         views.potrojari_view,
         name="potrojari",
     ),
+    path(
+        'custom_report/',
+        views.custom_report,
+        name="custom_report",
+    ),
 ]
