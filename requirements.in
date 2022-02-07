@@ -9,3 +9,4 @@ django-filter
 whitenoise
 django-extensions
 reportlab
+ptpython
