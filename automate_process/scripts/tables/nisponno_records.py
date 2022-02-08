@@ -21,6 +21,7 @@ def update(request=None, *args, **kwargs):
     nisponno_records_status = {}
     nispottikritto_nothi_status = {}
     upokarvogi_status = {}
+    potrojari_status = {}
 
     # Nispottikritto nothi
     try:
@@ -42,16 +43,16 @@ def update(request=None, *args, **kwargs):
         upokarvogi_status['status'] = 'Failed'
         print(e)
 
-    # update potrojari
-    # try:
-    #     year_report = potrojari.update(objs, request, *args, **kwargs)
-    #     # year_report = mobile_app_users.update(objs)
-    #     nisponno_records['potrojari'] = year_report
-    #     status['potrojari'] = 'success'
-    # except Exception as e:
-    #     nisponno_records['potrojari'] = []
-    #     status['potrojari'] = 'Failed'
-    #     print(e)
+    # potrojari
+    try:
+        last_report_date = potrojari.update(objs, request, *args, **kwargs)
+        # year_report = mobile_app_users.update(objs)
+        potrojari_status['last_report_date'] = str(last_report_date)
+        potrojari_status['potrojari'] = 'success'
+    except Exception as e:
+        potrojari_status['potrojari'] = []
+        potrojari_status['potrojari'] = 'Failed'
+        print(e)
 
     # update note_nisponno
     # try:
@@ -65,6 +66,7 @@ def update(request=None, *args, **kwargs):
     #     print(e)
     nisponno_records_status['nispottikritto_nothi'] = nispottikritto_nothi_status
     nisponno_records_status['upokarvogi'] = upokarvogi_status
+    nisponno_records_status['potrojari'] = potrojari_status
 
     return nisponno_records_status
 
