@@ -8,7 +8,7 @@
 # import json
 # import os
 
-# from django.conf import settings
+from django.conf import settings
 
 from ...models import NisponnoRecords
 from ..reports import (nispottikritto_nothi, note_nisponno, potrojari,
@@ -33,14 +33,14 @@ def update(request=None, *args, **kwargs):
         print(e)
 
     # upokarvogi
-    # try:
-    #     last_report_date = upokarvogi.update(objs, request, *args, **kwargs)
-    #     upokarvogi_status['last_report_date'] = last_report_date
-    #     upokarvogi_status['status'] = 'success'
-    # except Exception as e:
-    #     upokarvogi_status['last_report_date'] = []
-    #     upokarvogi_status['status'] = 'Failed'
-    #     print(e)
+    try:
+        last_report_date = upokarvogi.update(objs, request, *args, **kwargs)
+        upokarvogi_status['last_report_date'] = last_report_date
+        upokarvogi_status['status'] = 'success'
+    except Exception as e:
+        upokarvogi_status['last_report_date'] = []
+        upokarvogi_status['status'] = 'Failed'
+        print(e)
 
     # update potrojari
     # try:
@@ -64,11 +64,15 @@ def update(request=None, *args, **kwargs):
     #     status['note_nisponno'] = 'Failed'
     #     print(e)
     nisponno_records_status['nispottikritto_nothi'] = nispottikritto_nothi_status
+    nisponno_records_status['upokarvogi'] = upokarvogi_status
 
     return nisponno_records_status
 
 
 def load_dataframe():
-    objs = NisponnoRecords.objects.using('source_db').all()
+    if settings.DEBUG:
+        objs = NisponnoRecords.objects.using('source_db').all()[:1000]
+    else:
+        objs = NisponnoRecords.objects.using('source_db').all()
 
     return objs
