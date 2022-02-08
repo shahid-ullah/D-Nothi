@@ -1,80 +1,129 @@
-# import json
-# import os
-
-
-# Step 1: Load DataFrame
-# Step 2: Add year, month and Date columns
-# Step 3: Get DataFrame Yearby
-# Step 4: Extract Year, Month and day statistics
+# automate_process/scripts/reports/mobile_app_users.py
+from datetime import datetime
 
 import pandas as pd
 
-# from django.conf import settings
+from dashboard_generate.models import ReportMobileAppUsersModel
 
 
-def update(objs):
+def initialize_day_map():
+    day_map_dict = {}
+    for i in range(32):
+        if i < 10:
+            key1 = str(i)
+            key2 = '0' + str(i)
+            value = '0' + str(i)
+            day_map_dict.setdefault(key1, value)
+            day_map_dict.setdefault(key2, value)
+        else:
+            key = str(i)
+            value = str(i)
+            day_map_dict.setdefault(key, value)
+
+    return day_map_dict
+
+
+def initialize_month_map():
+    month_map_dict = {}
+    for i in range(13):
+        if i < 10:
+            key1 = str(i)
+            key2 = '0' + str(i)
+            value = '0' + str(i)
+            month_map_dict.setdefault(key1, value)
+            month_map_dict.setdefault(key2, value)
+        else:
+            key = str(i)
+            value = str(i)
+            month_map_dict.setdefault(key, value)
+    return month_map_dict
+
+
+DAY_MAP_DICT = initialize_day_map()
+MONTH_MAP_DICT = initialize_month_map()
+
+
+def generate_year_month_day_key_and_report_date(year, month, day):
+    year = str(year)
+    month = str(month)
+    day = str(day)
+
+    month = MONTH_MAP_DICT[month]
+    day = DAY_MAP_DICT[day]
+
+    year_month_day = year + month + day
+    report_date = year + "-" + month + "-" + day
+
+    return year_month_day, report_date
+
+
+def generate_model_object_dictionary(request, year, month, day, count):
+    year_month_day, report_date = generate_year_month_day_key_and_report_date(
+        year, month, day
+    )
+    dict_ = {}
+    dict_['year'] = year
+    dict_['month'] = month
+    dict_['day'] = day
+    dict_['count_or_sum'] = count
+    dict_['year_month_day'] = year_month_day
+    dict_['report_date'] = report_date
+    report_day = datetime(year, month, day)
+
+    dict_['report_day'] = report_day
+
+    try:
+        if request.user.is_authenticated:
+            dict_['creator'] = request.user
+    except Exception as e:
+        pass
+
+    return dict_
+
+
+def format_and_load_to_mysql_db(request, groupby_date):
+    last_report_date = ''
+
+    for date, frame in groupby_date:
+        last_report_date = date
+
+        count = frame['id'].count()
+
+        dict_ = generate_model_object_dictionary(
+            request, date.year, date.month, date.day, count
+        )
+        defaults = {'count_or_sum': count}
+
+        try:
+            obj = ReportMobileAppUsersModel.objects.get(
+                year_month_day=dict_['year_month_day']
+            )
+            # obj = ReportTotalOfficesModel.objects.get(report_day=report_day)
+            for key, value in defaults.items():
+                setattr(obj, key, value)
+            obj.save()
+        except ReportMobileAppUsersModel.DoesNotExist:
+            obj = ReportMobileAppUsersModel(**dict_)
+            obj.save()
+    return last_report_date
+
+
+def update(objs, request=None, *args, **kwargs):
+    print()
+    print('start processing mobile_app_users report')
 
     values = objs.values('id', 'is_mobile', 'created')
-    user_login_history_df = pd.DataFrame(values)
+    dataframe = pd.DataFrame(values)
 
-    user_login_history_df = user_login_history_df.loc[
-        user_login_history_df.is_mobile == 1
-    ]
+    dataframe = dataframe.loc[dataframe.is_mobile == 1]
     # remove null values
-    user_login_history_df = user_login_history_df.loc[
-        user_login_history_df.created.notnull()
-    ]
+    dataframe = dataframe.loc[dataframe.created.notnull()]
     # add new column: cretead_new as datetime field from operation_date column
-    user_login_history_df['created'] = pd.to_datetime(
-        user_login_history_df['created'], errors='coerce'
-    )
-    user_login_history_df = user_login_history_df.loc[
-        user_login_history_df.created.notnull()
-    ]
+    dataframe = dataframe.loc[dataframe.created.notnull()]
+    groupby_date = dataframe.groupby(dataframe.created.dt.date)
 
-    # Extract years and months and dates from created column
-    created_datetime_index = pd.DatetimeIndex(user_login_history_df['created'])
-    years = created_datetime_index.year.values.astype(str)
-    months = created_datetime_index.month.values.astype(str)
-    days = created_datetime_index.day.values.astype(str)
-    user_login_history_df['year'] = years
-    user_login_history_df['month'] = months
-    user_login_history_df['day'] = days
-    print("Processing datframe completed ... \n")
+    last_report_date = format_and_load_to_mysql_db(request, groupby_date)
+    print('End processing mobile_app_users report')
+    print()
 
-    dataframe_year_by = user_login_history_df.groupby('year')
-
-    year_data = []
-    for year, year_frame in dataframe_year_by:
-        year = str(year)
-        # year, year_frame.shape
-        year_dict = {}
-        year_dict['year'] = year
-        year_dict['count'] = int(year_frame.shape[0])
-        year_dict['month_data'] = []
-
-        month_data = []
-
-        month_group_by = year_frame.groupby('month')
-        for month, month_frame in month_group_by:
-            month_dict = {}
-            month_dict['month'] = month
-            month_dict['count'] = month_frame.shape[0]
-            month_dict['day_data'] = []
-
-            day_data = []
-            day_group_by = month_frame.groupby('day')
-            for day, day_frame in day_group_by:
-                day_dict = {}
-                day_dict['day'] = day
-                day_dict['count'] = day_frame.shape[0]
-                day_data.append(day_dict)
-            month_dict['day_data'] = day_data
-            month_data.append(month_dict)
-
-        year_dict['month_data'] = month_data
-        year_data.append(year_dict)
-
-    dictionary = year_data
-
-    return dictionary
+    return last_report_date

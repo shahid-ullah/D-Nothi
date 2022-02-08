@@ -32,42 +32,42 @@ class updateDashboard(APIView):
             return Response({'status': 'system update running. Please request later'})
 
         settings.SYSTEM_UPDATE_RUNNING = True
-        # try:
-        #     status_ = user_login_history_table()
-        #     status['user_login_history'] = status_
-
-        # except Exception as e:
-        #     # settings.SYSTEM_UPDATE_RUNNING = False
-        #     # return Response({'status': status, 'error': str(e)})
-        #     print(e)
 
         # Table 1: offices
-        try:
-            offices_status = offices_table(request)
-            status['offices'] = offices_status
+        # try:
+        #     offices_status = offices_table(request)
+        #     status['offices'] = offices_status
 
-        except Exception as e:
-            print(e)
+        # except Exception as e:
+        #     print(e)
 
         # Table 2: nisponno_records
-        try:
-            nisponno_records_status = nisponno_records_table(request)
-            status['nisponno_records'] = nisponno_records_status
-        except Exception as e:
-            print(e)
+        # try:
+        #     nisponno_records_status = nisponno_records_table(request)
+        #     status['nisponno_records'] = nisponno_records_status
+        # except Exception as e:
+        #     print(e)
 
         # Table 3: users
-        try:
-            users_status = users_table(request)
-            status['users'] = users_status
+        # try:
+        #     users_status = users_table(request)
+        #     status['users'] = users_status
 
-        except Exception as e:
-            print(e)
+        # except Exception as e:
+        #     print(e)
 
         # Table 4: users_employee_records
+        # try:
+        #     users_emploee_records_status = users_employee_records_table(request)
+        #     status['users_employee_records'] = users_emploee_records_status
+
+        # except Exception as e:
+        #     print(e)
+
+        # Table 5: user_login_history
         try:
-            users_emploee_records_status = users_employee_records_table(request)
-            status['users_employee_records'] = users_emploee_records_status
+            status_ = user_login_history_table(request)
+            status['user_login_history'] = status_
 
         except Exception as e:
             print(e)
@@ -77,10 +77,10 @@ class updateDashboard(APIView):
         return Response(status)
 
 
-def user_login_history_table():
-    _, status = user_login_history.update()
+def user_login_history_table(request=None, *args, **kwargs):
+    user_login_history_status = user_login_history.update(request, *args, **kwargs)
 
-    return status
+    return user_login_history_status
 
 
 def offices_table(request=None, *args, **kwargs):
