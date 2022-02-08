@@ -6,9 +6,11 @@ import json
 import numpy as np
 import pandas as pd
 from django.db.models import Sum
+from django.http import HttpResponse
 # from django.http import FileResponse
 from django.shortcuts import render
 
+from .forms import ReportDateRangeForm
 from .models import (ReportFemaleNothiUsersModel, ReportMaleNothiUsersModel,
                      ReportNispottikrittoNothiModel, ReportNoteNisponnoModel,
                      ReportPotrojariModel, ReportTotalOfficesModel,
@@ -215,7 +217,146 @@ def potrojari_view(request):
     return render(request, 'dashboard_generate/potrojari.html', context)
 
 
+def process_post_request(request):
+    year_month_day = ''
+    form = ReportDateRangeForm(request.POST)
+    if form.is_valid():
+        from_date = form.cleaned_data['From']
+        to_date = form.cleaned_data['To']
+        if from_date < to_date:
+            range = [from_date, to_date]
+            # total_offices
+
+            offices_objs = ReportTotalOfficesModel.objects.filter(
+                report_day__range=range
+            )
+            office_count_dict = offices_objs.aggregate(Sum('count_or_sum'))
+            office_count = office_count_dict['count_or_sum__sum']
+
+            if not office_count:
+                office_count = 0
+
+            # nispottikritto_nothi
+            nispottikritto_nothi_objects = (
+                ReportNispottikrittoNothiModel.objects.filter(report_day__range=range)
+            )
+            nispottikritto_nothi_dict = nispottikritto_nothi_objects.aggregate(
+                Sum('count_or_sum')
+            )
+            nispottikritto_nothi_count = nispottikritto_nothi_dict['count_or_sum__sum']
+            if not nispottikritto_nothi_count:
+                nispottikritto_nothi_count = 0
+
+            # # upokarvogi
+            upokarvogi_objects = ReportUpokarvogiModel.objects.filter(
+                report_day__range=range
+            )
+            upokarvogi_dict = upokarvogi_objects.aggregate(Sum('count_or_sum'))
+            upokarvogi = upokarvogi_dict['count_or_sum__sum']
+            if not upokarvogi:
+                upokarvogi = 0
+
+            # # potrojari
+            potrojari_objects = ReportPotrojariModel.objects.filter(
+                report_day__range=range
+            )
+            potrojari_dict = potrojari_objects.aggregate(Sum('count_or_sum'))
+            potrojari = potrojari_dict['count_or_sum__sum']
+            if not potrojari:
+                potrojari = 0
+
+            # # note nisponno
+            note_nisponno_objects = ReportNoteNisponnoModel.objects.filter(
+                report_day__range=range
+            )
+            note_nisponno_dict = note_nisponno_objects.aggregate(Sum('count_or_sum'))
+            note_nisponno = note_nisponno_dict['count_or_sum__sum']
+            if not note_nisponno:
+                note_nisponno = 0
+
+            total_users_dict = ReportTotalUsersModel.objects.aggregate(
+                Sum('count_or_sum')
+            )
+            total_users = total_users_dict['count_or_sum__sum']
+
+            nothi_users_male_dict = ReportMaleNothiUsersModel.objects.aggregate(
+                Sum('count_or_sum')
+            )
+            nothi_users_male = nothi_users_male_dict['count_or_sum__sum']
+
+            nothi_users_female_dict = ReportFemaleNothiUsersModel.objects.aggregate(
+                Sum('count_or_sum')
+            )
+            nothi_users_female = nothi_users_female_dict['count_or_sum__sum']
+
+            context = {
+                'offices': {
+                    'total_offices': {
+                        'count': office_count,
+                        'date_from': '',
+                        'date_to': year_month_day,
+                    }
+                },
+                'nisponno_records': {
+                    'nispottikritto_nothi': {
+                        'count': nispottikritto_nothi_count,
+                        'date_from': '',
+                        'date_to': year_month_day,
+                    },
+                    'upokarvogi': {
+                        'count': upokarvogi,
+                        'date_from': '',
+                        'date_to': year_month_day,
+                    },
+                    'potrojari': {
+                        'count': potrojari,
+                        'date_from': '',
+                        'date_to': year_month_day,
+                    },
+                    'note_nisponno': {
+                        'count': note_nisponno,
+                        'date_from': '',
+                        'date_to': year_month_day,
+                    },
+                },
+                'users': {
+                    'total_users': {
+                        'count': total_users,
+                        'date_from': '',
+                        'date_to': year_month_day,
+                    }
+                },
+                'users_employee_records': {
+                    'nothi_users_male': {
+                        'count': nothi_users_male,
+                        'date_from': '',
+                        'date_to': year_month_day,
+                    },
+                    'nothi_users_female': {
+                        'count': nothi_users_female,
+                        'date_from': '',
+                        'date_to': year_month_day,
+                    },
+                },
+                # 'user_login_history': {
+                #     'mobile_app_users': {'count': office_count, 'date_range': '12/12/20'},
+                #     'android_ios_users': {'count': office_count, 'date_range': '12/12/20'},
+                # },
+                'form': form,
+            }
+
+            return render(request, 'dashboard_generate/custom_report.html', context)
+        else:
+            return HttpResponse('From date greater than to date')
+    else:
+        return HttpResponse('Date format not correct')
+
+
 def custom_report(request):
+    if request.method == 'POST':
+        return process_post_request(request)
+
+    form = ReportDateRangeForm()
     context = {}
     from datetime import date
 
@@ -330,6 +471,7 @@ def custom_report(request):
         #     'mobile_app_users': {'count': office_count, 'date_range': '12/12/20'},
         #     'android_ios_users': {'count': office_count, 'date_range': '12/12/20'},
         # },
+        'form': form,
     }
 
     return render(request, 'dashboard_generate/custom_report.html', context)

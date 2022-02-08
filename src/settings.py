@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     # third party app
     'rest_framework',
     'django_extensions',
+    'crispy_forms',
     # local apps
     'monthly_report.apps.MonthlyReportConfig',
     'users.apps.UsersConfig',
