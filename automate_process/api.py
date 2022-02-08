@@ -41,29 +41,28 @@ class updateDashboard(APIView):
         #     # return Response({'status': status, 'error': str(e)})
         #     print(e)
 
-        # offices table
-        # try:
-        #     offices_status = offices_table(request)
-        #     status['offices'] = offices_status
+        # Table 1: offices
+        try:
+            offices_status = offices_table(request)
+            status['offices'] = offices_status
 
-        # except Exception as e:
-        #     print(e)
+        except Exception as e:
+            print(e)
 
-        # nisponno_records table
+        # Table 2: nisponno_records
         try:
             nisponno_records_status = nisponno_records_table(request)
             status['nisponno_records'] = nisponno_records_status
         except Exception as e:
             print(e)
 
-        # try:
-        #     status_ = users_table(request)
-        #     status['users'] = status_
+        # Table 3: users
+        try:
+            users_status = users_table(request)
+            status['users'] = users_status
 
-        # except Exception as e:
-        #     # settings.SYSTEM_UPDATE_RUNNING = False
-        #     # return Response({'status': status, 'error': str(e)})
-        #     print(e)
+        except Exception as e:
+            print(e)
 
         # try:
         #     status_ = users_employee_records_table(request)
@@ -98,9 +97,9 @@ def nisponno_records_table(request=None, *args, **kwargs):
 
 
 def users_table(request=None):
-    _, status = users.update(request)
+    users_status = users.update(request)
 
-    return status
+    return users_status
 
 
 def users_employee_records_table(request=None):

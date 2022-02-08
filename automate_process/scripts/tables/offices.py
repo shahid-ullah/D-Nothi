@@ -1,5 +1,7 @@
 # Total Offices
 
+from django.conf import settings
+
 from ...models import Offices
 from ..reports import total_offices
 
@@ -25,6 +27,9 @@ def update(request=None, *args, **kwargs):
 
 
 def load_dataframe():
-    objs = Offices.objects.using('source_db').all()
+    if settings.DEBUG:
+        objs = Offices.objects.using('source_db').all()[:1000]
+    else:
+        objs = Offices.objects.using('source_db').all()
 
     return objs
