@@ -10,3 +10,4 @@ whitenoise
 django-extensions
 reportlab
 ptpython
+django-crispy-forms

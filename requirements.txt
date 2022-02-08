@@ -16,6 +16,8 @@ django==3.2.9
     #   django-extensions
     #   django-filter
     #   djangorestframework
+django-crispy-forms==1.14.0
+    # via -r requirements.in
 django-environ==0.8.1
     # via -r requirements.in
 django-extensions==3.1.5
