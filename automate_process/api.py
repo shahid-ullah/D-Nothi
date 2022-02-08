@@ -64,14 +64,13 @@ class updateDashboard(APIView):
         except Exception as e:
             print(e)
 
-        # try:
-        #     status_ = users_employee_records_table(request)
-        #     status['users_employee_records'] = status_
+        # Table 4: users_employee_records
+        try:
+            users_emploee_records_status = users_employee_records_table(request)
+            status['users_employee_records'] = users_emploee_records_status
 
-        # except Exception as e:
-        #     # settings.SYSTEM_UPDATE_RUNNING = False
-        #     # return Response({'status': status, 'error': str(e)})
-        #     print(e)
+        except Exception as e:
+            print(e)
 
         settings.SYSTEM_UPDATE_RUNNING = False
 
@@ -103,6 +102,6 @@ def users_table(request=None):
 
 
 def users_employee_records_table(request=None):
-    _, status = users_employee_records.update(request)
+    users_employee_records_status = users_employee_records.update(request)
 
-    return status
+    return users_employee_records_status

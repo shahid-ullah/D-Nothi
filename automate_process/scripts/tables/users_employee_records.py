@@ -1,57 +1,50 @@
 # Table Name: users_employee_records (combined_table)
 # Report1: male_nothi_users
 # Report2: female_nothi_users
-import json
-import os
+
+from django.conf import settings
 
 from ...models import EmployeeRecords, Users
-from ..reports import male_nothi_users
-
-# from django.conf import settings
+from ..reports import male_female_nothi_users
 
 
 def update(request=None, *args, **kwargs):
     users_objs, employee_records_objs = load_dataframe()
-    # breakpoint()
 
-    users_employee_records = {}
-    status = {}
+    users_employee_records_status = {}
+    male_nothi_users_status = {}
+    female_nothi_users_status = {}
 
-    # update male & female nothi users
+    # male & female nothi users
     try:
-        male_year_report, female_year_report = male_nothi_users.update(
+        male_last_report_date, female_last_report_date = male_female_nothi_users.update(
             request, users_objs, employee_records_objs, *args, **kwargs
         )
-        users_employee_records['male_nothi_users'] = male_year_report
-        users_employee_records['female_nothi_users'] = female_year_report
-        status['male_female_nothi_users'] = 'success'
+        male_nothi_users_status['last_report_date'] = str(male_last_report_date)
+        male_nothi_users_status['status'] = str(male_last_report_date)
+
+        female_nothi_users_status['last_report_date'] = str(female_last_report_date)
+        female_nothi_users_status['status'] = 'success'
+
     except Exception as e:
-        users_employee_records['male_nothi_users'] = []
-        users_employee_records['female_nothi_users'] = []
-        status['male_female_nothi_users'] = 'Failed'
         print(e)
 
-    # dir_name = 'temporary_data'
-    # if not os.path.exists(dir_name):
-    #     os.makedirs(dir_name)
+    users_employee_records_status['male_nothi_users'] = male_nothi_users_status
+    users_employee_records_status['female_nothi_users'] = female_nothi_users_status
 
-    # path = dir_name + "/" + "users_employee_records.json"
-
-    # print(f"Saving graph data ...{path}")
-    # with open(path, 'w', encoding='utf-8') as f:
-    #     json.dump(users_employee_records, f, ensure_ascii=False, indent=4)
-    return users_employee_records, status
+    return users_employee_records_status
 
 
 def load_dataframe():
-    # if settings.DEBUG:
-    #     users_objs = Users.objects.using('source_db').all()[:100000]
-    #     employee_records_objs = EmployeeRecords.objects.using('source_db').all()[
-    #         :100000
-    #     ]
-    # else:
-    users_objs = Users.objects.using('source_db').all()
-    employee_records_objs = EmployeeRecords.objects.using('source_db').all()
-    # breakpoint()
+
+    if settings.DEBUG:
+        users_objs = Users.objects.using('source_db').all()[:1000]
+    else:
+        users_objs = Users.objects.using('source_db').all()
+
+    if settings.DEBUG:
+        employee_records_objs = EmployeeRecords.objects.using('source_db').all()[:1000]
+    else:
+        employee_records_objs = EmployeeRecords.objects.using('source_db').all()
 
     return users_objs, employee_records_objs
