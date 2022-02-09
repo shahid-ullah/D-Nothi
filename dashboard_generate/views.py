@@ -187,6 +187,105 @@ def potrojari_view(request):
     return render(request, 'dashboard_generate/potrojari.html', context)
 
 
+def get_total_office_count(date_range):
+    offices_objs = ReportTotalOfficesModel.objects.all()
+    office_count_dict = offices_objs.aggregate(Sum('count_or_sum'))
+    office_count = office_count_dict['count_or_sum__sum']
+
+    if not office_count:
+        office_count = 0
+
+    return office_count
+
+
+def get_nispottikritto_nothi_count(date_range):
+    nispottikritto_nothi_objects = ReportNispottikrittoNothiModel.objects.filter(
+        report_day__range=date_range
+    )
+    nispottikritto_nothi_dict = nispottikritto_nothi_objects.aggregate(
+        Sum('count_or_sum')
+    )
+    nispottikritto_nothi_count = nispottikritto_nothi_dict['count_or_sum__sum']
+
+    if not nispottikritto_nothi_count:
+        nispottikritto_nothi_count = 0
+
+    return nispottikritto_nothi_count
+
+
+def get_upokarvogi_count(date_range):
+    upokarvogi_objects = ReportUpokarvogiModel.objects.filter(
+        report_day__range=date_range
+    )
+    upokarvogi_dict = upokarvogi_objects.aggregate(Sum('count_or_sum'))
+    upokarvogi = upokarvogi_dict['count_or_sum__sum']
+
+    if not upokarvogi:
+        upokarvogi = 0
+
+    return upokarvogi
+
+
+def get_potrojari_count(date_range):
+    potrojari_objects = ReportPotrojariModel.objects.filter(
+        report_day__range=date_range
+    )
+    potrojari_dict = potrojari_objects.aggregate(Sum('count_or_sum'))
+    potrojari = potrojari_dict['count_or_sum__sum']
+
+    if not potrojari:
+        potrojari = 0
+
+    return potrojari
+
+
+def get_note_nisponno_count(date_range):
+    note_nisponno_objects = ReportNoteNisponnoModel.objects.filter(
+        report_day__range=date_range
+    )
+    note_nisponno_dict = note_nisponno_objects.aggregate(Sum('count_or_sum'))
+    note_nisponno = note_nisponno_dict['count_or_sum__sum']
+
+    if not note_nisponno:
+        note_nisponno = 0
+
+    return note_nisponno
+
+
+def get_total_users(date_range):
+    total_users_dict = ReportTotalUsersModel.objects.aggregate(Sum('count_or_sum'))
+    total_users = total_users_dict['count_or_sum__sum']
+
+    if not total_users:
+        total_users = 0
+
+    return total_users
+
+
+def get_nothi_users_male(date_range):
+    nothi_users_male_dict = ReportMaleNothiUsersModel.objects.aggregate(
+        Sum('count_or_sum')
+    )
+    nothi_users_male = nothi_users_male_dict['count_or_sum__sum']
+
+    if not nothi_users_male:
+        nothi_users_male = 0
+
+    return nothi_users_male
+
+
+def get_nothi_users_female(date_range):
+    nothi_users_female_dict = ReportFemaleNothiUsersModel.objects.aggregate(
+        Sum('count_or_sum')
+    )
+    nothi_users_female = nothi_users_female_dict['count_or_sum__sum']
+
+    if not nothi_users_female:
+        nothi_users_female = 0
+
+    return nothi_users_female
+
+
 def process_post_request(request):
     year_month_day = ''
     form = ReportDateRangeForm(request.POST)
@@ -194,70 +293,23 @@ def process_post_request(request):
         from_date = form.cleaned_data['From']
         to_date = form.cleaned_data['To']
         if from_date < to_date:
-            range = [from_date, to_date]
+            date_range = [from_date, to_date]
             # total_offices
-
-            offices_objs = ReportTotalOfficesModel.objects.filter(
-                report_day__range=range
-            )
-            office_count_dict = offices_objs.aggregate(Sum('count_or_sum'))
-            office_count = office_count_dict['count_or_sum__sum']
-
-            if not office_count:
-                office_count = 0
-
+            office_count = get_total_office_count(date_range)
             # nispottikritto_nothi
-            nispottikritto_nothi_objects = (
-                ReportNispottikrittoNothiModel.objects.filter(report_day__range=range)
-            )
-            nispottikritto_nothi_dict = nispottikritto_nothi_objects.aggregate(
-                Sum('count_or_sum')
-            )
-            nispottikritto_nothi_count = nispottikritto_nothi_dict['count_or_sum__sum']
-            if not nispottikritto_nothi_count:
-                nispottikritto_nothi_count = 0
-
-            # # upokarvogi
-            upokarvogi_objects = ReportUpokarvogiModel.objects.filter(
-                report_day__range=range
-            )
-            upokarvogi_dict = upokarvogi_objects.aggregate(Sum('count_or_sum'))
-            upokarvogi = upokarvogi_dict['count_or_sum__sum']
-            if not upokarvogi:
-                upokarvogi = 0
-
-            # # potrojari
-            potrojari_objects = ReportPotrojariModel.objects.filter(
-                report_day__range=range
-            )
-            potrojari_dict = potrojari_objects.aggregate(Sum('count_or_sum'))
-            potrojari = potrojari_dict['count_or_sum__sum']
-            if not potrojari:
-                potrojari = 0
-
-            # # note nisponno
-            note_nisponno_objects = ReportNoteNisponnoModel.objects.filter(
-                report_day__range=range
-            )
-            note_nisponno_dict = note_nisponno_objects.aggregate(Sum('count_or_sum'))
-            note_nisponno = note_nisponno_dict['count_or_sum__sum']
-            if not note_nisponno:
-                note_nisponno = 0
-
-            total_users_dict = ReportTotalUsersModel.objects.aggregate(
-                Sum('count_or_sum')
-            )
-            total_users = total_users_dict['count_or_sum__sum']
-
-            nothi_users_male_dict = ReportMaleNothiUsersModel.objects.aggregate(
-                Sum('count_or_sum')
-            )
-            nothi_users_male = nothi_users_male_dict['count_or_sum__sum']
-
-            nothi_users_female_dict = ReportFemaleNothiUsersModel.objects.aggregate(
-                Sum('count_or_sum')
-            )
-            nothi_users_female = nothi_users_female_dict['count_or_sum__sum']
+            nispottikritto_nothi_count = get_nispottikritto_nothi_count(date_range)
+            # upokarvogi
+            upokarvogi = get_upokarvogi_count(date_range)
+            # potrojari
+            potrojari = get_potrojari_count(date_range)
+            #  note nisponno
+            note_nisponno = get_note_nisponno_count(date_range)
+            # total users
+            total_users = get_total_users(date_range)
+            # nothi users male
+            nothi_users_male = get_nothi_users_male(date_range)
+            # nothi users female
+            nothi_users_female = get_nothi_users_female(date_range)
 
             context = {
                 'offices': {
