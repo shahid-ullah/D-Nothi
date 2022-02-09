@@ -1,7 +1,7 @@
 {% extends 'monthly_report/base.html' %}
 {% load static %}
 
-{% block title %}মোট নিষ্পন্ন{% endblock %}
+{% block title %}মোট নথি ব্যবহারকারী{% endblock %}
 {% block inline_css %}
 
 {% endblock inline_css %}
@@ -19,7 +19,7 @@
     <div class="col-sm-12 col-md-12">
       <div class="card">
         <div class="card-header card-header-custom2">
-            নথি ব্যবহারকারী
+            মোট নথি ব্যবহারকারী
         </div>
         <div class="card-body">
           <div id="chart_top_illness">
@@ -27,7 +27,7 @@
             <figure class="highcharts-figure">
               <div id="container"></div>
               <p class="highcharts-description">
-                বার্ষিক এবং মাসিক নথি ব্যবহারকারী
+                <!-- বার্ষিক এবং মাসিক নথি ব্যবহারকারী -->
               </p>
             </figure>
 
@@ -43,12 +43,43 @@
 
             <script>
               // Create the chart
+              let level = 1;
+              let first_level_title = 'বার্ষিক নথি ব্যবহারকারী'
+              let second_level_title = 'মাসিক নথি ব্যবহারকারী'
+              let third_level_title = 'দৈনিক নথি ব্যবহারকারী'
+
               Highcharts.chart('container', {
                 chart: {
-                  type: 'column'
+                  type: 'column',
+                  events: {
+                    drilldown: function (e) {
+                      level = level + 1
+                      if (level == 1){
+                        this.setTitle({ text: first_level_title });
+                      }
+                      if (level == 2){
+                        this.setTitle({ text: second_level_title });
+                      }
+                      if (level == 3){
+                        this.setTitle({ text: third_level_title });
+                      }
+                    },
+                    drillup: function (e) {
+                      level = level - 1;
+                      if (level == 1){
+                        this.setTitle({ text: first_level_title });
+                      }
+                      if (level == 2){
+                        this.setTitle({ text: second_level_title });
+                      }
+                      if (level == 3){
+                        this.setTitle({ text: third_level_title });
+                      }
+                    }
+                  }
                 },
                 title: {
-                    text: 'বার্ষিক এবং মাসিক নথি ব্যবহারকারী'
+                    text: 'বার্ষিক নথি ব্যবহারকারী'
                 },
                 subtitle: {
                   text: ''
@@ -63,7 +94,7 @@
                 },
                 yAxis: {
                   title: {
-                      text: 'নথি ব্যবহারকারী'
+                      text: 'নথি ব্যবহারকারী সংখ্যা'
                   }
 
                 },
@@ -86,7 +117,7 @@
                   pointFormat: '<span style="color:{point.color}"><b>{point.y}</b><br/>'
                 },
 
-                series: generateGeneralSeries(year_map, 'years'),
+                series: generateGeneralSeries(year_map, 'year'),
                 drilldown: {
                   series: generateDrilldownSeries(year_map, month_map, day_map)
                 }

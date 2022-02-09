@@ -1,7 +1,7 @@
 {% extends 'monthly_report/base.html' %}
 {% load static %}
 
-{% block title %}মোট নিষ্পন্ন{% endblock %}
+{% block title %}মোট অফিস{% endblock %}
 {% block inline_css %}
 
 {% endblock inline_css %}
@@ -19,7 +19,7 @@
     <div class="col-sm-12 col-md-12">
       <div class="card">
         <div class="card-header card-header-custom2">
-          অফিস
+          মোট অফিস
         </div>
         <div class="card-body">
           <div id="chart_top_illness">
@@ -27,7 +27,7 @@
             <figure class="highcharts-figure">
               <div id="container"></div>
               <p class="highcharts-description">
-                অফিস(বার্ষিক এবং মাসিক)
+                <!-- অফিস(বার্ষিক এবং মাসিক) -->
               </p>
             </figure>
 
@@ -42,13 +42,44 @@
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
             <script>
+              let level = 1;
+              let first_level_title = 'বার্ষিক মোট অফিস'
+              let second_level_title = 'মাসিক মোট অফিস'
+              let third_level_title = 'দৈনিক মোট অফিস'
+
               // Create the chart
               Highcharts.chart('container', {
                 chart: {
-                  type: 'column'
+                  type: 'column',
+                  events: {
+                    drilldown: function (e) {
+                      level = level + 1
+                      if (level == 1){
+                        this.setTitle({ text: first_level_title });
+                      }
+                      if (level == 2){
+                        this.setTitle({ text: second_level_title });
+                      }
+                      if (level == 3){
+                        this.setTitle({ text: third_level_title });
+                      }
+                    },
+                    drillup: function (e) {
+                      level = level - 1;
+                      if (level == 1){
+                        this.setTitle({ text: first_level_title });
+                      }
+                      if (level == 2){
+                        this.setTitle({ text: second_level_title });
+                      }
+                      if (level == 3){
+                        this.setTitle({ text: third_level_title });
+                      }
+                    }
+                  }
                 },
                 title: {
-                  text: ''
+                  text: 'বার্ষিক মোট অফিস'
                 },
                 subtitle: {
                   text: ''
@@ -63,7 +94,7 @@
                 },
                 yAxis: {
                   title: {
-                    text: 'অফিস'
+                    text: 'অফিস সংখ্যা'
                   }
 
                 },

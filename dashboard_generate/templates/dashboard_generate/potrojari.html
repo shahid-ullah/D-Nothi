@@ -27,12 +27,10 @@
             <figure class="highcharts-figure">
               <div id="container"></div>
               <p class="highcharts-description">
-                 পত্রজারি (বার্ষিক এবং মাসিক)
+                 <!-- পত্রজারি (বার্ষিক এবং মাসিক) -->
               </p>
             </figure>
 
-            <canvas id="bar-chart" width="800" height="400"></canvas>
-            {# <script src="https://code.highcharts.com/highcharts.src.js"> </script> #}
             <script src="https://code.highcharts.com/highcharts.js"></script>
             <script src="https://code.highcharts.com/modules/data.js"></script>
             <script src="https://code.highcharts.com/modules/drilldown.js"></script>
@@ -43,12 +41,43 @@
 
             <script>
               // Create the chart
+              let level = 1;
+              let first_level_title = 'বার্ষিক পত্রজারি'
+              let second_level_title = 'মাসিক পত্রজারি'
+              let third_level_title = 'দৈনিক পত্রজারি'
+
               Highcharts.chart('container', {
                 chart: {
-                  type: 'column'
+                  type: 'column',
+                  events: {
+                    drilldown: function (e) {
+                      level = level + 1
+                      if (level == 1){
+                        this.setTitle({ text: first_level_title });
+                      }
+                      if (level == 2){
+                        this.setTitle({ text: second_level_title });
+                      }
+                      if (level == 3){
+                        this.setTitle({ text: third_level_title });
+                      }
+                    },
+                    drillup: function (e) {
+                      level = level - 1;
+                      if (level == 1){
+                        this.setTitle({ text: first_level_title });
+                      }
+                      if (level == 2){
+                        this.setTitle({ text: second_level_title });
+                      }
+                      if (level == 3){
+                        this.setTitle({ text: third_level_title });
+                      }
+                    }
+                  }
                 },
                 title: {
-                  text: ''
+                  text: 'বার্ষিক পত্রজারি'
                 },
                 subtitle: {
                   text: ''
@@ -63,7 +92,7 @@
                 },
                 yAxis: {
                   title: {
-                      text: 'পত্রজারি'
+                      text: 'পত্রজারি সংখ্যা'
                   }
 
                 },
@@ -86,7 +115,7 @@
                   pointFormat: '<span style="color:{point.color}"><b>{point.y}</b><br/>'
                 },
 
-                series: generateGeneralSeries(year_map, 'years'),
+                series: generateGeneralSeries(year_map, 'year'),
                 drilldown: {
                   series: generateDrilldownSeries(year_map, month_map, day_map)
                 }

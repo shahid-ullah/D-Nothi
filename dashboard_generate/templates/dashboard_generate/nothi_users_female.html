@@ -27,7 +27,7 @@
             <figure class="highcharts-figure">
               <div id="container"></div>
               <p class="highcharts-description">
-                  বার্ষিক এবং মাসিক নথি ব্যবহারকারী (মহিলা)
+                  <!-- বার্ষিক এবং মাসিক নথি ব্যবহারকারী (মহিলা) -->
               </p>
             </figure>
 
@@ -43,12 +43,43 @@
 
             <script>
               // Create the chart
+              let level = 1;
+              let first_level_title = 'বার্ষিক নথি ব্যবহারকারী (মহিলা)'
+              let second_level_title = 'মাসিক নথি ব্যবহারকারী (মহিলা)'
+              let third_level_title = 'দৈনিক নথি ব্যবহারকারী (মহিলা)'
+
               Highcharts.chart('container', {
                 chart: {
-                  type: 'column'
+                  type: 'column',
+                  events: {
+                    drilldown: function (e) {
+                      level = level + 1
+                      if (level == 1) {
+                        this.setTitle({ text: first_level_title });
+                      }
+                      if (level == 2) {
+                        this.setTitle({ text: second_level_title });
+                      }
+                      if (level == 3) {
+                        this.setTitle({ text: third_level_title });
+                      }
+                    },
+                    drillup: function (e) {
+                      level = level - 1;
+                      if (level == 1) {
+                        this.setTitle({ text: first_level_title });
+                      }
+                      if (level == 2) {
+                        this.setTitle({ text: second_level_title });
+                      }
+                      if (level == 3) {
+                        this.setTitle({ text: third_level_title });
+                      }
+                    }
+                  }
                 },
                 title: {
-                    text: 'বার্ষিক এবং মাসিক নথি ব্যবহারকারী (মহিলা)'
+                    text: 'বার্ষিক নথি ব্যবহারকারী (মহিলা)'
                 },
                 subtitle: {
                   text: ''
@@ -63,7 +94,7 @@
                 },
                 yAxis: {
                   title: {
-                      text: 'নথি ব্যবহারকারী (মহিলা)'
+                      text: 'ব্যবহারকারী সংখ্যা'
                   }
 
                 },
@@ -86,7 +117,7 @@
                   pointFormat: '<span style="color:{point.color}"><b>{point.y}</b><br/>'
                 },
 
-                series: generateGeneralSeries(year_map, 'years'),
+                series: generateGeneralSeries(year_map, 'year'),
                 drilldown: {
                   series: generateDrilldownSeries(year_map, month_map, day_map)
                 }
