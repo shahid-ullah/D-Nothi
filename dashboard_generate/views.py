@@ -66,20 +66,6 @@ def generate_year_month_and_day_map(objs):
 def total_offices_view(request):
     objs = ReportTotalOfficesModel.objects.all()
     year_map, month_map, day_map = generate_year_month_and_day_map(objs)
-    # breakpoint()
-
-    # global offices_general_series, offices_'drilldown'_series
-    # if offices_general_series and offices_'drilldown'_series:
-    #     context = {
-    #         'general_series': json.dumps(offices_general_series, cls=NpEncoder),
-    #         ''drilldown'_series': json.dumps(offices_'drilldown'_series, cls=NpEncoder),
-    #     }
-    #     return render(request, 'monthly_report/dashboard.html', context)
-
-    # general_series, 'drilldown'_series = load_total_offices_graph_data()
-
-    # offices_general_series = copy.deepcopy(general_series)
-    # offices_'drilldown'_series = copy.deepcopy('drilldown'_series)
 
     context = {
         'year_map': json.dumps(year_map, cls=NpEncoder),
@@ -97,22 +83,6 @@ nispottikritto_nothi_drilldown_series = None
 def nispottikritto_nothi_view(request):
     objs = ReportNispottikrittoNothiModel.objects.all()
     year_map, month_map, day_map = generate_year_month_and_day_map(objs)
-    # global nispottikritto_nothi_general_series, nispottikritto_nothi_drilldown_series
-    # if nispottikritto_nothi_general_series and nispottikritto_nothi_drilldown_series:
-    #     context = {
-    #         'general_series': json.dumps(
-    #             nispottikritto_nothi_general_series, cls=NpEncoder
-    #         ),
-    #         'drilldown_series': json.dumps(
-    #             nispottikritto_nothi_drilldown_series, cls=NpEncoder
-    #         ),
-    #     }
-    #     return render(request, 'monthly_report/nispottikritto_nothi.html', context)
-
-    # general_series, drilldown_series = load_nispottikritto_nothi_graph_data()
-
-    # nispottikritto_nothi_general_series = copy.deepcopy(general_series)
-    # nispottikritto_nothi_drilldown_series = copy.deepcopy(drilldown_series)
 
     context = {
         'year_map': json.dumps(year_map, cls=NpEncoder),

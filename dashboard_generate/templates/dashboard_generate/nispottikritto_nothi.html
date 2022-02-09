@@ -11,6 +11,22 @@
       var year_map = {{ year_map | safe }};
       var month_map = {{ month_map | safe }};
       var day_map = {{ day_map | safe }};
+
+      MONTH_NAME_MAP = {
+      1: 'January',
+      2: 'February',
+      3: 'March',
+      4: 'April',
+      5: 'May',
+      6: 'June',
+      7: 'July',
+      8: 'August',
+      9: 'September',
+      10: 'October',
+      11: 'November',
+      12: 'December',
+      }
+
       function generateGeneralSeries(maps_data, name=""){
           general_series = []
           general_series_dictionary = {
@@ -45,7 +61,8 @@
           var month_dict = month_map[year];
           for (const [month, value] of Object.entries(month_dict)){
             temp_dict = {};
-            temp_dict['name'] = month;
+            {# temp_dict['name'] = month; #}
+            temp_dict['name'] = MONTH_NAME_MAP[month];
             temp_dict['y'] = value;
             temp_dict['drilldown'] = year + month;
             dict['data'].push(temp_dict);
@@ -59,7 +76,7 @@
               data : [],
             }
             for (const [day, value] of Object.entries(day_dict)){
-              console.log(day, value);
+              {# console.log(day, value); #}
               nst_dict['data'].push([day, value]);
             }
             drilldown_series.push(nst_dict);
