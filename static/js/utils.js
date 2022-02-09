@@ -12,6 +12,7 @@ MONTH_NAME_MAP = {
   11: 'November',
   12: 'December',
 }
+
 function generateGeneralSeries(maps_data, name=""){
     general_series = []
     general_series_dictionary = {

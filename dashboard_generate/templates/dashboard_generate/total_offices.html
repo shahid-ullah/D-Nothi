@@ -80,11 +80,13 @@
                 },
 
                 tooltip: {
-                  headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                  pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+                  // headerFormat: '<span style="font-size:11px">{series.name} </span>',
+                  headerFormat: '<span style="font-size:11px"> </span>',
+                  // pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
+                  pointFormat: '<span style="color:{point.color}"><b>{point.y}</b><br/>'
                 },
 
-                series: generateGeneralSeries(year_map, 'years'),
+                series: generateGeneralSeries(year_map, 'year'),
                 drilldown: {
                   series: generateDrilldownSeries(year_map, month_map, day_map)
                 }
