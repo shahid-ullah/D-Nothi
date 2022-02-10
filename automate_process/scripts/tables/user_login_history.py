@@ -13,30 +13,38 @@ def update(request=None, *args, **kwargs):
 
     user_login_history_status = {}
     mobile_app_users_status = {}
-    # android_ios_users_status = {}
+    android_ios_users_status = {}
 
     # mobile app users
     try:
         last_report_date = mobile_app_users.update(objs, request, *args, **kwargs)
         mobile_app_users_status['last_report_date'] = str(last_report_date)
-        mobile_app_users_status['status'] = 'success'
+        mobile_app_users_status['status'] = 'success' ''
     except Exception as e:
         mobile_app_users_status['last_report_date'] = ''
         mobile_app_users_status['status'] = 'Failed'
         print(e)
 
     # Android-IOS users
-    # try:
-    #     last_report_date = android_ios_users.update(objs, request, *args, **kwargs)
-    #     android_ios_users_status['last_report_date'] = str(last_report_date)
-    #     android_ios_users_status['status'] = 'success'
-    # except Exception as e:
-    #     android_ios_users_status['last_report_date'] = ''
-    #     android_ios_users_status['status'] = 'Failed'
-    #     print(e)
+    try:
+        android_last_report_date, ios_last_report_date = android_ios_users.update(
+            objs, request, *args, **kwargs
+        )
+        android_ios_users_status['last_report_date'] = {
+            'android': str(android_last_report_date),
+            'ios': str(ios_last_report_date),
+        }
+        android_ios_users_status['status'] = 'success'
+    except Exception as e:
+        android_ios_users_status['last_report_date'] = {
+            'android': '',
+            'ios': '',
+        }
+        android_ios_users_status['status'] = 'Failed'
+        print(e)
 
     user_login_history_status['mobile_app_users'] = mobile_app_users_status
-    # user_login_history_status['android_ios_users'] = android_ios_users_status
+    user_login_history_status['android_ios_users'] = android_ios_users_status
 
     return user_login_history_status
 
