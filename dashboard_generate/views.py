@@ -12,9 +12,10 @@ from django.shortcuts import render
 
 from .forms import ReportDateRangeForm
 from .models import (ReportFemaleNothiUsersModel, ReportMaleNothiUsersModel,
-                     ReportNispottikrittoNothiModel, ReportNoteNisponnoModel,
-                     ReportPotrojariModel, ReportTotalOfficesModel,
-                     ReportTotalUsersModel, ReportUpokarvogiModel)
+                     ReportMobileAppUsersModel, ReportNispottikrittoNothiModel,
+                     ReportNoteNisponnoModel, ReportPotrojariModel,
+                     ReportTotalOfficesModel, ReportTotalUsersModel,
+                     ReportUpokarvogiModel)
 
 # from datetime import datetime
 
@@ -185,6 +186,20 @@ def potrojari_view(request):
     }
 
     return render(request, 'dashboard_generate/potrojari.html', context)
+
+
+def mobile_app_users_view(request):
+
+    objs = ReportMobileAppUsersModel.objects.all()
+    year_map, month_map, day_map = generate_year_month_and_day_map(objs)
+
+    context = {
+        'year_map': json.dumps(year_map, cls=NpEncoder),
+        'month_map': json.dumps(month_map, cls=NpEncoder),
+        'day_map': json.dumps(day_map, cls=NpEncoder),
+    }
+
+    return render(request, 'dashboard_generate/mobile_app_users.html', context)
 
 
 def get_total_office_count(date_range):

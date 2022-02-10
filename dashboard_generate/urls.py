@@ -45,4 +45,9 @@ urlpatterns = [
         views.custom_report,
         name="custom_report",
     ),
+    path(
+        'mobile_app_users/',
+        views.mobile_app_users_view,
+        name="mobile_app_users",
+    ),
 ]
