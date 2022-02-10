@@ -19,7 +19,7 @@
     <div class="col-sm-12 col-md-12">
       <div class="card">
         <div class="card-header card-header-custom2">
-            মোবাইল অ্যাপ ব্যবহারকারী
+          মোবাইল অ্যাপ ব্যবহারকারী
         </div>
         <div class="card-body">
           <div id="chart_top_illness">
@@ -27,7 +27,7 @@
             <figure class="highcharts-figure">
               <div id="container"></div>
               <p class="highcharts-description">
-                 <!-- পত্রজারি (বার্ষিক এবং মাসিক) -->
+                <!-- পত্রজারি (বার্ষিক এবং মাসিক) -->
               </p>
             </figure>
 
@@ -92,7 +92,7 @@
                 },
                 yAxis: {
                   title: {
-                      text: 'ব্যবহারকারী সংখ্যা'
+                    text: 'ব্যবহারকারী সংখ্যা'
                   }
 
                 },
@@ -119,6 +119,80 @@
                 drilldown: {
                   series: generateDrilldownSeries(year_map, month_map, day_map)
                 }
+              });
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12 col-md-12">
+      <div class="card">
+        <div class="card-header card-header-custom2">
+          <!-- মোবাইল অ্যাপ ব্যবহারকারী -->
+        </div>
+        <div class="card-body">
+          <div id="chart_top_illness">
+
+            <figure class="highcharts-figure">
+              <div id="container2"></div>
+              <p class="highcharts-description">
+                <!-- বার্ষিক এবং মাসিক মোবাইল অ্যাপ ব্যবহারকারী -->
+              </p>
+            </figure>
+
+            <script>
+              // Create the chart
+
+              Highcharts.chart('container2', {
+                chart: {
+                  plotBackgroundColor: null,
+                  plotBorderWidth: null,
+                  plotShadow: false,
+                  type: 'pie'
+                },
+                title: {
+                  text: 'অ্যনড্রয়েড  এবং আইওস ব্যবহারকারী',
+                },
+                tooltip: {
+                  pointFormat: '{series.name} <b>{point.percentage:.0f}%</b>'
+                },
+                accessibility: {
+                  point: {
+                    valueSuffix: '%'
+                  }
+                },
+                plotOptions: {
+                  pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                      enabled: true,
+                      format: '<b>{point.name}</b>: {point.percentage:.0f} %'
+                    }
+                  }
+                },
+                series:
+                [
+                  {
+                    name: "",
+                    colorByPoint: true,
+                    data: [
+                      {
+                        name: "অ্যানড্রয়েড",
+                        y: {{ android_users | safe }},
+                        drilldown: "android"
+                      },
+                      {
+                        name: "আইওস",
+                        y: {{ ios_users | safe }},
+                        drilldown: "IOS"
+                      },
+                    ]
+                  }
+                ],
               });
             </script>
           </div>

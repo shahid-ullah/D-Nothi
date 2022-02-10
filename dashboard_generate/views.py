@@ -11,7 +11,8 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from .forms import ReportDateRangeForm
-from .models import (ReportFemaleNothiUsersModel, ReportMaleNothiUsersModel,
+from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
+                     ReportIOSUsersModel, ReportMaleNothiUsersModel,
                      ReportMobileAppUsersModel, ReportNispottikrittoNothiModel,
                      ReportNoteNisponnoModel, ReportPotrojariModel,
                      ReportTotalOfficesModel, ReportTotalUsersModel,
@@ -192,11 +193,15 @@ def mobile_app_users_view(request):
 
     objs = ReportMobileAppUsersModel.objects.all()
     year_map, month_map, day_map = generate_year_month_and_day_map(objs)
+    android_users = ReportAndroidUsersModel.objects.aggregate(Sum('count_or_sum'))
+    ios_users = ReportIOSUsersModel.objects.aggregate(Sum('count_or_sum'))
 
     context = {
         'year_map': json.dumps(year_map, cls=NpEncoder),
         'month_map': json.dumps(month_map, cls=NpEncoder),
         'day_map': json.dumps(day_map, cls=NpEncoder),
+        'android_users': json.dumps(android_users['count_or_sum__sum'], cls=NpEncoder),
+        'ios_users': json.dumps(ios_users['count_or_sum__sum'], cls=NpEncoder),
     }
 
     return render(request, 'dashboard_generate/mobile_app_users.html', context)
