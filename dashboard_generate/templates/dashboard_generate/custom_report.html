@@ -8,19 +8,19 @@
 
 {% block body_block %}
   <div class="row">
-    <div class="col-2">
+    <div class="col-4">
     </div>
-    <div class="col-8">
+    <div class="col-4">
       <form action="" enctype="multipart/form-data" method="POST">
         {% csrf_token %}
         {{ form|crispy }}
         <input type="submit" name="submit" value="Submit">
       </form>
     </div>
-    <div class="col-2">
+    <div class="col-4">
     </div>
-
   </div>
+
   <div class="">
     <div class="row">
       <div class="col-12">
@@ -30,8 +30,6 @@
               <tr>
                 <th scope="col">রিপোর্ট টাইপ</th>
                 <th scope="col">report</th>
-                {# <th scope="col">Date From</th> #}
-                {# <th scope="col">Date To</th> #}
 
               </tr>
             </thead>
@@ -39,65 +37,42 @@
               <tr>
                 <th scope="row">মোট অফিস</th>
                 <td class="total_office">{{ offices.total_offices.count }}</td>
-                <!-- <td class="total_office">{{ offices.total_offices.date_from }}</td>
-                <td class="total_office">{{ offices.total_offices.date_to }}</td> -->
-                {# <th scope="col">10/10/21 - 20/01/22</th> #}
               </tr>
               <tr>
                 <th scope="row">নিষ্পত্তিকৃত নথি</th>
                 <td class="nispotti_krito_nothi">{{ nisponno_records.nispottikritto_nothi.count }}</td>
-                <!-- <td class="nispotti_krito_nothi">{{ nisponno_records.nispottikritto_nothi.date_from }}</td>
-                <td class="nispotti_krito_nothi">{{ nisponno_records.nispottikritto_nothi.date_to }}</td> -->
-                {# <th scope="col">10/10/21 - 20/01/22</th> #}
               </tr>
               <tr>
                 <th scope="row">মোট উপকারভোগী</th>
                 <td class="total_upokarvogi">{{ nisponno_records.upokarvogi.count }}</td>
-                <!-- <td class="total_upokarvogi">{{ nisponno_records.upokarvogi.date_from }}</td>
-                <td class="total_upokarvogi">{{ nisponno_records.upokarvogi.date_to }}</td> -->
-                {# <th scope="col">10/10/21 - 20/01/22</th> #}
               </tr>
               <tr>
                 <th scope="row">নোট নিষ্পন্ন</th>
                 <td class="total_nisponno">{{ nisponno_records.note_nisponno.count }}</td>
-                <!-- <td class="total_nisponno">{{ nisponno_records.note_nisponno.date_from }}</td>
-                <td class="total_nisponno">{{ nisponno_records.note_nisponno.date_to }}</td> -->
-                {# <th scope="col">10/10/21 - 20/01/22</th> #}
               </tr>
               <tr>
                 <th scope="row">পত্রজারি</th>
                 <td class="total_potrojari">{{ nisponno_records.potrojari.count }}</td>
-                <!-- <td class="total_nisponno">{{ nisponno_records.potrojari.date_from }}</td>
-                <td class="total_nisponno">{{ nisponno_records.potrojari.date_to }}</td> -->
-                {# <th scope="col">10/10/21 - 20/01/22</th> #}
               </tr>
               <tr>
                 <th scope="row">মোট নথি ব্যবহারকারী (পুরুষ)</th>
                 <td class="total_nothi_users_male">{{ users_employee_records.nothi_users_male.count }}</td>
-                <!-- <td class="total_nothi_users_male">{{ users_employee_records.nothi_users_male.date_from }}</td>
-                <td class="total_nothi_users_male">{{ users_employee_records.nothi_users_male.date_to }}</td> -->
-                {# <th scope="col">10/10/21 - 20/01/22</th> #}
               </tr>
               <tr>
                 <th scope="row">মোট নথি ব্যবহারকারী (মহিলা)</th>
                 <td class="total_nothi_users_female">{{ users_employee_records.nothi_users_female.count }}</td>
-                <!-- <td class="total_nothi_users_female">{{ users_employee_records.nothi_users_female.date_from }}</td>
-                <td class="total_nothi_users_female">{{ users_employee_records.nothi_users_female.date_to }}</td> -->
-                {# <th scope="col">10/10/21 - 20/01/22</th> #}
               </tr>
-              {# <tr> #}
-              {#   <th scope="row">মোবাইল অ্যাপ ব্যবহারকারী</th> #}
-              {#   <td class="total_mobile_app_users">{{ user_login_history.mobile_app_users.count }}</td> #}
-              {#   {# <th scope="col">10/10/21 - 20/01/22</th> #} #}
-              {# </tr> #}
+              <tr>
+                <th scope="row">মোবাইল অ্যাপ ব্যবহারকারী</th>
+                <td class="total_mobile_app_users">{{ user_login_history.mobile_app_users.count }}</td>
+              </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
-
   </div>
 {% endblock %}
 
-{% block local_js %}
-{%  endblock local_js %}
+{# {% block local_js %} #}
+{# {%  endblock local_js %} #}

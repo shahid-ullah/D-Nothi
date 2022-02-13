@@ -87,7 +87,7 @@ def format_and_load_to_mysql_db(request, groupby_date):
     for date, frame in groupby_date:
         last_report_date = date
 
-        count = frame['id'].count()
+        count = frame['upokarvogi'].sum()
 
         dict_ = generate_model_object_dictionary(
             request, date.year, date.month, date.day, count

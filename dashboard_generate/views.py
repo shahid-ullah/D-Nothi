@@ -2,6 +2,7 @@
 # import copy
 # import io
 import json
+from datetime import datetime
 
 import numpy as np
 import pandas as pd
@@ -17,9 +18,6 @@ from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
                      ReportNoteNisponnoModel, ReportPotrojariModel,
                      ReportTotalOfficesModel, ReportTotalUsersModel,
                      ReportUpokarvogiModel)
-
-# from datetime import datetime
-
 
 # from reportlab.pdfgen import canvas
 # from rest_framework import views
@@ -208,7 +206,7 @@ def mobile_app_users_view(request):
 
 
 def get_total_office_count(date_range):
-    offices_objs = ReportTotalOfficesModel.objects.all()
+    offices_objs = ReportTotalOfficesModel.objects.filter(report_day__lte=date_range[1])
     office_count_dict = offices_objs.aggregate(Sum('count_or_sum'))
     office_count = office_count_dict['count_or_sum__sum']
 
@@ -273,7 +271,10 @@ def get_note_nisponno_count(date_range):
 
 
 def get_total_users(date_range):
-    total_users_dict = ReportTotalUsersModel.objects.aggregate(Sum('count_or_sum'))
+    total_users_objs = ReportTotalUsersModel.objects.filter(
+        report_day__lte=date_range[1]
+    )
+    total_users_dict = total_users_objs.aggregate(Sum('count_or_sum'))
     total_users = total_users_dict['count_or_sum__sum']
 
     if not total_users:
@@ -283,9 +284,10 @@ def get_total_users(date_range):
 
 
 def get_nothi_users_male(date_range):
-    nothi_users_male_dict = ReportMaleNothiUsersModel.objects.aggregate(
-        Sum('count_or_sum')
+    nothi_users_male_objs = ReportMaleNothiUsersModel.objects.filter(
+        report_day__lte=date_range[1]
     )
+    nothi_users_male_dict = nothi_users_male_objs.aggregate(Sum('count_or_sum'))
     nothi_users_male = nothi_users_male_dict['count_or_sum__sum']
 
     if not nothi_users_male:
@@ -295,9 +297,10 @@ def get_nothi_users_male(date_range):
 
 
 def get_nothi_users_female(date_range):
-    nothi_users_female_dict = ReportFemaleNothiUsersModel.objects.aggregate(
-        Sum('count_or_sum')
+    nothi_users_female_objs = ReportMaleNothiUsersModel.objects.filter(
+        report_day__lte=date_range[1]
     )
+    nothi_users_female_dict = nothi_users_female_objs.aggregate(Sum('count_or_sum'))
     nothi_users_female = nothi_users_female_dict['count_or_sum__sum']
 
     if not nothi_users_female:
@@ -312,84 +315,89 @@ def process_post_request(request):
     if form.is_valid():
         from_date = form.cleaned_data['From']
         to_date = form.cleaned_data['To']
-        if from_date < to_date:
-            date_range = [from_date, to_date]
-            # total_offices
-            office_count = get_total_office_count(date_range)
-            # nispottikritto_nothi
-            nispottikritto_nothi_count = get_nispottikritto_nothi_count(date_range)
-            # upokarvogi
-            upokarvogi = get_upokarvogi_count(date_range)
-            # potrojari
-            potrojari = get_potrojari_count(date_range)
-            #  note nisponno
-            note_nisponno = get_note_nisponno_count(date_range)
-            # total users
-            total_users = get_total_users(date_range)
-            # nothi users male
-            nothi_users_male = get_nothi_users_male(date_range)
-            # nothi users female
-            nothi_users_female = get_nothi_users_female(date_range)
 
-            context = {
-                'offices': {
-                    'total_offices': {
-                        'count': office_count,
-                        'date_from': '',
-                        'date_to': year_month_day,
-                    }
-                },
-                'nisponno_records': {
-                    'nispottikritto_nothi': {
-                        'count': nispottikritto_nothi_count,
-                        'date_from': '',
-                        'date_to': year_month_day,
-                    },
-                    'upokarvogi': {
-                        'count': upokarvogi,
-                        'date_from': '',
-                        'date_to': year_month_day,
-                    },
-                    'potrojari': {
-                        'count': potrojari,
-                        'date_from': '',
-                        'date_to': year_month_day,
-                    },
-                    'note_nisponno': {
-                        'count': note_nisponno,
-                        'date_from': '',
-                        'date_to': year_month_day,
-                    },
-                },
-                'users': {
-                    'total_users': {
-                        'count': total_users,
-                        'date_from': '',
-                        'date_to': year_month_day,
-                    }
-                },
-                'users_employee_records': {
-                    'nothi_users_male': {
-                        'count': nothi_users_male,
-                        'date_from': '',
-                        'date_to': year_month_day,
-                    },
-                    'nothi_users_female': {
-                        'count': nothi_users_female,
-                        'date_from': '',
-                        'date_to': year_month_day,
-                    },
-                },
-                # 'user_login_history': {
-                #     'mobile_app_users': {'count': office_count, 'date_range': '12/12/20'},
-                #     'android_ios_users': {'count': office_count, 'date_range': '12/12/20'},
-                # },
-                'form': form,
-            }
+        start_date = datetime(from_date.year, from_date.month, from_date.day)
+        end_date = datetime(to_date.year, to_date.month, to_date.day)
+        if start_date > end_date:
+            start_date, end_date = end_date, start_date
 
-            return render(request, 'dashboard_generate/custom_report.html', context)
-        else:
-            return HttpResponse('From date greater than to date')
+        date_range = [start_date, end_date]
+        # total_offices
+        office_count = get_total_office_count(date_range)
+        # nispottikritto_nothi
+        nispottikritto_nothi_count = get_nispottikritto_nothi_count(date_range)
+        # upokarvogi
+        upokarvogi = get_upokarvogi_count(date_range)
+        # potrojari
+        potrojari = get_potrojari_count(date_range)
+        #  note nisponno
+        note_nisponno = get_note_nisponno_count(date_range)
+        # total users
+        total_users = get_total_users(date_range)
+        # nothi users male
+        nothi_users_male = get_nothi_users_male(date_range)
+        # nothi users female
+        nothi_users_female = get_nothi_users_female(date_range)
+
+        context = {
+            'offices': {
+                'total_offices': {
+                    'count': office_count,
+                    'date_from': '',
+                    'date_to': year_month_day,
+                }
+            },
+            'nisponno_records': {
+                'nispottikritto_nothi': {
+                    'count': nispottikritto_nothi_count,
+                    'date_from': '',
+                    'date_to': year_month_day,
+                },
+                'upokarvogi': {
+                    'count': upokarvogi,
+                    'date_from': '',
+                    'date_to': year_month_day,
+                },
+                'potrojari': {
+                    'count': potrojari,
+                    'date_from': '',
+                    'date_to': year_month_day,
+                },
+                'note_nisponno': {
+                    'count': note_nisponno,
+                    'date_from': '',
+                    'date_to': year_month_day,
+                },
+            },
+            'users': {
+                'total_users': {
+                    'count': total_users,
+                    'date_from': '',
+                    'date_to': year_month_day,
+                }
+            },
+            'users_employee_records': {
+                'nothi_users_male': {
+                    'count': nothi_users_male,
+                    'date_from': '',
+                    'date_to': year_month_day,
+                },
+                'nothi_users_female': {
+                    'count': nothi_users_female,
+                    'date_from': '',
+                    'date_to': year_month_day,
+                },
+            },
+            # 'user_login_history': {
+            #     'mobile_app_users': {'count': office_count, 'date_range': '12/12/20'},
+            #     'android_ios_users': {'count': office_count, 'date_range': '12/12/20'},
+            # },
+            'form': form,
+        }
+
+        return render(request, 'dashboard_generate/custom_report.html', context)
+        # else:
+        #     return HttpResponse('From date greater than to date')
     else:
         return HttpResponse('Date format not correct')
 
@@ -449,16 +457,17 @@ def custom_report(request):
     total_users_dict = ReportTotalUsersModel.objects.aggregate(Sum('count_or_sum'))
     total_users = total_users_dict['count_or_sum__sum']
 
+    # nothi users male
     nothi_users_male_dict = ReportMaleNothiUsersModel.objects.aggregate(
         Sum('count_or_sum')
     )
     nothi_users_male = nothi_users_male_dict['count_or_sum__sum']
 
+    # nothi users female
     nothi_users_female_dict = ReportFemaleNothiUsersModel.objects.aggregate(
         Sum('count_or_sum')
     )
     nothi_users_female = nothi_users_female_dict['count_or_sum__sum']
-    # breakpoint()
 
     context = {
         'offices': {

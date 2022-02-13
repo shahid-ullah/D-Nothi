@@ -90,7 +90,7 @@ class utilsContainer:
             last_report_date = date
 
             count = frame['id'].count()
-            print(f"date: {last_report_date}, count: {count}")
+            # print(f"date: {last_report_date}, count: {count}")
 
             dict_ = self.generate_model_object_dictionary(
                 request, date.year, date.month, date.day, count
