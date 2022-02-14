@@ -1,6 +1,5 @@
 # dashboard_generate/views.py
-# import copy
-# import io
+import csv
 import json
 from datetime import datetime
 
@@ -18,10 +17,6 @@ from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
                      ReportNoteNisponnoModel, ReportPotrojariModel,
                      ReportTotalOfficesModel, ReportTotalUsersModel,
                      ReportUpokarvogiModel)
-
-# from reportlab.pdfgen import canvas
-# from rest_framework import views
-# from rest_framework.response import Response
 
 
 class NpEncoder(json.JSONEncoder):
@@ -297,7 +292,7 @@ def get_nothi_users_male(date_range):
 
 
 def get_nothi_users_female(date_range):
-    nothi_users_female_objs = ReportMaleNothiUsersModel.objects.filter(
+    nothi_users_female_objs = ReportFemaleNothiUsersModel.objects.filter(
         report_day__lte=date_range[1]
     )
     nothi_users_female_dict = nothi_users_female_objs.aggregate(Sum('count_or_sum'))
@@ -338,6 +333,15 @@ def process_post_request(request):
         nothi_users_male = get_nothi_users_male(date_range)
         # nothi users female
         nothi_users_female = get_nothi_users_female(date_range)
+        y1 = start_date.year
+        y2 = end_date.year
+        m1 = start_date.month
+        m2 = end_date.month
+        d1 = start_date.day
+        d2 = end_date.day
+
+        start_date = str(y1) + '-' + str(m1) + '-' + str(d1)
+        end_date = str(y2) + '-' + str(m2) + '-' + str(d2)
 
         context = {
             'offices': {
@@ -393,11 +397,13 @@ def process_post_request(request):
             #     'android_ios_users': {'count': office_count, 'date_range': '12/12/20'},
             # },
             'form': form,
+            'start_date': start_date,
+            'end_date': end_date,
         }
 
-        return render(request, 'dashboard_generate/custom_report.html', context)
-        # else:
-        #     return HttpResponse('From date greater than to date')
+        return render(
+            request, 'dashboard_generate/custom_report.html', context={'data': context}
+        )
     else:
         return HttpResponse('Date format not correct')
 
@@ -523,6 +529,57 @@ def custom_report(request):
         #     'android_ios_users': {'count': office_count, 'date_range': '12/12/20'},
         # },
         'form': form,
+        'start_date': str(year) + '-' + str(month) + '-' + str(day),
+        'end_date': str(year) + '-' + str(month) + '-' + str(day),
     }
 
-    return render(request, 'dashboard_generate/custom_report.html', context)
+    return render(
+        request,
+        'dashboard_generate/custom_report.html',
+        context={
+            'data': context,
+        },
+    )
+
+
+def report_export_csv(request, start_date=None, end_date=None):
+    start_date = start_date.split('-')
+    end_date = end_date.split('-')
+    start_date = datetime(int(start_date[0]), int(start_date[1]), int(start_date[2]))
+    end_date = datetime(int(end_date[0]), int(end_date[1]), int(end_date[2]))
+    date_range = [start_date, end_date]
+    office_count = get_total_office_count(date_range)
+    # nispottikritto_nothi
+    nispottikritto_nothi_count = get_nispottikritto_nothi_count(date_range)
+    # upokarvogi
+    upokarvogi = get_upokarvogi_count(date_range)
+    # potrojari
+    potrojari = get_potrojari_count(date_range)
+    #  note nisponno
+    note_nisponno = get_note_nisponno_count(date_range)
+    # total users
+    total_users = get_total_users(date_range)
+    # nothi users male
+    nothi_users_male = get_nothi_users_male(date_range)
+    # nothi users female
+    nothi_users_female = get_nothi_users_female(date_range)
+
+    response = HttpResponse(content_type='text/csv')
+    writer = csv.writer(response)
+    writer.writerow(['    সূচক   ', '      সংখ্যা      '])
+    writer.writerow(['মোট অফিস', office_count])
+    writer.writerow(['নিস্পত্তিকৃত নথি', nispottikritto_nothi_count])
+
+    writer.writerow(['মোট উপকারভোগী', upokarvogi])
+    writer.writerow(['নোট নিষ্পন্ন', note_nisponno])
+    writer.writerow(['পত্রজারি', potrojari])
+    writer.writerow(['মোট ব্যবহারকারী', total_users])
+    writer.writerow(['মোট নথি ব্যবহারকারী (পুরুষ)', nothi_users_male])
+    writer.writerow(['মোট নথি ব্যবহারকারী (মহিলা)', nothi_users_female])
+    now = datetime.now()
+    filename = now.strftime("%Y%m%d%H%M%S")
+    filename = 'report_' + filename + '.csv'
+    content_disposition = f'attachment; filename={filename}'
+    response['Content-Disposition'] = content_disposition
+
+    return response

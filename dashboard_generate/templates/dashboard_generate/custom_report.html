@@ -11,13 +11,39 @@
     <div class="col-4">
     </div>
     <div class="col-4">
-      <form action="" enctype="multipart/form-data" method="POST">
+      {# <form action="" enctype="multipart/form-data" method="POST"> #}
+        {#   {% csrf_token %} #}
+        {#   {{ data.form|crispy }} #}
+        {#   <input type="submit" name="submit" value="Submit"> #}
+        {# </form> #}
+
+      <form class="user" method="post" novalidate>
         {% csrf_token %}
-        {{ form|crispy }}
-        <input type="submit" name="submit" value="Submit">
+        <div class="d-flex">
+          <div class="form-group">
+            {{ data.form.From.label }}
+            {{ data.form.From }}
+            <div class="text-danger list-unstyled">
+              {{ data.form.From.errors }}
+            </div>
+          </div>
+          <div class="form-group">
+            {{ data.form.To.label }}
+            {{ data.form.To }}
+            <div class="text-danger list-unstyled">
+              {{ data.form.To.errors }}
+            </div>
+          </div>
+
+        </div>
+        <button class="btn btn-primary btn-user btn-block" type="submit">submit</button>
+
       </form>
     </div>
     <div class="col-4">
+      <div class="">
+        <a href="{% url 'export_csv' data.start_date data.end_date %}" target="_blank" class="nav-link"><i class=""></i>Export CSV</a>
+      </div>
     </div>
   </div>
 
@@ -28,43 +54,47 @@
           <table class="table table-striped table-hover caption-top">
             <thead>
               <tr>
-                <th scope="col">রিপোর্ট টাইপ</th>
-                <th scope="col">report</th>
+                <th scope="col">সূচক</th>
+                <th scope="col">সংখ্যা</th>
 
               </tr>
             </thead>
             <tbody>
               <tr>
                 <th scope="row">মোট অফিস</th>
-                <td class="total_office">{{ offices.total_offices.count }}</td>
+                <td class="total_office">{{ data.offices.total_offices.count }}</td>
               </tr>
               <tr>
                 <th scope="row">নিষ্পত্তিকৃত নথি</th>
-                <td class="nispotti_krito_nothi">{{ nisponno_records.nispottikritto_nothi.count }}</td>
+                <td class="nispotti_krito_nothi">{{ data.nisponno_records.nispottikritto_nothi.count }}</td>
               </tr>
               <tr>
                 <th scope="row">মোট উপকারভোগী</th>
-                <td class="total_upokarvogi">{{ nisponno_records.upokarvogi.count }}</td>
+                <td class="total_upokarvogi">{{ data.nisponno_records.upokarvogi.count }}</td>
               </tr>
               <tr>
                 <th scope="row">নোট নিষ্পন্ন</th>
-                <td class="total_nisponno">{{ nisponno_records.note_nisponno.count }}</td>
+                <td class="total_nisponno">{{ data.nisponno_records.note_nisponno.count }}</td>
               </tr>
               <tr>
                 <th scope="row">পত্রজারি</th>
-                <td class="total_potrojari">{{ nisponno_records.potrojari.count }}</td>
+                <td class="total_potrojari">{{ data.nisponno_records.potrojari.count }}</td>
+              </tr>
+              <tr>
+                <th scope="row">মোট ব্যবহারকারী</th>
+                <td class="total_nothi_users">{{ data.users.total_users.count }}</td>
               </tr>
               <tr>
                 <th scope="row">মোট নথি ব্যবহারকারী (পুরুষ)</th>
-                <td class="total_nothi_users_male">{{ users_employee_records.nothi_users_male.count }}</td>
+                <td class="total_nothi_users_male">{{ data.users_employee_records.nothi_users_male.count }}</td>
               </tr>
               <tr>
                 <th scope="row">মোট নথি ব্যবহারকারী (মহিলা)</th>
-                <td class="total_nothi_users_female">{{ users_employee_records.nothi_users_female.count }}</td>
+                <td class="total_nothi_users_female">{{ data.users_employee_records.nothi_users_female.count }}</td>
               </tr>
               <tr>
                 <th scope="row">মোবাইল অ্যাপ ব্যবহারকারী</th>
-                <td class="total_mobile_app_users">{{ user_login_history.mobile_app_users.count }}</td>
+                <td class="total_mobile_app_users">{{ data.user_login_history.mobile_app_users.count }}</td>
               </tr>
             </tbody>
           </table>
