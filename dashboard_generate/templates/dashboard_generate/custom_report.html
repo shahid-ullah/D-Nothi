@@ -10,41 +10,48 @@
   <div class="row">
     <div class="col-4">
     </div>
-    <div class="col-4">
-      {# <form action="" enctype="multipart/form-data" method="POST"> #}
-        {#   {% csrf_token %} #}
-        {#   {{ data.form|crispy }} #}
-        {#   <input type="submit" name="submit" value="Submit"> #}
-        {# </form> #}
+    <div class="col-4 d-flex">
+      <div class="form_wrapper">
+        <form class="" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="d-flex">
+            <div class="form-group">
+              <label class="form-label" for="">{{data.form.From.label}}</label>
+              {{ data.form.From }}
+              <div class="text-danger list-unstyled">
+                {{ data.form.From.errors }}
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="">{{data.form.To.label}}</label>
+              {{ data.form.To }}
+              <div class="text-danger list-unstyled">
+                {{ data.form.To.errors }}
+              </div>
+            </div>
 
-      <form class="user" method="post" novalidate>
-        {% csrf_token %}
-        <div class="d-flex">
-          <div class="form-group">
-            {{ data.form.From.label }}
-            {{ data.form.From }}
-            <div class="text-danger list-unstyled">
-              {{ data.form.From.errors }}
-            </div>
-          </div>
-          <div class="form-group">
-            {{ data.form.To.label }}
-            {{ data.form.To }}
-            <div class="text-danger list-unstyled">
-              {{ data.form.To.errors }}
-            </div>
           </div>
 
-        </div>
-        <button class="btn btn-primary btn-user btn-block" type="submit">submit</button>
+          <div style="width: 100%;">
+            <button class="btn btn-primary btn-block" type="submit">submit</button>
+          </div>
+        </form>
 
-      </form>
-    </div>
-    <div class="col-4">
-      <div class="">
-        <a href="{% url 'export_csv' data.start_date data.end_date %}" target="_blank" class="nav-link"><i class=""></i>Export CSV</a>
       </div>
+
+
+      <div style="margin-top: 40px; margin-left: 20px; font-size: 20px;" class="">
+        <a href="{% url 'export_csv' data.start_date data.end_date %}" target="_blank" class=""><i class=""></i>Export CSV</a>
+      </div>
+
     </div>
+
+    <!-- <div style="top:30px;" class="col-4">
+      <div class="">
+        <a href="{% url 'export_csv' data.start_date data.end_date %}" target="_blank" class=""><i class=""></i>Export CSV</a>
+      </div>
+    </div> -->
+
   </div>
 
   <div class="">
