@@ -18,6 +18,8 @@ from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
                      ReportTotalOfficesModel, ReportTotalUsersModel,
                      ReportUpokarvogiModel)
 
+# from monthly_report.views.views import mobile_app_users
+
 
 class NpEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -265,6 +267,19 @@ def get_note_nisponno_count(date_range):
     return note_nisponno
 
 
+def get_mobile_app_users(date_range):
+    mobile_app_users_objects = ReportMobileAppUsersModel.objects.filter(
+        report_day__range=date_range
+    )
+    mobile_app_users_dict = mobile_app_users_objects.aggregate(Sum('count_or_sum'))
+    mobile_app_users = mobile_app_users_dict['count_or_sum__sum']
+
+    if not mobile_app_users:
+        mobile_app_users = 0
+
+    return mobile_app_users
+
+
 def get_total_users(date_range):
     total_users_objs = ReportTotalUsersModel.objects.filter(
         report_day__lte=date_range[1]
@@ -475,6 +490,15 @@ def custom_report(request):
     )
     nothi_users_female = nothi_users_female_dict['count_or_sum__sum']
 
+    # mobile app users
+    mobile_app_users_objects = ReportMobileAppUsersModel.objects.filter(
+        year=year, month=month
+    )
+    mobile_app_users_dict = mobile_app_users_objects.aggregate(Sum('count_or_sum'))
+    mobile_app_users = mobile_app_users_dict['count_or_sum__sum']
+    if not mobile_app_users:
+        mobile_app_users = 0
+
     context = {
         'offices': {
             'total_offices': {
@@ -524,10 +548,10 @@ def custom_report(request):
                 'date_to': year_month_day,
             },
         },
-        # 'user_login_history': {
-        #     'mobile_app_users': {'count': office_count, 'date_range': '12/12/20'},
-        #     'android_ios_users': {'count': office_count, 'date_range': '12/12/20'},
-        # },
+        'user_login_history': {
+            'mobile_app_users': {'count': mobile_app_users, 'date_range': '12/12/20'},
+            # 'android_ios_users': {'count': office_count, 'date_range': '12/12/20'},
+        },
         'form': form,
         'start_date': str(year) + '-' + str(month) + '-' + str(day),
         'end_date': str(year) + '-' + str(month) + '-' + str(day),
@@ -564,6 +588,9 @@ def report_export_csv(request, start_date=None, end_date=None):
     # nothi users female
     nothi_users_female = get_nothi_users_female(date_range)
 
+    # mobile app users
+    mobile_app_users = get_mobile_app_users(date_range)
+
     response = HttpResponse(content_type='text/csv')
     writer = csv.writer(response)
     writer.writerow(['    সূচক   ', '      সংখ্যা      '])
@@ -576,6 +603,7 @@ def report_export_csv(request, start_date=None, end_date=None):
     writer.writerow(['মোট ব্যবহারকারী', total_users])
     writer.writerow(['মোট নথি ব্যবহারকারী (পুরুষ)', nothi_users_male])
     writer.writerow(['মোট নথি ব্যবহারকারী (মহিলা)', nothi_users_female])
+    writer.writerow(['মোবাইল অ্যাপ ব্যবহারকারী', mobile_app_users])
     now = datetime.now()
     filename = now.strftime("%Y%m%d%H%M%S")
     filename = 'report_' + filename + '.csv'
