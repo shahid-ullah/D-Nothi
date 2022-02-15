@@ -141,16 +141,18 @@ def update(request, users_objs, employee_objs, *args, **kwargs):
         right_on=['id'],
         suffixes=('_users', '_employee'),
     )
-    users_gender_df = users_gender_df.loc[users_gender_df.created_users.notnull()]
+    users_gender_df['created_users'] = users_gender_df.created_users.fillna(
+        method='bfill'
+    )
+
     users_gender_df = users_gender_df.astype({'gender': str})
 
     male_nothi_users_df = users_gender_df[users_gender_df.gender == '1']
-    female_nothi_users_df = users_gender_df[users_gender_df.gender != '1']
+    female_nothi_users_df = users_gender_df[users_gender_df.gender == '2']
 
     male_groupby_date = male_nothi_users_df.groupby(
         male_nothi_users_df.created_users.dt.date
     )
-    # breakpoint()
     male_last_report_date = format_and_load_to_mysql_db(
         request, male_groupby_date, ReportMaleNothiUsersModel
     )
