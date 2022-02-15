@@ -348,6 +348,9 @@ def process_post_request(request):
         nothi_users_male = get_nothi_users_male(date_range)
         # nothi users female
         nothi_users_female = get_nothi_users_female(date_range)
+        # mobile app users
+        mobile_app_users = get_mobile_app_users(date_range)
+
         y1 = start_date.year
         y2 = end_date.year
         m1 = start_date.month
@@ -407,10 +410,13 @@ def process_post_request(request):
                     'date_to': year_month_day,
                 },
             },
-            # 'user_login_history': {
-            #     'mobile_app_users': {'count': office_count, 'date_range': '12/12/20'},
-            #     'android_ios_users': {'count': office_count, 'date_range': '12/12/20'},
-            # },
+            'user_login_history': {
+                'mobile_app_users': {
+                    'count': mobile_app_users,
+                    'date_range': '12/12/20',
+                },
+                # 'android_ios_users': {'count': office_count, 'date_range': '12/12/20'},
+            },
             'form': form,
             'start_date': start_date,
             'end_date': end_date,
