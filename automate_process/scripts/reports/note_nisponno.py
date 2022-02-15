@@ -119,8 +119,8 @@ def update(objs, request=None, *args, **kwargs):
 
     dataframe = dataframe.loc[dataframe.type != 'potrojari']
     # remove null values
-    dataframe = dataframe.loc[dataframe.operation_date.notnull()]
-    dataframe = dataframe.loc[dataframe.operation_date.notnull()]
+    # dataframe = dataframe.loc[dataframe.operation_date.notnull()]
+    dataframe['operation_date'] = dataframe.operation_date.fillna(method='bfill')
     groupby_date = dataframe.groupby(dataframe.operation_date.dt.date)
 
     last_report_date = format_and_load_to_mysql_db(request, groupby_date)

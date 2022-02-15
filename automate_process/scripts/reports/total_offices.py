@@ -118,7 +118,8 @@ def update(objs, request=None, *args, **kwargs):
 
     dataframe = pd.DataFrame(values)
     dataframe = dataframe[dataframe.active_status == 1]
-    dataframe = dataframe.loc[dataframe.created.notnull()]
+    # dataframe = dataframe.loc[dataframe.created.notnull()]
+    dataframe['created'] = dataframe.created.fillna(method='bfill')
     groupby_date = dataframe.groupby(dataframe.created.dt.date)
 
     last_report_date = format_and_load_to_mysql_db(request, groupby_date)

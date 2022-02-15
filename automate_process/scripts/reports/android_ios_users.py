@@ -18,7 +18,8 @@ def update(objs, request=None, *args, **kwargs):
 
     dataframe = dataframe.loc[dataframe.is_mobile == 1]
     # remove null values
-    dataframe = dataframe.loc[dataframe.created.notnull()]
+    # dataframe = dataframe.loc[dataframe.created.notnull()]
+    dataframe['created'] = dataframe.created.fillna(method='bfill')
 
     android_dataframe = dataframe.loc[dataframe.device_type == 'android']
     android_groupby_date = android_dataframe.groupby(android_dataframe.created.dt.date)

@@ -117,7 +117,8 @@ def update(objs, request=None, *args, **kwargs):
 
     dataframe = dataframe.loc[dataframe.is_mobile == 1]
     # remove null values
-    dataframe = dataframe.loc[dataframe.created.notnull()]
+    # dataframe = dataframe.loc[dataframe.created.notnull()]
+    dataframe['created'] = dataframe.created.fillna(method='bfill')
     # add new column: cretead_new as datetime field from operation_date column
     dataframe = dataframe.loc[dataframe.created.notnull()]
     groupby_date = dataframe.groupby(dataframe.created.dt.date)
