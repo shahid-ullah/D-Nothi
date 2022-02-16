@@ -7,7 +7,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .scripts.tables import (nisponno_records, offices, user_login_history,
-                             users, users_employee_records)
+                             user_login_history_employee_records, users,
+                             users_employee_records)
 
 
 class updateDashboard(APIView):
@@ -70,6 +71,14 @@ class updateDashboard(APIView):
         except Exception as e:
             print(e)
 
+        # Table 6: user_login_history_employee_records
+        try:
+            status_ = user_login_history_employee_records_table(request)
+            status['user_login_history_employee_records'] = status_
+
+        except Exception as e:
+            print(e)
+
         settings.SYSTEM_UPDATE_RUNNING = False
 
         return Response(status)
@@ -101,5 +110,11 @@ def users_table(request=None):
 
 def users_employee_records_table(request=None):
     users_employee_records_status = users_employee_records.update(request)
+
+    return users_employee_records_status
+
+
+def user_login_history_employee_records_table(request=None):
+    users_employee_records_status = user_login_history_employee_records.update(request)
 
     return users_employee_records_status

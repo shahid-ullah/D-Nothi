@@ -21,7 +21,7 @@ def update(request=None, *args, **kwargs):
             request, users_objs, employee_records_objs, *args, **kwargs
         )
         male_nothi_users_status['last_report_date'] = str(male_last_report_date)
-        male_nothi_users_status['status'] = str(male_last_report_date)
+        male_nothi_users_status['status'] = 'success'
 
         female_nothi_users_status['last_report_date'] = str(female_last_report_date)
         female_nothi_users_status['status'] = 'success'
