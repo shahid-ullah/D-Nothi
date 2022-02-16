@@ -51,6 +51,11 @@ urlpatterns = [
         name="mobile_app_users",
     ),
     path(
+        'login_total_users/',
+        views.login_total_users_view,
+        name="login_total_users",
+    ),
+    path(
         'export_csv/<str:start_date>/<str:end_date>/',
         views.report_export_csv,
         name="export_csv",

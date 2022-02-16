@@ -12,11 +12,11 @@ from django.shortcuts import render
 
 from .forms import ReportDateRangeForm
 from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
-                     ReportIOSUsersModel, ReportMaleNothiUsersModel,
-                     ReportMobileAppUsersModel, ReportNispottikrittoNothiModel,
-                     ReportNoteNisponnoModel, ReportPotrojariModel,
-                     ReportTotalOfficesModel, ReportTotalUsersModel,
-                     ReportUpokarvogiModel)
+                     ReportIOSUsersModel, ReportLoginTotalUsers,
+                     ReportMaleNothiUsersModel, ReportMobileAppUsersModel,
+                     ReportNispottikrittoNothiModel, ReportNoteNisponnoModel,
+                     ReportPotrojariModel, ReportTotalOfficesModel,
+                     ReportTotalUsersModel, ReportUpokarvogiModel)
 
 # from monthly_report.views.views import mobile_app_users
 
@@ -182,6 +182,54 @@ def potrojari_view(request):
     }
 
     return render(request, 'dashboard_generate/potrojari.html', context)
+
+
+def generate_login_total_users_year_month_day_map(objs):
+    values = objs.values('year', 'month', 'day', 'count_or_sum', 'employee_record_ids')
+    dataframe = pd.DataFrame(values)
+    year_map = {}
+    month_map = {}
+    day_map = {}
+
+    for year, year_frame in dataframe.groupby('year'):
+        year_dict = {}
+
+        for ids_dict in year_frame['employee_record_ids'].values:
+            year_dict.update(ids_dict)
+
+        year_map[year] = len(year_dict)
+
+        month_map[year] = {}
+        day_map[year] = {}
+
+        month_group_by = year_frame.groupby('month')
+
+        for month, month_frame in month_group_by:
+            month_dict = {}
+            for ids_dict in month_frame['employee_record_ids'].values:
+                month_dict.update(ids_dict)
+            month_map[year][month] = len(month_dict)
+
+            day_map[year][month] = {}
+
+            day_group_by = month_frame.groupby('day')
+            for day, day_frame in day_group_by:
+                day_map[year][month][day] = day_frame['count_or_sum'].sum()
+
+    return year_map, month_map, day_map
+
+
+def login_total_users_view(request):
+    objs = ReportLoginTotalUsers.objects.all()
+    year_map, month_map, day_map = generate_login_total_users_year_month_day_map(objs)
+
+    context = {
+        'year_map': json.dumps(year_map, cls=NpEncoder),
+        'month_map': json.dumps(month_map, cls=NpEncoder),
+        'day_map': json.dumps(day_map, cls=NpEncoder),
+    }
+
+    return render(request, 'dashboard_generate/login_total_users.html', context)
 
 
 def mobile_app_users_view(request):
