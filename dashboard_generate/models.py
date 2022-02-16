@@ -256,3 +256,31 @@ class ReportIOSUsersModel(models.Model):
 
     def __str__(self):
         return f'year: {self.year} month: {self.month}, day: {self.day}, count_or_sum: {self.count_or_sum}'
+
+
+def empty_dictionary():
+    return set()
+
+
+class ReportLoginTotalUsers(models.Model):
+    year_month_day = models.CharField(
+        max_length=100, blank=False, null=False, db_index=True
+    )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
+    year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
+    month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
+    day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
+    count_or_sum = models.PositiveIntegerField(default=0)
+    employee_record_ids = models.JSONField(default=empty_dictionary)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    report_date = models.CharField(max_length=100)
+    report_day = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        db_table = "report_login_total_users"
+
+    def __str__(self):
+        return f'year: {self.year} month: {self.month}, day: {self.day}, count_or_sum: {self.count_or_sum}'

@@ -2,11 +2,11 @@ from django.contrib import admin
 
 # Register your models here.
 from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
-                     ReportIOSUsersModel, ReportMaleNothiUsersModel,
-                     ReportMobileAppUsersModel, ReportNispottikrittoNothiModel,
-                     ReportNoteNisponnoModel, ReportPotrojariModel,
-                     ReportTotalOfficesModel, ReportTotalUsersModel,
-                     ReportUpokarvogiModel)
+                     ReportIOSUsersModel, ReportLoginTotalUsers,
+                     ReportMaleNothiUsersModel, ReportMobileAppUsersModel,
+                     ReportNispottikrittoNothiModel, ReportNoteNisponnoModel,
+                     ReportPotrojariModel, ReportTotalOfficesModel,
+                     ReportTotalUsersModel, ReportUpokarvogiModel)
 
 
 @admin.register(ReportTotalOfficesModel)
@@ -70,3 +70,8 @@ class ReportAndroidUsersModelAdmin(admin.ModelAdmin):
 @admin.register(ReportIOSUsersModel)
 class ReportIOSUsersModelAdmin(admin.ModelAdmin):
     list_display = [field.name for field in ReportIOSUsersModel._meta.get_fields()]
+
+
+@admin.register(ReportLoginTotalUsers)
+class ReportLoginTotalUsersAdmin(admin.ModelAdmin):
+    list_display = ['id', 'year', 'month', 'day', 'count_or_sum']
