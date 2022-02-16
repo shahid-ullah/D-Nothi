@@ -342,6 +342,49 @@ def get_note_nisponno_count(date_range):
     return note_nisponno
 
 
+def get_login_total_users(date_range):
+
+    login_total_users_objects = ReportLoginTotalUsers.objects.filter(
+        report_day__range=date_range
+    )
+    count_dict = {}
+    for obj in login_total_users_objects:
+        count_dict.update(obj.employee_record_ids)
+    login_total_users = len(count_dict)
+    if not login_total_users:
+        login_total_users = 0
+
+    return login_total_users
+
+
+def get_login_male_users(date_range):
+    login_male_users_objects = ReportLoginMalelUsersModel.objects.filter(
+        report_day__range=date_range
+    )
+    count_dict = {}
+    for obj in login_male_users_objects:
+        count_dict.update(obj.employee_record_ids)
+    login_male_users = len(count_dict)
+    if not login_male_users:
+        login_male_users = 0
+
+    return login_male_users
+
+
+def get_login_female_users(date_range):
+    login_female_users_objects = ReportLoginFemalelUsersModel.objects.filter(
+        report_day__range=date_range
+    )
+    count_dict = {}
+    for obj in login_female_users_objects:
+        count_dict.update(obj.employee_record_ids)
+    login_female_users = len(count_dict)
+    if not login_female_users:
+        login_female_users = 0
+
+    return login_female_users
+
+
 def get_mobile_app_users(date_range):
     mobile_app_users_objects = ReportMobileAppUsersModel.objects.filter(
         report_day__range=date_range
@@ -426,6 +469,13 @@ def process_post_request(request):
         # mobile app users
         mobile_app_users = get_mobile_app_users(date_range)
 
+        # login total users
+        login_total_users = get_login_total_users(date_range)
+        # login male users
+        login_male_users = get_login_male_users(date_range)
+        # login female users
+        login_female_users = get_login_female_users(date_range)
+
         y1 = start_date.year
         y2 = end_date.year
         m1 = start_date.month
@@ -491,6 +541,20 @@ def process_post_request(request):
                     'date_range': '12/12/20',
                 },
                 # 'android_ios_users': {'count': office_count, 'date_range': '12/12/20'},
+            },
+            'login_history_employee_records': {
+                'login_total_users': {
+                    'count': login_total_users,
+                    'date_range': '12/12/20',
+                },
+                'login_male_users': {
+                    'count': login_male_users,
+                    'date_range': '12/12/20',
+                },
+                'login_female_users': {
+                    'count': login_female_users,
+                    'date_range': '12/12/20',
+                },
             },
             'form': form,
             'start_date': start_date,
@@ -580,6 +644,33 @@ def custom_report(request):
     if not mobile_app_users:
         mobile_app_users = 0
 
+    # total users (login)
+    login_total_users_objects = ReportLoginTotalUsers.objects.filter(
+        year=year, month=month
+    )
+    login_total_users_dict = login_total_users_objects.aggregate(Sum('count_or_sum'))
+    login_total_users = login_total_users_dict['count_or_sum__sum']
+    if not login_total_users:
+        login_total_users = 0
+
+    # total nothi users (male login)
+    login_male_users_objects = ReportLoginMalelUsersModel.objects.filter(
+        year=year, month=month
+    )
+    login_male_users_dict = login_male_users_objects.aggregate(Sum('count_or_sum'))
+    login_male_users = login_male_users_dict['count_or_sum__sum']
+    if not login_male_users:
+        login_male_users = 0
+
+    # total nothi users (female login)
+    login_female_users_objects = ReportLoginFemalelUsersModel.objects.filter(
+        year=year, month=month
+    )
+    login_female_users_dict = login_female_users_objects.aggregate(Sum('count_or_sum'))
+    login_female_users = login_female_users_dict['count_or_sum__sum']
+    if not login_female_users:
+        login_female_users = 0
+
     context = {
         'offices': {
             'total_offices': {
@@ -633,6 +724,14 @@ def custom_report(request):
             'mobile_app_users': {'count': mobile_app_users, 'date_range': '12/12/20'},
             # 'android_ios_users': {'count': office_count, 'date_range': '12/12/20'},
         },
+        'login_history_employee_records': {
+            'login_total_users': {'count': login_total_users, 'date_range': '12/12/20'},
+            'login_male_users': {'count': login_male_users, 'date_range': '12/12/20'},
+            'login_female_users': {
+                'count': login_female_users,
+                'date_range': '12/12/20',
+            },
+        },
         'form': form,
         'start_date': str(year) + '-' + str(month) + '-' + str(day),
         'end_date': str(year) + '-' + str(month) + '-' + str(day),
@@ -672,6 +771,13 @@ def report_export_csv(request, start_date=None, end_date=None):
     # mobile app users
     mobile_app_users = get_mobile_app_users(date_range)
 
+    # login total users
+    login_total_users = get_login_total_users(date_range)
+    # login male users
+    login_male_users = get_login_male_users(date_range)
+    # login female users
+    login_female_users = get_login_female_users(date_range)
+
     response = HttpResponse(content_type='text/csv')
     writer = csv.writer(response)
     writer.writerow(['    সূচক   ', '      সংখ্যা      '])
@@ -684,6 +790,9 @@ def report_export_csv(request, start_date=None, end_date=None):
     writer.writerow(['মোট ব্যবহারকারী', total_users])
     writer.writerow(['মোট নথি ব্যবহারকারী (পুরুষ)', nothi_users_male])
     writer.writerow(['মোট নথি ব্যবহারকারী (মহিলা)', nothi_users_female])
+    writer.writerow(['মোট ব্যবহারকারী (লগইন)', login_total_users])
+    writer.writerow(['মোট নথি ব্যবহারকারী (পুরুষ লগইন)', login_male_users])
+    writer.writerow(['মোট নথি ব্যবহারকারী (মহিলা লগইন)', login_female_users])
     writer.writerow(['মোবাইল অ্যাপ ব্যবহারকারী', mobile_app_users])
     now = datetime.now()
     filename = now.strftime("%Y%m%d%H%M%S")

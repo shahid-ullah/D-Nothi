@@ -100,6 +100,18 @@
                 <td class="total_nothi_users_female">{{ data.users_employee_records.nothi_users_female.count }}</td>
               </tr>
               <tr>
+                <th scope="row">মোট ব্যবহারকারী (লগইন)</th>
+                <td class="total_nothi_users">{{ data.login_history_employee_records.login_total_users.count }}</td>
+              </tr>
+              <tr>
+                <th scope="row">মোট নথি ব্যবহারকারী (পুরুষ লগইন)</th>
+                <td class="total_nothi_users_male">{{ data.login_history_employee_records.login_male_users.count }}</td>
+              </tr>
+              <tr>
+                <th scope="row">মোট নথি ব্যবহারকারী (মহিলা লগইন)</th>
+                <td class="total_nothi_users_female">{{ data.login_history_employee_records.login_female_users.count }}</td>
+              </tr>
+              <tr>
                 <th scope="row">মোবাইল অ্যাপ ব্যবহারকারী</th>
                 <td class="total_mobile_app_users">{{ data.user_login_history.mobile_app_users.count }}</td>
               </tr>
