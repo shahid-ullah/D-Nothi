@@ -12,7 +12,8 @@ from django.shortcuts import render
 
 from .forms import ReportDateRangeForm
 from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
-                     ReportIOSUsersModel, ReportLoginTotalUsers,
+                     ReportIOSUsersModel, ReportLoginFemalelUsersModel,
+                     ReportLoginMalelUsersModel, ReportLoginTotalUsers,
                      ReportMaleNothiUsersModel, ReportMobileAppUsersModel,
                      ReportNispottikrittoNothiModel, ReportNoteNisponnoModel,
                      ReportPotrojariModel, ReportTotalOfficesModel,
@@ -230,6 +231,32 @@ def login_total_users_view(request):
     }
 
     return render(request, 'dashboard_generate/login_total_users.html', context)
+
+
+def login_male_users_view(request):
+    objs = ReportLoginMalelUsersModel.objects.all()
+    year_map, month_map, day_map = generate_login_total_users_year_month_day_map(objs)
+
+    context = {
+        'year_map': json.dumps(year_map, cls=NpEncoder),
+        'month_map': json.dumps(month_map, cls=NpEncoder),
+        'day_map': json.dumps(day_map, cls=NpEncoder),
+    }
+
+    return render(request, 'dashboard_generate/login_male_users.html', context)
+
+
+def login_female_users_view(request):
+    objs = ReportLoginFemalelUsersModel.objects.all()
+    year_map, month_map, day_map = generate_login_total_users_year_month_day_map(objs)
+
+    context = {
+        'year_map': json.dumps(year_map, cls=NpEncoder),
+        'month_map': json.dumps(month_map, cls=NpEncoder),
+        'day_map': json.dumps(day_map, cls=NpEncoder),
+    }
+
+    return render(request, 'dashboard_generate/login_female_users.html', context)
 
 
 def mobile_app_users_view(request):

@@ -56,6 +56,16 @@ urlpatterns = [
         name="login_total_users",
     ),
     path(
+        'login_male_users/',
+        views.login_male_users_view,
+        name="login_male_users",
+    ),
+    path(
+        'login_female_users/',
+        views.login_female_users_view,
+        name="login_female_users",
+    ),
+    path(
         'export_csv/<str:start_date>/<str:end_date>/',
         views.report_export_csv,
         name="export_csv",
