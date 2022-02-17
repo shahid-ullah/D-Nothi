@@ -1,13 +1,13 @@
 # dashboard_generate/views.py
 import csv
 import json
+import time
 from datetime import datetime
 
 import numpy as np
 import pandas as pd
 from django.db.models import Sum
 from django.http import HttpResponse
-# from django.http import FileResponse
 from django.shortcuts import render
 
 from .forms import ReportDateRangeForm
@@ -19,9 +19,45 @@ from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
                      ReportPotrojariModel, ReportTotalOfficesModel,
                      ReportTotalUsersModel, ReportUpokarvogiModel)
 
-# from monthly_report.views.views import mobile_app_users
+CACHED_DICTIONARY = {'last_cached': time.time()}
 
-CACHED_DICTIONARY = {}
+
+def get_cache_or_calculate(report_type, mapping_method, model):
+    global CACHED_DICTIONARY
+    cached = CACHED_DICTIONARY.setdefault(report_type, {})
+    if cached:
+        last_cached = CACHED_DICTIONARY[report_type]['last_cached']
+        current_time = time.time()
+        if (current_time - last_cached) > (60 * 60):
+            print('resetting cache')
+            print()
+            CACHED_DICTIONARY = {}
+            objs = model.objects.all()
+            CACHED_DICTIONARY.setdefault(report_type, {})
+            year_map, month_map, day_map = mapping_method(objs)
+            CACHED_DICTIONARY[report_type]['year_map'] = year_map
+            CACHED_DICTIONARY[report_type]['month_map'] = month_map
+            CACHED_DICTIONARY[report_type]['day_map'] = day_map
+            CACHED_DICTIONARY[report_type]['last_cached'] = time.time()
+        else:
+            print('current time: ', current_time - last_cached)
+            print('using cache')
+            print()
+            year_map = CACHED_DICTIONARY[report_type]['year_map']
+            month_map = CACHED_DICTIONARY[report_type]['month_map']
+            day_map = CACHED_DICTIONARY[report_type]['day_map']
+    else:
+        print('using raw calculation')
+        print()
+        objs = model.objects.all()
+        CACHED_DICTIONARY.setdefault(report_type, {})
+        year_map, month_map, day_map = mapping_method(objs)
+        CACHED_DICTIONARY[report_type]['year_map'] = year_map
+        CACHED_DICTIONARY[report_type]['month_map'] = month_map
+        CACHED_DICTIONARY[report_type]['day_map'] = day_map
+        CACHED_DICTIONARY[report_type]['last_cached'] = time.time()
+
+    return year_map, month_map, day_map
 
 
 class NpEncoder(json.JSONEncoder):
@@ -64,18 +100,10 @@ def generate_year_month_and_day_map(objs):
 
 # Create your views here.
 def total_offices_view(request):
-    global CACHED_DICTIONARY
-    total_offices = CACHED_DICTIONARY.setdefault('total_offices', {})
-    if total_offices:
-        year_map = CACHED_DICTIONARY['total_offices']['year_map']
-        month_map = CACHED_DICTIONARY['total_offices']['month_map']
-        day_map = CACHED_DICTIONARY['total_offices']['day_map']
-    else:
-        objs = ReportTotalOfficesModel.objects.all()
-        year_map, month_map, day_map = generate_year_month_and_day_map(objs)
-        CACHED_DICTIONARY['total_offices']['year_map'] = year_map
-        CACHED_DICTIONARY['total_offices']['month_map'] = month_map
-        CACHED_DICTIONARY['total_offices']['day_map'] = day_map
+
+    year_map, month_map, day_map = get_cache_or_calculate(
+        'total_offices', generate_year_month_and_day_map, ReportTotalOfficesModel
+    )
 
     context = {
         'year_map': json.dumps(year_map, cls=NpEncoder),
@@ -91,18 +119,11 @@ nispottikritto_nothi_drilldown_series = None
 
 
 def nispottikritto_nothi_view(request):
-    global CACHED_DICTIONARY
-    nispottikritto_nothi = CACHED_DICTIONARY.setdefault('nispottikritto_nothi', {})
-    if nispottikritto_nothi:
-        year_map = CACHED_DICTIONARY['nispottikritto_nothi']['year_map']
-        month_map = CACHED_DICTIONARY['nispottikritto_nothi']['month_map']
-        day_map = CACHED_DICTIONARY['nispottikritto_nothi']['day_map']
-    else:
-        objs = ReportNispottikrittoNothiModel.objects.all()
-        year_map, month_map, day_map = generate_year_month_and_day_map(objs)
-        CACHED_DICTIONARY['nispottikritto_nothi']['year_map'] = year_map
-        CACHED_DICTIONARY['nispottikritto_nothi']['month_map'] = month_map
-        CACHED_DICTIONARY['nispottikritto_nothi']['day_map'] = day_map
+    year_map, month_map, day_map = get_cache_or_calculate(
+        'nispottikritto_nothi',
+        generate_year_month_and_day_map,
+        ReportNispottikrittoNothiModel,
+    )
 
     context = {
         'year_map': json.dumps(year_map, cls=NpEncoder),
@@ -114,36 +135,9 @@ def nispottikritto_nothi_view(request):
 
 
 def nothi_users_total(request):
-    global CACHED_DICTIONARY
-    nothi_users_total = CACHED_DICTIONARY.setdefault('nothi_users_total', {})
-    if nothi_users_total:
-        year_map = CACHED_DICTIONARY['nothi_users_total']['year_map']
-        month_map = CACHED_DICTIONARY['nothi_users_total']['month_map']
-        day_map = CACHED_DICTIONARY['nothi_users_total']['day_map']
-    else:
-        objs = ReportTotalUsersModel.objects.all()
-        year_map, month_map, day_map = generate_year_month_and_day_map(objs)
-        CACHED_DICTIONARY['nothi_users_total']['year_map'] = year_map
-        CACHED_DICTIONARY['nothi_users_total']['month_map'] = month_map
-        CACHED_DICTIONARY['nothi_users_total']['day_map'] = day_map
-    # objs = ReportTotalUsersModel.objects.all()
-    # year_map, month_map, day_map = generate_year_month_and_day_map(objs)
-    # global nispottikritto_nothi_general_series, nispottikritto_nothi_drilldown_series
-    # if nispottikritto_nothi_general_series and nispottikritto_nothi_drilldown_series:
-    #     context = {
-    #         'general_series': json.dumps(
-    #             nispottikritto_nothi_general_series, cls=NpEncoder
-    #         ),
-    #         'drilldown_series': json.dumps(
-    #             nispottikritto_nothi_drilldown_series, cls=NpEncoder
-    #         ),
-    #     }
-    #     return render(request, 'monthly_report/nispottikritto_nothi.html', context)
-
-    # general_series, drilldown_series = load_nispottikritto_nothi_graph_data()
-
-    # nispottikritto_nothi_general_series = copy.deepcopy(general_series)
-    # nispottikritto_nothi_drilldown_series = copy.deepcopy(drilldown_series)
+    year_map, month_map, day_map = get_cache_or_calculate(
+        'nothi_users_total', generate_year_month_and_day_map, ReportTotalUsersModel
+    )
 
     context = {
         'year_map': json.dumps(year_map, cls=NpEncoder),
@@ -155,20 +149,9 @@ def nothi_users_total(request):
 
 
 def total_upokarvogi(request):
-    global CACHED_DICTIONARY
-    upokarvogi = CACHED_DICTIONARY.setdefault('upokarvogi', {})
-    if upokarvogi:
-        year_map = CACHED_DICTIONARY['upokarvogi']['year_map']
-        month_map = CACHED_DICTIONARY['upokarvogi']['month_map']
-        day_map = CACHED_DICTIONARY['upokarvogi']['day_map']
-    else:
-        objs = ReportUpokarvogiModel.objects.all()
-        year_map, month_map, day_map = generate_year_month_and_day_map(objs)
-        CACHED_DICTIONARY['upokarvogi']['year_map'] = year_map
-        CACHED_DICTIONARY['upokarvogi']['month_map'] = month_map
-        CACHED_DICTIONARY['upokarvogi']['day_map'] = day_map
-    # objs = ReportUpokarvogiModel.objects.all()
-    # year_map, month_map, day_map = generate_year_month_and_day_map(objs)
+    year_map, month_map, day_map = get_cache_or_calculate(
+        'upokarvogi', generate_year_month_and_day_map, ReportUpokarvogiModel
+    )
 
     context = {
         'year_map': json.dumps(year_map, cls=NpEncoder),
@@ -180,20 +163,9 @@ def total_upokarvogi(request):
 
 
 def nothi_users_male(request):
-    global CACHED_DICTIONARY
-    nothi_users_male_cache = CACHED_DICTIONARY.setdefault('nothi_users_male_cache', {})
-    if nothi_users_male_cache:
-        year_map = CACHED_DICTIONARY['nothi_users_male_cache']['year_map']
-        month_map = CACHED_DICTIONARY['nothi_users_male_cache']['month_map']
-        day_map = CACHED_DICTIONARY['nothi_users_male_cache']['day_map']
-    else:
-        objs = ReportMaleNothiUsersModel.objects.all()
-        year_map, month_map, day_map = generate_year_month_and_day_map(objs)
-        CACHED_DICTIONARY['nothi_users_male_cache']['year_map'] = year_map
-        CACHED_DICTIONARY['nothi_users_male_cache']['month_map'] = month_map
-        CACHED_DICTIONARY['nothi_users_male_cache']['day_map'] = day_map
-    # objs = ReportMaleNothiUsersModel.objects.all()
-    # year_map, month_map, day_map = generate_year_month_and_day_map(objs)
+    year_map, month_map, day_map = get_cache_or_calculate(
+        'nothi_users_male', generate_year_month_and_day_map, ReportMaleNothiUsersModel
+    )
 
     context = {
         'year_map': json.dumps(year_map, cls=NpEncoder),
@@ -205,22 +177,11 @@ def nothi_users_male(request):
 
 
 def nothi_users_female(request):
-    global CACHED_DICTIONARY
-    nothi_users_female_cache = CACHED_DICTIONARY.setdefault(
-        'nothi_users_female_cache', {}
+    year_map, month_map, day_map = get_cache_or_calculate(
+        'nothi_users_female',
+        generate_year_month_and_day_map,
+        ReportFemaleNothiUsersModel,
     )
-    if nothi_users_female_cache:
-        year_map = CACHED_DICTIONARY['nothi_users_female_cache']['year_map']
-        month_map = CACHED_DICTIONARY['nothi_users_female_cache']['month_map']
-        day_map = CACHED_DICTIONARY['nothi_users_female_cache']['day_map']
-    else:
-        objs = ReportFemaleNothiUsersModel.objects.all()
-        year_map, month_map, day_map = generate_year_month_and_day_map(objs)
-        CACHED_DICTIONARY['nothi_users_female_cache']['year_map'] = year_map
-        CACHED_DICTIONARY['nothi_users_female_cache']['month_map'] = month_map
-        CACHED_DICTIONARY['nothi_users_female_cache']['day_map'] = day_map
-    # objs = ReportFemaleNothiUsersModel.objects.all()
-    # year_map, month_map, day_map = generate_year_month_and_day_map(objs)
 
     context = {
         'year_map': json.dumps(year_map, cls=NpEncoder),
@@ -232,20 +193,9 @@ def nothi_users_female(request):
 
 
 def note_nisponno(request):
-    global CACHED_DICTIONARY
-    note_nisponno_cache = CACHED_DICTIONARY.setdefault('note_nisponno_cache', {})
-    if note_nisponno_cache:
-        year_map = CACHED_DICTIONARY['note_nisponno_cache']['year_map']
-        month_map = CACHED_DICTIONARY['note_nisponno_cache']['month_map']
-        day_map = CACHED_DICTIONARY['note_nisponno_cache']['day_map']
-    else:
-        objs = ReportNoteNisponnoModel.objects.all()
-        year_map, month_map, day_map = generate_year_month_and_day_map(objs)
-        CACHED_DICTIONARY['note_nisponno_cache']['year_map'] = year_map
-        CACHED_DICTIONARY['note_nisponno_cache']['month_map'] = month_map
-        CACHED_DICTIONARY['note_nisponno_cache']['day_map'] = day_map
-    # objs = ReportNoteNisponnoModel.objects.all()
-    # year_map, month_map, day_map = generate_year_month_and_day_map(objs)
+    year_map, month_map, day_map = get_cache_or_calculate(
+        'note_nisponno', generate_year_month_and_day_map, ReportNoteNisponnoModel
+    )
 
     context = {
         'year_map': json.dumps(year_map, cls=NpEncoder),
@@ -257,20 +207,9 @@ def note_nisponno(request):
 
 
 def potrojari_view(request):
-    global CACHED_DICTIONARY
-    potrojari_cache = CACHED_DICTIONARY.setdefault('potrojari_cache', {})
-    if potrojari_cache:
-        year_map = CACHED_DICTIONARY['potrojari_cache']['year_map']
-        month_map = CACHED_DICTIONARY['potrojari_cache']['month_map']
-        day_map = CACHED_DICTIONARY['potrojari_cache']['day_map']
-    else:
-        objs = ReportPotrojariModel.objects.all()
-        year_map, month_map, day_map = generate_year_month_and_day_map(objs)
-        CACHED_DICTIONARY['potrojari_cache']['year_map'] = year_map
-        CACHED_DICTIONARY['potrojari_cache']['month_map'] = month_map
-        CACHED_DICTIONARY['potrojari_cache']['day_map'] = day_map
-    # objs = ReportPotrojariModel.objects.all()
-    # year_map, month_map, day_map = generate_year_month_and_day_map(objs)
+    year_map, month_map, day_map = get_cache_or_calculate(
+        'potrojari', generate_year_month_and_day_map, ReportPotrojariModel
+    )
 
     context = {
         'year_map': json.dumps(year_map, cls=NpEncoder),
@@ -281,7 +220,7 @@ def potrojari_view(request):
     return render(request, 'dashboard_generate/potrojari.html', context)
 
 
-def generate_login_total_users_year_month_day_map(objs):
+def generate_login_users_year_month_day_map(objs):
     values = objs.values('year', 'month', 'day', 'count_or_sum', 'employee_record_ids')
     dataframe = pd.DataFrame(values)
     year_map = {}
@@ -317,20 +256,11 @@ def generate_login_total_users_year_month_day_map(objs):
 
 
 def login_total_users_view(request):
-    global CACHED_DICTIONARY
-    login_total_users = CACHED_DICTIONARY.setdefault('login_total_users', {})
-    if login_total_users:
-        year_map = CACHED_DICTIONARY['login_total_users']['year_map']
-        month_map = CACHED_DICTIONARY['login_total_users']['month_map']
-        day_map = CACHED_DICTIONARY['login_total_users']['day_map']
-    else:
-        objs = ReportLoginTotalUsers.objects.all()
-        year_map, month_map, day_map = generate_year_month_and_day_map(objs)
-        CACHED_DICTIONARY['login_total_users']['year_map'] = year_map
-        CACHED_DICTIONARY['login_total_users']['month_map'] = month_map
-        CACHED_DICTIONARY['login_total_users']['day_map'] = day_map
-    # objs = ReportLoginTotalUsers.objects.all()
-    # year_map, month_map, day_map = generate_login_total_users_year_month_day_map(objs)
+    year_map, month_map, day_map = get_cache_or_calculate(
+        'login_total_users',
+        generate_login_users_year_month_day_map,
+        ReportLoginTotalUsers,
+    )
 
     context = {
         'year_map': json.dumps(year_map, cls=NpEncoder),
@@ -342,20 +272,11 @@ def login_total_users_view(request):
 
 
 def login_male_users_view(request):
-    global CACHED_DICTIONARY
-    login_male_users_cache = CACHED_DICTIONARY.setdefault('login_male_users_cache', {})
-    if login_male_users_cache:
-        year_map = CACHED_DICTIONARY['login_male_users_cache']['year_map']
-        month_map = CACHED_DICTIONARY['login_male_users_cache']['month_map']
-        day_map = CACHED_DICTIONARY['login_male_users_cache']['day_map']
-    else:
-        objs = ReportLoginMalelUsersModel.objects.all()
-        year_map, month_map, day_map = generate_year_month_and_day_map(objs)
-        CACHED_DICTIONARY['login_male_users_cache']['year_map'] = year_map
-        CACHED_DICTIONARY['login_male_users_cache']['month_map'] = month_map
-        CACHED_DICTIONARY['login_male_users_cache']['day_map'] = day_map
-    # objs = ReportLoginMalelUsersModel.objects.all()
-    # year_map, month_map, day_map = generate_login_total_users_year_month_day_map(objs)
+    year_map, month_map, day_map = get_cache_or_calculate(
+        'login_male_users',
+        generate_login_users_year_month_day_map,
+        ReportLoginMalelUsersModel,
+    )
 
     context = {
         'year_map': json.dumps(year_map, cls=NpEncoder),
@@ -367,22 +288,11 @@ def login_male_users_view(request):
 
 
 def login_female_users_view(request):
-    global CACHED_DICTIONARY
-    login_female_users_cache = CACHED_DICTIONARY.setdefault(
-        'login_female_users_cache', {}
+    year_map, month_map, day_map = get_cache_or_calculate(
+        'login_female_users',
+        generate_login_users_year_month_day_map,
+        ReportLoginFemalelUsersModel,
     )
-    if login_female_users_cache:
-        year_map = CACHED_DICTIONARY['login_female_users_cache']['year_map']
-        month_map = CACHED_DICTIONARY['login_female_users_cache']['month_map']
-        day_map = CACHED_DICTIONARY['login_female_users_cache']['day_map']
-    else:
-        objs = ReportLoginFemalelUsersModel.objects.all()
-        year_map, month_map, day_map = generate_year_month_and_day_map(objs)
-        CACHED_DICTIONARY['login_female_users_cache']['year_map'] = year_map
-        CACHED_DICTIONARY['login_female_users_cache']['month_map'] = month_map
-        CACHED_DICTIONARY['login_female_users_cache']['day_map'] = day_map
-    # objs = ReportLoginFemalelUsersModel.objects.all()
-    # year_map, month_map, day_map = generate_login_total_users_year_month_day_map(objs)
 
     context = {
         'year_map': json.dumps(year_map, cls=NpEncoder),
@@ -394,21 +304,10 @@ def login_female_users_view(request):
 
 
 def mobile_app_users_view(request):
+    year_map, month_map, day_map = get_cache_or_calculate(
+        'mobile_app_users', generate_year_month_and_day_map, ReportMobileAppUsersModel
+    )
 
-    global CACHED_DICTIONARY
-    mobile_app_users_cache = CACHED_DICTIONARY.setdefault('mobile_app_users_cache', {})
-    if mobile_app_users_cache:
-        year_map = CACHED_DICTIONARY['mobile_app_users_cache']['year_map']
-        month_map = CACHED_DICTIONARY['mobile_app_users_cache']['month_map']
-        day_map = CACHED_DICTIONARY['mobile_app_users_cache']['day_map']
-    else:
-        objs = ReportMobileAppUsersModel.objects.all()
-        year_map, month_map, day_map = generate_year_month_and_day_map(objs)
-        CACHED_DICTIONARY['mobile_app_users_cache']['year_map'] = year_map
-        CACHED_DICTIONARY['mobile_app_users_cache']['month_map'] = month_map
-        CACHED_DICTIONARY['mobile_app_users_cache']['day_map'] = day_map
-    # objs = ReportMobileAppUsersModel.objects.all()
-    # year_map, month_map, day_map = generate_year_month_and_day_map(objs)
     android_users = ReportAndroidUsersModel.objects.aggregate(Sum('count_or_sum'))
     ios_users = ReportIOSUsersModel.objects.aggregate(Sum('count_or_sum'))
 
