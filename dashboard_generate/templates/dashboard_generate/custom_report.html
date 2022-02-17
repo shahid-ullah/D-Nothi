@@ -54,66 +54,66 @@
 
   </div>
 
-  <div class="">
+  <div class="custom_report_table_wrapper" style="width: 50%; margin:auto">
     <div class="row">
       <div class="col-12">
         <div class="table-wrapper">
-          <table class="table table-striped table-hover caption-top">
+          <table class="table table-striped table-hover table-bordered caption-top">
             <thead>
               <tr>
-                <th scope="col">সূচক</th>
-                <th scope="col">সংখ্যা</th>
+                <th scope="col" class="text-justify" style="font-size: 20px;">সূচক</th>
+                <th scope="col" class="text-right" style="font-size: 20px;">সংখ্যা</th>
 
               </tr>
             </thead>
             <tbody>
               <tr>
-                <th scope="row">মোট অফিস</th>
-                <td class="total_office">{{ data.offices.total_offices.count }}</td>
+                <th scope="row" class="text-justify">মোট অফিস</th>
+                <td class="total_office text-right">{{ data.offices.total_offices.count }}</td>
               </tr>
               <tr>
-                <th scope="row">নিষ্পত্তিকৃত নথি</th>
-                <td class="nispotti_krito_nothi">{{ data.nisponno_records.nispottikritto_nothi.count }}</td>
+                <th scope="row" class="text-justify">নিষ্পত্তিকৃত নথি</th>
+                <td class="nispotti_krito_nothi text-right">{{ data.nisponno_records.nispottikritto_nothi.count }}</td>
               </tr>
               <tr>
-                <th scope="row">মোট উপকারভোগী</th>
-                <td class="total_upokarvogi">{{ data.nisponno_records.upokarvogi.count }}</td>
+                <th scope="row" class="text-justify">মোট উপকারভোগী</th>
+                <td class="total_upokarvogi text-right">{{ data.nisponno_records.upokarvogi.count }}</td>
               </tr>
               <tr>
-                <th scope="row">নোট নিষ্পন্ন</th>
-                <td class="total_nisponno">{{ data.nisponno_records.note_nisponno.count }}</td>
+                <th scope="row" class="text-justify">নোট নিষ্পন্ন</th>
+                <td class="total_nisponno text-right">{{ data.nisponno_records.note_nisponno.count }}</td>
               </tr>
               <tr>
-                <th scope="row">পত্রজারি</th>
-                <td class="total_potrojari">{{ data.nisponno_records.potrojari.count }}</td>
+                <th scope="row" class="text-justify">পত্রজারি</th>
+                <td class="total_potrojari text-right">{{ data.nisponno_records.potrojari.count }}</td>
               </tr>
               <tr>
-                <th scope="row">মোট ব্যবহারকারী</th>
-                <td class="total_nothi_users">{{ data.users.total_users.count }}</td>
+                <th scope="row" class="text-justify">মোট ব্যবহারকারী</th>
+                <td class="total_nothi_users text-right">{{ data.users.total_users.count }}</td>
               </tr>
               <tr>
-                <th scope="row">মোট নথি ব্যবহারকারী (পুরুষ)</th>
-                <td class="total_nothi_users_male">{{ data.users_employee_records.nothi_users_male.count }}</td>
+                <th scope="row" class="text-justify">মোট নথি ব্যবহারকারী (পুরুষ)</th>
+                <td class="total_nothi_users_male text-right">{{ data.users_employee_records.nothi_users_male.count }}</td>
               </tr>
               <tr>
-                <th scope="row">মোট নথি ব্যবহারকারী (মহিলা)</th>
-                <td class="total_nothi_users_female">{{ data.users_employee_records.nothi_users_female.count }}</td>
+                <th scope="row" class="text-justify">মোট নথি ব্যবহারকারী (মহিলা)</th>
+                <td class="total_nothi_users_female text-right">{{ data.users_employee_records.nothi_users_female.count }}</td>
               </tr>
               <tr>
-                <th scope="row">মোট ব্যবহারকারী (লগইন)</th>
-                <td class="total_nothi_users">{{ data.login_history_employee_records.login_total_users.count }}</td>
+                <th scope="row" class="text-justify">মোট ব্যবহারকারী (লগইন)</th>
+                <td class="total_nothi_users text-right">{{ data.login_history_employee_records.login_total_users.count }}</td>
               </tr>
               <tr>
-                <th scope="row">মোট নথি ব্যবহারকারী (পুরুষ লগইন)</th>
-                <td class="total_nothi_users_male">{{ data.login_history_employee_records.login_male_users.count }}</td>
+                <th scope="row" class="text-justify">মোট নথি ব্যবহারকারী (পুরুষ লগইন)</th>
+                <td class="total_nothi_users_male text-right">{{ data.login_history_employee_records.login_male_users.count }}</td>
               </tr>
               <tr>
-                <th scope="row">মোট নথি ব্যবহারকারী (মহিলা লগইন)</th>
-                <td class="total_nothi_users_female">{{ data.login_history_employee_records.login_female_users.count }}</td>
+                <th scope="row" class="text-justify">মোট নথি ব্যবহারকারী (মহিলা লগইন)</th>
+                <td class="total_nothi_users_female text-right">{{ data.login_history_employee_records.login_female_users.count }}</td>
               </tr>
               <tr>
-                <th scope="row">মোবাইল অ্যাপ ব্যবহারকারী</th>
-                <td class="total_mobile_app_users">{{ data.user_login_history.mobile_app_users.count }}</td>
+                <th scope="row" class="text-justify">মোবাইল অ্যাপ ব্যবহারকারী</th>
+                <td class="total_mobile_app_users text-right">{{ data.user_login_history.mobile_app_users.count }}</td>
               </tr>
             </tbody>
           </table>
