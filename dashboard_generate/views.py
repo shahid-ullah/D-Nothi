@@ -1,15 +1,12 @@
-# dashboard_generate/views.py
 import csv
 import json
-import time
 from datetime import datetime
 
-import numpy as np
-import pandas as pd
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import render
 
+from . import helper_functions as hf
 from .forms import ReportDateRangeForm
 from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
                      ReportIOSUsersModel, ReportLoginFemalelUsersModel,
@@ -19,467 +16,196 @@ from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
                      ReportPotrojariModel, ReportTotalOfficesModel,
                      ReportTotalUsersModel, ReportUpokarvogiModel)
 
-CACHED_DICTIONARY = {'last_cached': time.time()}
-
-
-def get_cache_or_calculate(report_type, mapping_method, model):
-    global CACHED_DICTIONARY
-    cached = CACHED_DICTIONARY.setdefault(report_type, {})
-    if cached:
-        last_cached = CACHED_DICTIONARY[report_type]['last_cached']
-        current_time = time.time()
-        if (current_time - last_cached) > (60 * 60):
-            print('resetting cache')
-            print()
-            CACHED_DICTIONARY = {}
-            objs = model.objects.all()
-            CACHED_DICTIONARY.setdefault(report_type, {})
-            year_map, month_map, day_map = mapping_method(objs)
-            CACHED_DICTIONARY[report_type]['year_map'] = year_map
-            CACHED_DICTIONARY[report_type]['month_map'] = month_map
-            CACHED_DICTIONARY[report_type]['day_map'] = day_map
-            CACHED_DICTIONARY[report_type]['last_cached'] = time.time()
-        else:
-            print('current time: ', current_time - last_cached)
-            print('using cache')
-            print()
-            year_map = CACHED_DICTIONARY[report_type]['year_map']
-            month_map = CACHED_DICTIONARY[report_type]['month_map']
-            day_map = CACHED_DICTIONARY[report_type]['day_map']
-    else:
-        print('using raw calculation')
-        print()
-        objs = model.objects.all()
-        CACHED_DICTIONARY.setdefault(report_type, {})
-        year_map, month_map, day_map = mapping_method(objs)
-        CACHED_DICTIONARY[report_type]['year_map'] = year_map
-        CACHED_DICTIONARY[report_type]['month_map'] = month_map
-        CACHED_DICTIONARY[report_type]['day_map'] = day_map
-        CACHED_DICTIONARY[report_type]['last_cached'] = time.time()
-
-    return year_map, month_map, day_map
-
-
-class NpEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, np.integer):
-            return int(obj)
-        if isinstance(obj, np.floating):
-            return float(obj)
-        if isinstance(obj, np.ndarray):
-            return obj.tolist()
-        return super(NpEncoder, self).default(obj)
-
-
-def generate_year_month_and_day_map(objs):
-    values = objs.values('year', 'month', 'day', 'count_or_sum')
-    dataframe = pd.DataFrame(values)
-    year_map = {}
-    month_map = {}
-    day_map = {}
-
-    year_group_by = dataframe.groupby('year')
-    for year, year_frame in year_group_by:
-        year_map[year] = year_frame['count_or_sum'].sum()
-        month_map[year] = {}
-        day_map[year] = {}
-
-        month_group_by = year_frame.groupby('month')
-
-        for month, month_frame in month_group_by:
-            month_map[year][month] = month_frame['count_or_sum'].sum()
-
-            day_map[year][month] = {}
-
-            day_group_by = month_frame.groupby('day')
-            for day, day_frame in day_group_by:
-                day_map[year][month][day] = day_frame['count_or_sum'].sum()
-
-    return year_map, month_map, day_map
-
 
 # Create your views here.
 def total_offices_view(request):
 
-    year_map, month_map, day_map = get_cache_or_calculate(
-        'total_offices', generate_year_month_and_day_map, ReportTotalOfficesModel
+    year_map, month_map, day_map = hf.get_cache_or_calculate(
+        'total_offices', hf.generate_year_month_and_day_map, ReportTotalOfficesModel
     )
 
     context = {
-        'year_map': json.dumps(year_map, cls=NpEncoder),
-        'month_map': json.dumps(month_map, cls=NpEncoder),
-        'day_map': json.dumps(day_map, cls=NpEncoder),
+        'year_map': json.dumps(year_map, cls=hf.NpEncoder),
+        'month_map': json.dumps(month_map, cls=hf.NpEncoder),
+        'day_map': json.dumps(day_map, cls=hf.NpEncoder),
     }
 
     return render(request, 'dashboard_generate/total_offices.html', context)
 
 
-nispottikritto_nothi_general_series = None
-nispottikritto_nothi_drilldown_series = None
-
-
 def nispottikritto_nothi_view(request):
-    year_map, month_map, day_map = get_cache_or_calculate(
+    year_map, month_map, day_map = hf.get_cache_or_calculate(
         'nispottikritto_nothi',
-        generate_year_month_and_day_map,
+        hf.generate_year_month_and_day_map,
         ReportNispottikrittoNothiModel,
     )
 
     context = {
-        'year_map': json.dumps(year_map, cls=NpEncoder),
-        'month_map': json.dumps(month_map, cls=NpEncoder),
-        'day_map': json.dumps(day_map, cls=NpEncoder),
+        'year_map': json.dumps(year_map, cls=hf.NpEncoder),
+        'month_map': json.dumps(month_map, cls=hf.NpEncoder),
+        'day_map': json.dumps(day_map, cls=hf.NpEncoder),
     }
 
     return render(request, 'dashboard_generate/nispottikritto_nothi.html', context)
 
 
-def nothi_users_total(request):
-    year_map, month_map, day_map = get_cache_or_calculate(
-        'nothi_users_total', generate_year_month_and_day_map, ReportTotalUsersModel
+def nothi_users_total_view(request):
+    year_map, month_map, day_map = hf.get_cache_or_calculate(
+        'nothi_users_total', hf.generate_year_month_and_day_map, ReportTotalUsersModel
     )
 
     context = {
-        'year_map': json.dumps(year_map, cls=NpEncoder),
-        'month_map': json.dumps(month_map, cls=NpEncoder),
-        'day_map': json.dumps(day_map, cls=NpEncoder),
+        'year_map': json.dumps(year_map, cls=hf.NpEncoder),
+        'month_map': json.dumps(month_map, cls=hf.NpEncoder),
+        'day_map': json.dumps(day_map, cls=hf.NpEncoder),
     }
 
     return render(request, 'dashboard_generate/nothi_users_total.html', context)
 
 
-def total_upokarvogi(request):
-    year_map, month_map, day_map = get_cache_or_calculate(
-        'upokarvogi', generate_year_month_and_day_map, ReportUpokarvogiModel
+def total_upokarvogi_view(request):
+    year_map, month_map, day_map = hf.get_cache_or_calculate(
+        'upokarvogi', hf.generate_year_month_and_day_map, ReportUpokarvogiModel
     )
 
     context = {
-        'year_map': json.dumps(year_map, cls=NpEncoder),
-        'month_map': json.dumps(month_map, cls=NpEncoder),
-        'day_map': json.dumps(day_map, cls=NpEncoder),
+        'year_map': json.dumps(year_map, cls=hf.NpEncoder),
+        'month_map': json.dumps(month_map, cls=hf.NpEncoder),
+        'day_map': json.dumps(day_map, cls=hf.NpEncoder),
     }
 
     return render(request, 'dashboard_generate/total_upokarvogi.html', context)
 
 
-def nothi_users_male(request):
-    year_map, month_map, day_map = get_cache_or_calculate(
-        'nothi_users_male', generate_year_month_and_day_map, ReportMaleNothiUsersModel
+def nothi_users_male_view(request):
+    year_map, month_map, day_map = hf.get_cache_or_calculate(
+        'nothi_users_male',
+        hf.generate_year_month_and_day_map,
+        ReportMaleNothiUsersModel,
     )
 
     context = {
-        'year_map': json.dumps(year_map, cls=NpEncoder),
-        'month_map': json.dumps(month_map, cls=NpEncoder),
-        'day_map': json.dumps(day_map, cls=NpEncoder),
+        'year_map': json.dumps(year_map, cls=hf.NpEncoder),
+        'month_map': json.dumps(month_map, cls=hf.NpEncoder),
+        'day_map': json.dumps(day_map, cls=hf.NpEncoder),
     }
 
     return render(request, 'dashboard_generate/nothi_users_male.html', context)
 
 
-def nothi_users_female(request):
-    year_map, month_map, day_map = get_cache_or_calculate(
+def nothi_users_female_view(request):
+    year_map, month_map, day_map = hf.get_cache_or_calculate(
         'nothi_users_female',
-        generate_year_month_and_day_map,
+        hf.generate_year_month_and_day_map,
         ReportFemaleNothiUsersModel,
     )
 
     context = {
-        'year_map': json.dumps(year_map, cls=NpEncoder),
-        'month_map': json.dumps(month_map, cls=NpEncoder),
-        'day_map': json.dumps(day_map, cls=NpEncoder),
+        'year_map': json.dumps(year_map, cls=hf.NpEncoder),
+        'month_map': json.dumps(month_map, cls=hf.NpEncoder),
+        'day_map': json.dumps(day_map, cls=hf.NpEncoder),
     }
 
     return render(request, 'dashboard_generate/nothi_users_female.html', context)
 
 
-def note_nisponno(request):
-    year_map, month_map, day_map = get_cache_or_calculate(
-        'note_nisponno', generate_year_month_and_day_map, ReportNoteNisponnoModel
+def note_nisponno_view(request):
+    year_map, month_map, day_map = hf.get_cache_or_calculate(
+        'note_nisponno', hf.generate_year_month_and_day_map, ReportNoteNisponnoModel
     )
 
     context = {
-        'year_map': json.dumps(year_map, cls=NpEncoder),
-        'month_map': json.dumps(month_map, cls=NpEncoder),
-        'day_map': json.dumps(day_map, cls=NpEncoder),
+        'year_map': json.dumps(year_map, cls=hf.NpEncoder),
+        'month_map': json.dumps(month_map, cls=hf.NpEncoder),
+        'day_map': json.dumps(day_map, cls=hf.NpEncoder),
     }
 
     return render(request, 'dashboard_generate/note_nisponno.html', context)
 
 
 def potrojari_view(request):
-    year_map, month_map, day_map = get_cache_or_calculate(
-        'potrojari', generate_year_month_and_day_map, ReportPotrojariModel
+    year_map, month_map, day_map = hf.get_cache_or_calculate(
+        'potrojari', hf.generate_year_month_and_day_map, ReportPotrojariModel
     )
 
     context = {
-        'year_map': json.dumps(year_map, cls=NpEncoder),
-        'month_map': json.dumps(month_map, cls=NpEncoder),
-        'day_map': json.dumps(day_map, cls=NpEncoder),
+        'year_map': json.dumps(year_map, cls=hf.NpEncoder),
+        'month_map': json.dumps(month_map, cls=hf.NpEncoder),
+        'day_map': json.dumps(day_map, cls=hf.NpEncoder),
     }
 
     return render(request, 'dashboard_generate/potrojari.html', context)
 
 
-def generate_login_users_year_month_day_map(objs):
-    values = objs.values('year', 'month', 'day', 'count_or_sum', 'employee_record_ids')
-    dataframe = pd.DataFrame(values)
-    year_map = {}
-    month_map = {}
-    day_map = {}
-
-    for year, year_frame in dataframe.groupby('year'):
-        year_dict = {}
-
-        for ids_dict in year_frame['employee_record_ids'].values:
-            year_dict.update(ids_dict)
-
-        year_map[year] = len(year_dict)
-
-        month_map[year] = {}
-        day_map[year] = {}
-
-        month_group_by = year_frame.groupby('month')
-
-        for month, month_frame in month_group_by:
-            month_dict = {}
-            for ids_dict in month_frame['employee_record_ids'].values:
-                month_dict.update(ids_dict)
-            month_map[year][month] = len(month_dict)
-
-            day_map[year][month] = {}
-
-            day_group_by = month_frame.groupby('day')
-            for day, day_frame in day_group_by:
-                day_map[year][month][day] = day_frame['count_or_sum'].sum()
-
-    return year_map, month_map, day_map
-
-
 def login_total_users_view(request):
-    year_map, month_map, day_map = get_cache_or_calculate(
+    year_map, month_map, day_map = hf.get_cache_or_calculate(
         'login_total_users',
-        generate_login_users_year_month_day_map,
+        hf.generate_login_users_year_month_day_map,
         ReportLoginTotalUsers,
     )
 
     context = {
-        'year_map': json.dumps(year_map, cls=NpEncoder),
-        'month_map': json.dumps(month_map, cls=NpEncoder),
-        'day_map': json.dumps(day_map, cls=NpEncoder),
+        'year_map': json.dumps(year_map, cls=hf.NpEncoder),
+        'month_map': json.dumps(month_map, cls=hf.NpEncoder),
+        'day_map': json.dumps(day_map, cls=hf.NpEncoder),
     }
 
     return render(request, 'dashboard_generate/login_total_users.html', context)
 
 
 def login_male_users_view(request):
-    year_map, month_map, day_map = get_cache_or_calculate(
+    year_map, month_map, day_map = hf.get_cache_or_calculate(
         'login_male_users',
-        generate_login_users_year_month_day_map,
+        hf.generate_login_users_year_month_day_map,
         ReportLoginMalelUsersModel,
     )
 
     context = {
-        'year_map': json.dumps(year_map, cls=NpEncoder),
-        'month_map': json.dumps(month_map, cls=NpEncoder),
-        'day_map': json.dumps(day_map, cls=NpEncoder),
+        'year_map': json.dumps(year_map, cls=hf.NpEncoder),
+        'month_map': json.dumps(month_map, cls=hf.NpEncoder),
+        'day_map': json.dumps(day_map, cls=hf.NpEncoder),
     }
 
     return render(request, 'dashboard_generate/login_male_users.html', context)
 
 
 def login_female_users_view(request):
-    year_map, month_map, day_map = get_cache_or_calculate(
+    year_map, month_map, day_map = hf.get_cache_or_calculate(
         'login_female_users',
-        generate_login_users_year_month_day_map,
+        hf.generate_login_users_year_month_day_map,
         ReportLoginFemalelUsersModel,
     )
 
     context = {
-        'year_map': json.dumps(year_map, cls=NpEncoder),
-        'month_map': json.dumps(month_map, cls=NpEncoder),
-        'day_map': json.dumps(day_map, cls=NpEncoder),
+        'year_map': json.dumps(year_map, cls=hf.NpEncoder),
+        'month_map': json.dumps(month_map, cls=hf.NpEncoder),
+        'day_map': json.dumps(day_map, cls=hf.NpEncoder),
     }
 
     return render(request, 'dashboard_generate/login_female_users.html', context)
 
 
 def mobile_app_users_view(request):
-    year_map, month_map, day_map = get_cache_or_calculate(
-        'mobile_app_users', generate_year_month_and_day_map, ReportMobileAppUsersModel
+    year_map, month_map, day_map = hf.get_cache_or_calculate(
+        'mobile_app_users',
+        hf.generate_year_month_and_day_map,
+        ReportMobileAppUsersModel,
     )
 
     android_users = ReportAndroidUsersModel.objects.aggregate(Sum('count_or_sum'))
     ios_users = ReportIOSUsersModel.objects.aggregate(Sum('count_or_sum'))
 
     context = {
-        'year_map': json.dumps(year_map, cls=NpEncoder),
-        'month_map': json.dumps(month_map, cls=NpEncoder),
-        'day_map': json.dumps(day_map, cls=NpEncoder),
-        'android_users': json.dumps(android_users['count_or_sum__sum'], cls=NpEncoder),
-        'ios_users': json.dumps(ios_users['count_or_sum__sum'], cls=NpEncoder),
+        'year_map': json.dumps(year_map, cls=hf.NpEncoder),
+        'month_map': json.dumps(month_map, cls=hf.NpEncoder),
+        'day_map': json.dumps(day_map, cls=hf.NpEncoder),
+        'android_users': json.dumps(
+            android_users['count_or_sum__sum'], cls=hf.NpEncoder
+        ),
+        'ios_users': json.dumps(ios_users['count_or_sum__sum'], cls=hf.NpEncoder),
     }
 
     return render(request, 'dashboard_generate/mobile_app_users.html', context)
-
-
-def get_total_office_count(date_range):
-    offices_objs = ReportTotalOfficesModel.objects.filter(report_day__lte=date_range[1])
-    office_count_dict = offices_objs.aggregate(Sum('count_or_sum'))
-    office_count = office_count_dict['count_or_sum__sum']
-
-    if not office_count:
-        office_count = 0
-
-    return office_count
-
-
-def get_nispottikritto_nothi_count(date_range):
-    nispottikritto_nothi_objects = ReportNispottikrittoNothiModel.objects.filter(
-        report_day__range=date_range
-    )
-    nispottikritto_nothi_dict = nispottikritto_nothi_objects.aggregate(
-        Sum('count_or_sum')
-    )
-    nispottikritto_nothi_count = nispottikritto_nothi_dict['count_or_sum__sum']
-
-    if not nispottikritto_nothi_count:
-        nispottikritto_nothi_count = 0
-
-    return nispottikritto_nothi_count
-
-
-def get_upokarvogi_count(date_range):
-    upokarvogi_objects = ReportUpokarvogiModel.objects.filter(
-        report_day__range=date_range
-    )
-    upokarvogi_dict = upokarvogi_objects.aggregate(Sum('count_or_sum'))
-    upokarvogi = upokarvogi_dict['count_or_sum__sum']
-
-    if not upokarvogi:
-        upokarvogi = 0
-
-    return upokarvogi
-
-
-def get_potrojari_count(date_range):
-    potrojari_objects = ReportPotrojariModel.objects.filter(
-        report_day__range=date_range
-    )
-    potrojari_dict = potrojari_objects.aggregate(Sum('count_or_sum'))
-    potrojari = potrojari_dict['count_or_sum__sum']
-
-    if not potrojari:
-        potrojari = 0
-
-    return potrojari
-
-
-def get_note_nisponno_count(date_range):
-    note_nisponno_objects = ReportNoteNisponnoModel.objects.filter(
-        report_day__range=date_range
-    )
-    note_nisponno_dict = note_nisponno_objects.aggregate(Sum('count_or_sum'))
-    note_nisponno = note_nisponno_dict['count_or_sum__sum']
-
-    if not note_nisponno:
-        note_nisponno = 0
-
-    return note_nisponno
-
-
-def get_login_total_users(date_range):
-
-    login_total_users_objects = ReportLoginTotalUsers.objects.filter(
-        report_day__range=date_range
-    )
-    count_dict = {}
-    for obj in login_total_users_objects:
-        count_dict.update(obj.employee_record_ids)
-    login_total_users = len(count_dict)
-    if not login_total_users:
-        login_total_users = 0
-
-    return login_total_users
-
-
-def get_login_male_users(date_range):
-    login_male_users_objects = ReportLoginMalelUsersModel.objects.filter(
-        report_day__range=date_range
-    )
-    count_dict = {}
-    for obj in login_male_users_objects:
-        count_dict.update(obj.employee_record_ids)
-    login_male_users = len(count_dict)
-    if not login_male_users:
-        login_male_users = 0
-
-    return login_male_users
-
-
-def get_login_female_users(date_range):
-    login_female_users_objects = ReportLoginFemalelUsersModel.objects.filter(
-        report_day__range=date_range
-    )
-    count_dict = {}
-    for obj in login_female_users_objects:
-        count_dict.update(obj.employee_record_ids)
-    login_female_users = len(count_dict)
-    if not login_female_users:
-        login_female_users = 0
-
-    return login_female_users
-
-
-def get_mobile_app_users(date_range):
-    mobile_app_users_objects = ReportMobileAppUsersModel.objects.filter(
-        report_day__range=date_range
-    )
-    mobile_app_users_dict = mobile_app_users_objects.aggregate(Sum('count_or_sum'))
-    mobile_app_users = mobile_app_users_dict['count_or_sum__sum']
-
-    if not mobile_app_users:
-        mobile_app_users = 0
-
-    return mobile_app_users
-
-
-def get_total_users(date_range):
-    total_users_objs = ReportTotalUsersModel.objects.filter(
-        report_day__lte=date_range[1]
-    )
-    total_users_dict = total_users_objs.aggregate(Sum('count_or_sum'))
-    total_users = total_users_dict['count_or_sum__sum']
-
-    if not total_users:
-        total_users = 0
-
-    return total_users
-
-
-def get_nothi_users_male(date_range):
-    nothi_users_male_objs = ReportMaleNothiUsersModel.objects.filter(
-        report_day__lte=date_range[1]
-    )
-    nothi_users_male_dict = nothi_users_male_objs.aggregate(Sum('count_or_sum'))
-    nothi_users_male = nothi_users_male_dict['count_or_sum__sum']
-
-    if not nothi_users_male:
-        nothi_users_male = 0
-
-    return nothi_users_male
-
-
-def get_nothi_users_female(date_range):
-    nothi_users_female_objs = ReportFemaleNothiUsersModel.objects.filter(
-        report_day__lte=date_range[1]
-    )
-    nothi_users_female_dict = nothi_users_female_objs.aggregate(Sum('count_or_sum'))
-    nothi_users_female = nothi_users_female_dict['count_or_sum__sum']
-
-    if not nothi_users_female:
-        nothi_users_female = 0
-
-    return nothi_users_female
 
 
 def process_post_request(request):
@@ -496,30 +222,30 @@ def process_post_request(request):
 
         date_range = [start_date, end_date]
         # total_offices
-        office_count = get_total_office_count(date_range)
+        office_count = hf.get_total_office_count(date_range)
         # nispottikritto_nothi
-        nispottikritto_nothi_count = get_nispottikritto_nothi_count(date_range)
+        nispottikritto_nothi_count = hf.get_nispottikritto_nothi_count(date_range)
         # upokarvogi
-        upokarvogi = get_upokarvogi_count(date_range)
+        upokarvogi = hf.get_upokarvogi_count(date_range)
         # potrojari
-        potrojari = get_potrojari_count(date_range)
+        potrojari = hf.get_potrojari_count(date_range)
         #  note nisponno
-        note_nisponno = get_note_nisponno_count(date_range)
+        note_nisponno = hf.get_note_nisponno_count(date_range)
         # total users
-        total_users = get_total_users(date_range)
+        total_users = hf.get_total_users(date_range)
         # nothi users male
-        nothi_users_male = get_nothi_users_male(date_range)
+        nothi_users_male = hf.get_nothi_users_male(date_range)
         # nothi users female
-        nothi_users_female = get_nothi_users_female(date_range)
+        nothi_users_female = hf.get_nothi_users_female(date_range)
         # mobile app users
-        mobile_app_users = get_mobile_app_users(date_range)
+        mobile_app_users = hf.get_mobile_app_users(date_range)
 
         # login total users
-        login_total_users = get_login_total_users(date_range)
+        login_total_users = hf.get_login_total_users(date_range)
         # login male users
-        login_male_users = get_login_male_users(date_range)
+        login_male_users = hf.get_login_male_users(date_range)
         # login female users
-        login_female_users = get_login_female_users(date_range)
+        login_female_users = hf.get_login_female_users(date_range)
 
         y1 = start_date.year
         y2 = end_date.year
@@ -791,37 +517,37 @@ def custom_report(request):
     )
 
 
-def report_export_csv(request, start_date=None, end_date=None):
+def report_export_csv_view(request, start_date=None, end_date=None):
     start_date = start_date.split('-')
     end_date = end_date.split('-')
     start_date = datetime(int(start_date[0]), int(start_date[1]), int(start_date[2]))
     end_date = datetime(int(end_date[0]), int(end_date[1]), int(end_date[2]))
     date_range = [start_date, end_date]
-    office_count = get_total_office_count(date_range)
+    office_count = hf.get_total_office_count(date_range)
     # nispottikritto_nothi
-    nispottikritto_nothi_count = get_nispottikritto_nothi_count(date_range)
+    nispottikritto_nothi_count = hf.get_nispottikritto_nothi_count(date_range)
     # upokarvogi
-    upokarvogi = get_upokarvogi_count(date_range)
+    upokarvogi = hf.get_upokarvogi_count(date_range)
     # potrojari
-    potrojari = get_potrojari_count(date_range)
+    potrojari = hf.get_potrojari_count(date_range)
     #  note nisponno
-    note_nisponno = get_note_nisponno_count(date_range)
+    note_nisponno = hf.get_note_nisponno_count(date_range)
     # total users
-    total_users = get_total_users(date_range)
+    total_users = hf.get_total_users(date_range)
     # nothi users male
-    nothi_users_male = get_nothi_users_male(date_range)
+    nothi_users_male = hf.get_nothi_users_male(date_range)
     # nothi users female
-    nothi_users_female = get_nothi_users_female(date_range)
+    nothi_users_female = hf.get_nothi_users_female(date_range)
 
     # mobile app users
-    mobile_app_users = get_mobile_app_users(date_range)
+    mobile_app_users = hf.get_mobile_app_users(date_range)
 
     # login total users
-    login_total_users = get_login_total_users(date_range)
+    login_total_users = hf.get_login_total_users(date_range)
     # login male users
-    login_male_users = get_login_male_users(date_range)
+    login_male_users = hf.get_login_male_users(date_range)
     # login female users
-    login_female_users = get_login_female_users(date_range)
+    login_female_users = hf.get_login_female_users(date_range)
 
     response = HttpResponse(content_type='text/csv')
     writer = csv.writer(response)

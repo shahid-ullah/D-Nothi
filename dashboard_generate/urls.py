@@ -12,27 +12,27 @@ urlpatterns = [
     ),
     path(
         'nothi_users_total/',
-        views.nothi_users_total,
+        views.nothi_users_total_view,
         name="nothi_users_total",
     ),
     path(
         'total_upokarvogi/',
-        views.total_upokarvogi,
+        views.total_upokarvogi_view,
         name="total_upokarvogi",
     ),
     path(
         'nothi_users_male/',
-        views.nothi_users_male,
+        views.nothi_users_male_view,
         name="nothi_users_male",
     ),
     path(
         'nothi_users_female/',
-        views.nothi_users_female,
+        views.nothi_users_female_view,
         name="nothi_users_female",
     ),
     path(
         'note_nisponno/',
-        views.note_nisponno,
+        views.note_nisponno_view,
         name="note_nisponno",
     ),
     path(
@@ -72,7 +72,7 @@ urlpatterns = [
     ),
     path(
         'export_csv/<str:start_date>/<str:end_date>/',
-        views.report_export_csv,
+        views.report_export_csv_view,
         name="export_csv",
     ),
 ]
