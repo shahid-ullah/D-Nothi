@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import views
+from . import api, views
 
 urlpatterns = [
     path('', views.total_offices_view, name="total_offices"),
@@ -64,6 +64,11 @@ urlpatterns = [
         'login_female_users/',
         views.login_female_users_view,
         name="login_female_users",
+    ),
+    path(
+        'source_db_status/',
+        api.SourceDBStatusAPI.as_view(),
+        name="source_db_status",
     ),
     path(
         'export_csv/<str:start_date>/<str:end_date>/',

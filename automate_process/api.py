@@ -13,10 +13,8 @@ from .scripts.tables import (nisponno_records, offices, user_login_history,
 
 class updateDashboard(APIView):
     """
-    View to list all users in the system.
-
-    * Requires token authentication.
-    * Only admin users are able to access this view.
+    update dashboard data.
+    process source db data and dump to dashboard db.
     """
 
     authentication_classes = [authentication.SessionAuthentication]
