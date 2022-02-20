@@ -64,6 +64,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'users.middleware.sso_middleware',
 ]
 
 ROOT_URLCONF = 'src.urls'
@@ -168,22 +169,12 @@ DATA_BASE_DIR_PATH = os.path.join(BASE_DIR, 'Data')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-OFFICES_CSV_FILE_PATH = None
-OFFICES_CSV_FILE_LOADED = False
-
-NISPONNO_RECORDS_CSV_FILE_PATH = None
-NISPONNO_RECORDS_CSV_FILE_LOADED = False
-
-USERS_TABLE_CSV_FILE_PATH = None
-USERS_TABLE_CSV_FILE_LOADED = False
-
-
-USERS_GENDER_MALE_TABLE_CSV_FILE_PATH = None
-USERS_GENDER_MALE_TABLE_CSV_FILE_LOADED = False
-
-USERS_GENDER_FEMALE_TABLE_CSV_FILE_PATH = None
-USERS_GENDER_FEMALE_TABLE_CSV_FILE_LOADED = False
 
 SYSTEM_UPDATE_RUNNING = False
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = None
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'users.custom_backends.NdoptorAuthenticationBackend',
+)

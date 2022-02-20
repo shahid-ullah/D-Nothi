@@ -34,8 +34,8 @@ def get_cache_or_calculate(report_type, mapping_method, model):
         last_cached = CACHED_DICTIONARY[report_type]['last_cached']
         current_time = time.time()
         if (current_time - last_cached) > (60 * 60):
-            print('resetting cache')
-            print()
+            # print('resetting cache')
+            # print()
             CACHED_DICTIONARY = {}
             objs = model.objects.all()
             CACHED_DICTIONARY.setdefault(report_type, {})
@@ -45,15 +45,15 @@ def get_cache_or_calculate(report_type, mapping_method, model):
             CACHED_DICTIONARY[report_type]['day_map'] = day_map
             CACHED_DICTIONARY[report_type]['last_cached'] = time.time()
         else:
-            print('current time: ', current_time - last_cached)
-            print('using cache')
-            print()
+            # print('current time: ', current_time - last_cached)
+            # print('using cache')
+            # print()
             year_map = CACHED_DICTIONARY[report_type]['year_map']
             month_map = CACHED_DICTIONARY[report_type]['month_map']
             day_map = CACHED_DICTIONARY[report_type]['day_map']
     else:
-        print('using raw calculation')
-        print()
+        # print('using raw calculation')
+        # print()
         objs = model.objects.all()
         CACHED_DICTIONARY.setdefault(report_type, {})
         year_map, month_map, day_map = mapping_method(objs)
