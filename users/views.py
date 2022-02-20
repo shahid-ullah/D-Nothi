@@ -2,9 +2,10 @@ import base64
 import json
 import zlib
 
-from django.contrib.auth import authenticate, get_user_model, login
+from django.conf import settings
+from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.http import HttpResponseBadRequest
-from django.shortcuts import redirect
+from django.shortcuts import redirect, reverse
 
 User = get_user_model()
 
@@ -50,14 +51,31 @@ def login_user(request, sso_data):
     try:
         username = sso_data['user_info']['user']['username']
         is_active = sso_data['user_info']['user']['active']
-        # name_eng = sso_data['user_info']['employee_info']['name_eng']
-        # name_bng = sso_data['user_info']['employee_info']['name_bng']
+        name_eng = sso_data['user_info']['employee_info']['name_eng']
+        name_bng = sso_data['user_info']['employee_info']['name_bng']
         user = authenticate(
             request,
             username=username,
+            name_eng=name_eng,
+            name_bng=name_bng,
             is_active=is_active,
         )
+        request.session['name'] = user.username
+        request.session['name_eng'] = user.username_eng
         login(request, user)
     except Exception as e:
         print(e)
         return HttpResponseBadRequest()
+
+
+def logout_view(request):
+    logout(request)
+
+    home_url = request.build_absolute_uri(reverse('home'))
+    home_url_b64_byte = base64.b64encode(home_url.encode('utf-8'))
+    home_url_b64_string = home_url_b64_byte.decode('utf-8')
+    logout_redirect_url = (
+        settings.SSO_LOGOUT_URL + "?" + "referer=" + home_url_b64_string
+    )
+
+    return redirect(logout_redirect_url)

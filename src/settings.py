@@ -178,3 +178,9 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'users.custom_backends.NdoptorAuthenticationBackend',
 )
+
+LOGOUT_REDIRECT_URL = 'home'
+
+
+SSO_LOGIN_URL = 'https://n-doptor-accounts-stage.nothi.gov.bd/login'
+SSO_LOGOUT_URL = 'https://n-doptor-accounts-stage.nothi.gov.bd/logout'

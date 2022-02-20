@@ -8,22 +8,25 @@ User = get_user_model()
 class NdoptorAuthenticationBackend(BaseBackend):
     def authenticate(self, request, username=None, *args, **kwargs):
 
-        # username_eng = kwargs.get('name_eng')
-        # username_bng = kwargs.get('name_bng')
+        username_eng = kwargs.get('name_eng')
+        username_bng = kwargs.get('name_bng')
         is_active = kwargs.get('is_active')
 
-        # if not username_eng:
-        #     if username_bng:
-        #         username_eng = username_bng
-        #     else:
-        #         username_eng = username
+        if not username_eng:
+            if username_bng:
+                username_eng = username_bng
+            else:
+                username_eng = username
 
         try:
             user = User.objects.get(username=username)
-            # user.username_eng = username_eng
-            # user.save()
+            user.username_eng = username_eng
+            user.save()
         except User.DoesNotExist:
-            user = User.objects.create(username=username, is_active=is_active)
+            user = User.objects.create(
+                username=username, username_eng=username_eng, is_active=is_active
+            )
+
             user.save()
         return user
 
