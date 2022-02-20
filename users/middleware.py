@@ -7,9 +7,9 @@ from django.shortcuts import redirect
 
 def sso_middleware(get_response):
     def middleware(request):
-        ndoptor_cookie = not request.GET.get('data')
+        ndoptor_cookie = request.GET.get('data')
 
-        if request.user.is_anonymous and ndoptor_cookie:
+        if request.user.is_anonymous and not ndoptor_cookie:
             login_redirect_url = request.build_absolute_uri()
             login_redirect_url_b64_byte = base64.b64encode(
                 login_redirect_url.encode('utf-8')

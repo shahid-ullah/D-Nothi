@@ -9,14 +9,14 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
 
       <!-- other html tags here -->
-    {% endblock %}
+    {% endblock metadata %}
 
     <link rel="shortcut icon" href="{% static 'img/favicon.png' %}" />
 
     {% block cdn_css %}
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
       <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
-    {% endblock %}
+    {% endblock cdn_css %}
 
     {% block local_css %}
       <!-- Icons -->
@@ -34,82 +34,47 @@
       <link rel="stylesheet" href="{% static 'vendors/css/toastr.min.css' %}">
       <link rel="stylesheet" href="{% static 'vendors/css/select2.min.css' %}">
 
-      {# <script src="{% static '\vendors\js\jquery.min.js' %}"></script> #}
-
-    {% endblock %}
+    {% endblock local_css %}
 
     {% block inline_css %}
     {% endblock inline_css %}
 
 
     {% block internal_css %}
-      <!--<style>-->
-<!--body{-->
-  <!--color: black;-->
-  <!--}-->
-  <!--</style>-->
-    {% endblock %}
-    {% block extra_head %}{% endblock %}
+    {% endblock internal_css %}
+
+    {% block extra_head %}{% endblock extra_head %}
+
   </head>
 
   <body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
     <header class="app-header navbar">
-      <button class="navbar-toggler mobile-sidebar-toggler d-lg-none" type="button">
+      <!-- <button class="navbar-toggler mobile-sidebar-toggler d-lg-none" type="button">
         <span class="navbar-toggler-icon"></span>
+      </button> -->
+      <div>
+        <a class="navbar-brand font-weight-bold" href="{%url 'home' %}">ডি-নথি</a>
+      </div>
       </button>
-      <a class="navbar-brand font-weight-bold" href="{%url 'home' %}">ডি-নথি</a>
-      <button class="navbar-toggler sidebar-toggler d-md-down-none" type="button">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <ul class="nav navbar-nav d-md-down-none mr-auto">
-
-      </ul>
-      <div class="d-flex">
-        <div class="mr-auto">
+      <div class="d-flex" style="margin-right: 70px;">
+        <div class="">
           <ul class="list-group list-group-flush">
             <li class="list-group-item">{{request.session.name_eng}}</li>
           </ul>
         </div>
+
         <div>
-        
-        <div class="dropdown show">
+          <div class="dropdown show">
             <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <!-- <img src="{% static 'img/avatars/6.jpg' %}" class="img-avatar" alt="admin@capsclinic.jp"> -->
             </a>
-
             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-              <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+              <a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out text-danger" aria-hidden="true"></i>Logout</a>
             </div>
           </div>
         </div>
 
       </div>
-
-      <!-- <ul class="nav navbar-nav ml-auto">
-        <li class="nav-item dropdown">
-          <a class="nav-link nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-            <img src="{% static 'img/avatars/6.jpg' %}" class="img-avatar" alt="admin@capsclinic.jp">
-          </a>
-          <div class="dropdown-menu dropdown-menu-right">
-            <div class="dropdown-header text-center">
-              <strong>Account</strong>
-            </div>
-            <a class="dropdown-item" href="#"><i class="fa fa-bell-o"></i> Updates<span class="badge badge-info">42</span></a>
-            <a class="dropdown-item" href="#"><i class="fa fa-envelope-o"></i> Messages<span class="badge badge-success">42</span></a>
-            <div class="dropdown-header text-center">
-              <strong>Settings</strong>
-            </div>
-            <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Profile</a>
-            <a class="dropdown-item" href="#"><i class="fa fa-wrench"></i> Settings</a>
-            <div class="divider"></div>
-            <a class="dropdown-item" href="#"><i class="fa fa-shield"></i> Lock Account</a>
-            <a class="dropdown-item" href="#"><i class="fa fa-lock"></i> Logout</a>
-          </div>
-        </li>
-        <button class="navbar-toggler aside-menu-toggler" type="button">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      </ul> -->
     </header>
 
     <div class="app-body">
@@ -120,8 +85,8 @@
               <a href="{%url 'home' %}" class="nav-link"><i class="icon-speedometer"></i>ড্যাশবোর্ড</a>
             </li>
             {# <li class="nav-item"> #}
-            {#   <a style="font-size: 15px;" href="{% url 'custom_report' %}" class="nav-link"><i class="icon-drop" style=""></i>রিপোর্ট তৈরি করুন</a> #}
-            {# </li> #}
+              {#   <a style="font-size: 15px;" href="{% url 'custom_report' %}" class="nav-link"><i class="icon-drop" style=""></i>রিপোর্ট তৈরি করুন</a> #}
+              {# </li> #}
 
             <li class="nav-title">নথি</li>
             <li class="nav-item">
@@ -169,12 +134,6 @@
             <li class="nav-item">
               <a href="{% url 'potrojari' %}" class="nav-link"><i class="icon-drop"></i>পত্রজারি</a>
             </li>
-            {# <li class="nav-title"> #}
-            {#   ডাক #}
-            {# </li> #}
-            {# <li class="nav-item"> #}
-            {# <!-- <a href="" class="nav-link"><i class="icon-drop"></i> Consultation Analysis </a> --> #}
-            {# </li> #}
           </ul>
         </nav>
         <button class="sidebar-minimizer brand-minimizer" type="button"></button>
@@ -183,9 +142,9 @@
       <main class="main">
 
         <div class="container-fluid">
-            {% block body_block %}
-              Main content
-            {% endblock %}
+          {% block body_block %}
+            Main content
+          {% endblock body_block %}
         </div>
       </main>
 
@@ -196,8 +155,6 @@
     </footer>
 
     {% block cdn_js %}
-      <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>-->
-      <!-- other cdn javascript links -->
 
       {# <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js" ></script> #}
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -209,7 +166,7 @@
       {# <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> #}
       {# <script src="https://code.highcharts.com/highcharts.src.js"></script> #}
 
-    {% endblock %}
+    {% endblock cdn_js %}
 
     {% block common_local_js %}
       <!-- Bootstrap and necessary plugins -->
@@ -225,17 +182,17 @@
       <script src="{% static "vendors/js/daterangepicker.min.js" %}"></script>
       <script src="{% static "vendors/js/select2.min.js" %}"></script>
 
-    {% endblock %}
+    {% endblock common_local_js %}
 
     {% block local_js %}
       <script src="{% static 'js/monthly_report.js' %}"></script>
       <!-- other cdn javascript links -->
-    {% endblock %}
+    {% endblock local_js %}
 
     {% block internal_js %}
       <script type="text/javascript">
         console.log(" Analysis base is working...")
       </script>
-    {% endblock %}
+    {% endblock internal_js %}
   </body>
 </html>

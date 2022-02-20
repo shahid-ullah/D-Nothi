@@ -1,3 +1,4 @@
+# users/settings
 import base64
 import json
 import zlib
@@ -46,7 +47,7 @@ def unzip_doptor_cookie(request, response):
 
 def login_user(request, sso_data):
     """
-    login user in chat local server.
+    login user in local server.
     """
     try:
         username = sso_data['user_info']['user']['username']
