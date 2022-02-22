@@ -9,7 +9,7 @@
 
 .app-header.navbar .navbar-brand {
     background-size: 120px auto;
-    border-bottom: 1px solid #aaaaaa;
+    /* border-bottom: 1px solid #aaaaaa; */
 }
 
 app-header.navbar {

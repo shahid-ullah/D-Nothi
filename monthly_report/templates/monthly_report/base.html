@@ -49,18 +49,14 @@
 
   <body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
     <header class="app-header navbar">
-      <!-- <button class="navbar-toggler mobile-sidebar-toggler d-lg-none" type="button">
-        <span class="navbar-toggler-icon"></span>
-      </button> -->
       <div>
         <a class="navbar-brand font-weight-bold" href="{%url 'home' %}">ডি-নথি</a>
       </div>
-      </button>
       <div class="d-flex" style="margin-right: 70px;">
-        <div class="">
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item">{{request.session.name_eng}}</li>
-          </ul>
+        <div>
+          <p style="margin: 0px; padding:0px;">{{request.session.name_eng}}</p>
+          <p style="margin: 0px; padding:0px;">{{request.session.designation}}</p>
+          <p style="margin: 0px; padding:0px;">{{request.session.office_name_bn}}</p>
         </div>
 
         <div>
@@ -73,8 +69,8 @@
             </div>
           </div>
         </div>
-
       </div>
+
     </header>
 
     <div class="app-body">

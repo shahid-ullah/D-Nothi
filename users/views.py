@@ -54,6 +54,9 @@ def login_user(request, sso_data):
         is_active = sso_data['user_info']['user']['active']
         name_eng = sso_data['user_info']['employee_info']['name_eng']
         name_bng = sso_data['user_info']['employee_info']['name_bng']
+        designation = sso_data['user_info']['office_info'][0]['designation']
+        office_name_bn = sso_data['user_info']['office_info'][0]['office_name_bn']
+        office_name_en = sso_data['user_info']['office_info'][0]['office_name_en']
         user = authenticate(
             request,
             username=username,
@@ -63,6 +66,9 @@ def login_user(request, sso_data):
         )
         request.session['name'] = user.username
         request.session['name_eng'] = user.username_eng
+        request.session['designation'] = designation
+        request.session['office_name_bn'] = office_name_bn
+        request.session['office_name_en'] = office_name_en
         login(request, user)
     except Exception as e:
         print(e)
