@@ -23,7 +23,6 @@ User = get_user_model()
 
 @login_required(login_url='/sso_login_handler/')
 def total_offices_view(request):
-
     year_map, month_map, day_map = hf.get_cache_or_calculate(
         'total_offices', hf.generate_year_month_and_day_map, ReportTotalOfficesModel
     )

@@ -12,20 +12,27 @@ User = get_user_model()
 
 
 def sso_login_handler(request, *args, **kwargs):
-    try:
-        ndoptor_cookie = request.GET.get('data')
-        path = request.GET.get('next')
-        path = path.split('?')[0]
 
-        sso_status, sso_cookie = unzip_doptor_cookie(request, ndoptor_cookie)
-        if sso_status == 'success':
-            login_user(request, sso_cookie)
-        else:
-            return HttpResponseBadRequest()
-    except Exception as e:
+    ndoptor_cookie = request.GET.get('data')
+    if not ndoptor_cookie:
+        login_redirect_url = request.build_absolute_uri(request.path)
+        login_redirect_url_b64_byte = base64.b64encode(
+            login_redirect_url.encode('utf-8')
+        )
+        login_redirect_url_b64_string = login_redirect_url_b64_byte.decode('utf-8')
+
+        ndoptor_login_url = (
+            settings.SSO_LOGIN_URL + "?" + "referer=" + login_redirect_url_b64_string
+        )
+        return redirect(ndoptor_login_url)
+
+    sso_status, sso_cookie = unzip_doptor_cookie(request, ndoptor_cookie)
+    if sso_status == 'success':
+        login_user(request, sso_cookie)
+    else:
         return HttpResponseBadRequest()
 
-    return redirect(request.build_absolute_uri(path))
+    return redirect(request.build_absolute_uri(reverse('home')))
 
 
 def unzip_doptor_cookie(request, response):
