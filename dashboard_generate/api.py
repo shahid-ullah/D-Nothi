@@ -6,6 +6,14 @@ from rest_framework.views import APIView
 from automate_process.models import (EmployeeRecords, NisponnoRecords, Offices,
                                      UserLoginHistory, Users)
 
+from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
+                     ReportIOSUsersModel, ReportLoginFemalelUsersModel,
+                     ReportLoginMalelUsersModel, ReportLoginTotalUsers,
+                     ReportMaleNothiUsersModel, ReportMobileAppUsersModel,
+                     ReportNispottikrittoNothiModel, ReportNoteNisponnoModel,
+                     ReportPotrojariModel, ReportTotalOfficesModel,
+                     ReportTotalUsersModel, ReportUpokarvogiModel)
+
 
 class SourceDBStatusAPI(APIView):
     def get(self, request, format=None):
@@ -13,6 +21,47 @@ class SourceDBStatusAPI(APIView):
 
         try:
             status = generate_status(request)
+        except Exception as e:
+            status = {}
+            print(e)
+
+        return Response(status)
+
+
+class ReportDBStatus(APIView):
+    def get(self, request, format=None):
+        """ """
+
+        models = [
+            ReportAndroidUsersModel,
+            ReportFemaleNothiUsersModel,
+            ReportIOSUsersModel,
+            ReportLoginFemalelUsersModel,
+            ReportLoginMalelUsersModel,
+            ReportLoginTotalUsers,
+            ReportMaleNothiUsersModel,
+            ReportMobileAppUsersModel,
+            ReportNispottikrittoNothiModel,
+            ReportNoteNisponnoModel,
+            ReportPotrojariModel,
+            ReportTotalOfficesModel,
+            ReportTotalUsersModel,
+            ReportUpokarvogiModel,
+        ]
+
+        try:
+            status = {}
+            for model in models:
+                objs = model.objects.all()
+                values = objs.values(
+                    'report_day',
+                )
+                dataframe = pd.DataFrame(values)
+                status.setdefault(model.__name__, {})
+                status[model.__name__]['table_size'] = dataframe.shape[0]
+                status[model.__name__][
+                    'report_date_range'
+                ] = f'{dataframe.report_day.min()} - {dataframe.report_day.max()}'
         except Exception as e:
             status = {}
             print(e)

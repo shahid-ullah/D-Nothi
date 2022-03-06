@@ -71,6 +71,11 @@ urlpatterns = [
         name="source_db_status",
     ),
     path(
+        'report_db_status/',
+        api.ReportDBStatus.as_view(),
+        name="report_db_status",
+    ),
+    path(
         'export_csv/<str:start_date>/<str:end_date>/',
         views.report_export_csv_view,
         name="export_csv",
