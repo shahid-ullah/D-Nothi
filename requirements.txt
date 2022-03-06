@@ -13,10 +13,13 @@ click==8.0.3
 django==3.2.9
     # via
     #   -r requirements.in
+    #   django-debug-toolbar
     #   django-extensions
     #   django-filter
     #   djangorestframework
 django-crispy-forms==1.14.0
+    # via -r requirements.in
+django-debug-toolbar==3.2.4
     # via -r requirements.in
 django-environ==0.8.1
     # via -r requirements.in
@@ -61,7 +64,9 @@ reportlab==3.6.6
 six==1.16.0
     # via python-dateutil
 sqlparse==0.4.2
-    # via django
+    # via
+    #   django
+    #   django-debug-toolbar
 tomli==1.2.2
     # via pep517
 wcwidth==0.2.5

@@ -11,3 +11,4 @@ django-extensions
 reportlab
 ptpython
 django-crispy-forms
+django-debug-toolbar
