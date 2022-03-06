@@ -49,9 +49,9 @@ class ReportDBStatus(APIView):
             ReportUpokarvogiModel,
         ]
 
-        try:
-            status = {}
-            for model in models:
+        status = {}
+        for model in models:
+            try:
                 objs = model.objects.all()
                 values = objs.values(
                     'report_day',
@@ -62,9 +62,9 @@ class ReportDBStatus(APIView):
                 status[model.__name__][
                     'report_date_range'
                 ] = f'{dataframe.report_day.min()} - {dataframe.report_day.max()}'
-        except Exception as e:
-            status = {'error': str(e)}
-            print(e)
+            except Exception as e:
+                status[model.__name__] = str(e)
+                print(e)
 
         return Response(status)
 
