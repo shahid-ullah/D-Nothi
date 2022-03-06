@@ -63,7 +63,7 @@ class ReportDBStatus(APIView):
                     'report_date_range'
                 ] = f'{dataframe.report_day.min()} - {dataframe.report_day.max()}'
         except Exception as e:
-            status = {}
+            status = {'error': str(e)}
             print(e)
 
         return Response(status)
