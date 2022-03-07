@@ -37,7 +37,7 @@ def update(request=None, *args, **kwargs):
     # upokarvogi
     try:
         last_report_date = upokarvogi.update(objs, request, *args, **kwargs)
-        upokarvogi_status['last_report_date'] = last_report_date
+        upokarvogi_status['last_report_date'] = str(last_report_date)
         upokarvogi_status['status'] = 'success'
     except Exception as e:
         upokarvogi_status['last_report_date'] = []
