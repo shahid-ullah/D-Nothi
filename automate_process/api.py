@@ -1,5 +1,6 @@
 # import json
 
+import time
 from datetime import datetime
 
 from django.conf import settings
@@ -27,6 +28,8 @@ class updateDashboard(APIView):
     authentication_classes = [authentication.SessionAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
+    start_processing = time.perf_counter()
+
     def get(self, request, format=None):
         """ """
 
@@ -35,6 +38,7 @@ class updateDashboard(APIView):
             print('system update running. please request later')
             return Response({'status': 'system update running. Please request later'})
 
+        start_processing_time = time.perf_counter()
         settings.SYSTEM_UPDATE_RUNNING = True
         try:
             update_log_object = DashboardUpdateLog.objects.create(
@@ -100,6 +104,8 @@ class updateDashboard(APIView):
             status['user_login_history_employee_records'] = str(e)
 
         settings.SYSTEM_UPDATE_RUNNING = False
+        end_processing_time = time.perf_counter()
+        status['computation_time'] = end_processing_time - start_processing_time
 
         try:
             update_log_object.status = status

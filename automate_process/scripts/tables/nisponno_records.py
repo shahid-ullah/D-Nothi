@@ -78,6 +78,7 @@ def load_dataframe():
     if settings.DEBUG:
         objs = NisponnoRecords.objects.using('source_db').all()[:1000]
     else:
-        objs = NisponnoRecords.objects.using('source_db').all()
+        query = settings.QUERY_CREATED_DATE
+        objs = NisponnoRecords.objects.using('source_db').filter(query)
 
     return objs

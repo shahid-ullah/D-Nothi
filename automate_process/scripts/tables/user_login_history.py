@@ -65,5 +65,7 @@ def load_dataframe():
     if settings.DEBUG:
         objs = UserLoginHistory.objects.using('source_db').all()[:1000]
     else:
-        objs = UserLoginHistory.objects.using('source_db').all()
+        query = settings.QUERY_CREATED_DATE
+        objs = UserLoginHistory.objects.using('source_db').filter(query)
+
     return objs

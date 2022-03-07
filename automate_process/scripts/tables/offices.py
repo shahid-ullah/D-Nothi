@@ -30,6 +30,7 @@ def load_dataframe():
     if settings.DEBUG:
         objs = Offices.objects.using('source_db').all()[:1000]
     else:
-        objs = Offices.objects.using('source_db').all()
+        query = settings.QUERY_CREATED_DATE
+        objs = Offices.objects.using('source_db').filter(query)
 
     return objs

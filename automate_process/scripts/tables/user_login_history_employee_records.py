@@ -52,11 +52,15 @@ def load_dataframe():
             :1000
         ]
     else:
-        user_login_history_objs = UserLoginHistory.objects.using('source_db').all()
+        query = settings.QUERY_CREATED_DATE
+        user_login_history_objs = UserLoginHistory.objects.using('source_db').filter(
+            query
+        )
 
     if settings.DEBUG:
         employee_records_objs = EmployeeRecords.objects.using('source_db').all()[:1000]
     else:
-        employee_records_objs = EmployeeRecords.objects.using('source_db').all()
+        query = settings.QUERY_CREATED_DATE
+        employee_records_objs = EmployeeRecords.objects.using('source_db').filter(query)
 
     return user_login_history_objs, employee_records_objs
