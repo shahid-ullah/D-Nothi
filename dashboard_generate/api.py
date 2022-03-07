@@ -1,18 +1,21 @@
 # dashboard_generate/api.py
 import pandas as pd
+from rest_framework import authentication, generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from automate_process.models import (EmployeeRecords, NisponnoRecords, Offices,
                                      UserLoginHistory, Users)
 
-from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
-                     ReportIOSUsersModel, ReportLoginFemalelUsersModel,
-                     ReportLoginMalelUsersModel, ReportLoginTotalUsers,
-                     ReportMaleNothiUsersModel, ReportMobileAppUsersModel,
-                     ReportNispottikrittoNothiModel, ReportNoteNisponnoModel,
-                     ReportPotrojariModel, ReportTotalOfficesModel,
-                     ReportTotalUsersModel, ReportUpokarvogiModel)
+from .models import (DashboardUpdateLog, ReportAndroidUsersModel,
+                     ReportFemaleNothiUsersModel, ReportIOSUsersModel,
+                     ReportLoginFemalelUsersModel, ReportLoginMalelUsersModel,
+                     ReportLoginTotalUsers, ReportMaleNothiUsersModel,
+                     ReportMobileAppUsersModel, ReportNispottikrittoNothiModel,
+                     ReportNoteNisponnoModel, ReportPotrojariModel,
+                     ReportTotalOfficesModel, ReportTotalUsersModel,
+                     ReportUpokarvogiModel)
+from .serializers import DashboardUpdateLogSerializer
 
 
 class SourceDBStatusAPI(APIView):
@@ -26,6 +29,13 @@ class SourceDBStatusAPI(APIView):
             print(e)
 
         return Response(status)
+
+
+class DashboardUpdateLogAPI(generics.ListAPIView):
+    authentication_classes = [authentication.SessionAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = DashboardUpdateLog.objects.all()
+    serializer_class = DashboardUpdateLogSerializer
 
 
 class ReportDBStatus(APIView):

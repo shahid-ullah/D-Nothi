@@ -344,3 +344,4 @@ class DashboardUpdateLog(models.Model):
 
     class Meta:
         db_table = "dashboard_update_log"
+        ordering = ['-id']
