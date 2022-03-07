@@ -259,7 +259,7 @@ class ReportIOSUsersModel(models.Model):
 
 
 def empty_dictionary():
-    return set()
+    return {}
 
 
 class ReportLoginTotalUsers(models.Model):
@@ -332,3 +332,15 @@ class ReportLoginFemalelUsersModel(models.Model):
 
     def __str__(self):
         return f'year: {self.year} month: {self.month}, day: {self.day}, count_or_sum: {self.count_or_sum}'
+
+
+class DashboardUpdateLog(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
+    status = models.JSONField(default=empty_dictionary)
+    update_start_time = models.DateTimeField(blank=True, null=True)
+    update_completion_time = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        db_table = "dashboard_update_log"
