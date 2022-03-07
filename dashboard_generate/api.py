@@ -1,4 +1,6 @@
 # dashboard_generate/api.py
+import time
+
 import pandas as pd
 from rest_framework import authentication, generics, permissions
 from rest_framework.response import Response
@@ -25,7 +27,7 @@ class SourceDBStatusAPI(APIView):
         try:
             status = generate_status(request)
         except Exception as e:
-            status = {}
+            status = {'error': str(e)}
             print(e)
 
         return Response(status)
@@ -81,33 +83,62 @@ class ReportDBStatus(APIView):
 
 def generate_status(request, *args, **kwargs):
 
-    model_list1 = [EmployeeRecords, Offices, UserLoginHistory, Users]
-    model_list2 = [NisponnoRecords]
-    # model_list1 = [Offices]
-    # model_list2 = [NisponnoRecords]
+    start = time.perf_counter()
+
+    model_list1 = [EmployeeRecords, Offices, UserLoginHistory, Users, NisponnoRecords]
     status = {}
     for model in model_list1:
         objs = model.objects.using('source_db').all()
-        values = objs.values(
-            'created',
+
+        first_object = objs.first()
+        last_object = objs.last()
+
+        report_first_date = get_report_first_date(
+            objs, first_object.id, first_object.created
         )
-        dataframe = pd.DataFrame(values)
+        report_last_date = get_report_last_date(
+            objs, last_object.id, last_object.created
+        )
+
         status.setdefault(model.__name__, {})
-        status[model.__name__]['table_size'] = dataframe.shape[0]
+        status[model.__name__]['table_size'] = objs.count()
         status[model.__name__][
             'report_date_range'
-        ] = f'{dataframe.created.min()} - {dataframe.created.max()}'
+        ] = f"{report_last_date} - {report_first_date}"
 
-    for model in model_list2:
-        objs = model.objects.using('source_db').all()
-        values = objs.values(
-            'operation_date',
-        )
-        dataframe = pd.DataFrame(values)
-        status.setdefault(model.__name__, {})
-        status[model.__name__]['table_size'] = dataframe.shape[0]
-        status[model.__name__][
-            'report_date_range'
-        ] = f'{dataframe.operation_date.min()} - {dataframe.operation_date.max()}'
+    stop = time.perf_counter()
+    status['coputation_time'] = stop - start
 
-        return status
+    return status
+
+
+def get_report_first_date(objs, id, report_time):
+    if report_time:
+        return report_time
+
+    id = id + 1
+    try:
+
+        obj = objs[id]
+        id = obj.id
+        report_time = obj.created
+    except IndexError:
+        id = id + 1
+
+    return get_report_first_date(objs, id, report_time)
+
+
+def get_report_last_date(objs, id, report_time):
+    if report_time:
+        return report_time
+
+    id = id - 1
+    try:
+
+        obj = objs[id]
+        id = obj.id
+        report_time = obj.created
+    except IndexError:
+        id = id - 1
+
+    return get_report_last_date(objs, id, report_time)
