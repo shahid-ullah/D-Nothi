@@ -15,7 +15,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('sso_login_handler/', sso_login_handler, name='sso_login_handler'),
     path('logout/', logout_view, name='logout'),
-    path('api-auth/', include('rest_framework.urls')),
+    # path('api-auth/', include('rest_framework.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

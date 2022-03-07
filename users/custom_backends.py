@@ -6,7 +6,14 @@ User = get_user_model()
 
 
 class NdoptorAuthenticationBackend(BaseBackend):
+    IGNORE_PATHS = [
+        '/admin/login/',
+        '/api-auth/login/',
+    ]
+
     def authenticate(self, request, username=None, *args, **kwargs):
+        if request.path in self.IGNORE_PATHS:
+            return
 
         username_eng = kwargs.get('name_eng')
         username_bng = kwargs.get('name_bng')
