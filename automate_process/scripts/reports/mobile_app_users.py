@@ -59,8 +59,7 @@ def generate_year_month_day_key_and_report_date(year, month, day):
 
 def generate_model_object_dictionary(request, year, month, day, count):
     year_month_day, report_date = generate_year_month_day_key_and_report_date(
-        year, month, day
-    )
+        year, month, day)
     dict_ = {}
     dict_['year'] = year
     dict_['month'] = month
@@ -87,17 +86,21 @@ def format_and_load_to_mysql_db(request, groupby_date):
     for date, frame in groupby_date:
         last_report_date = date
 
-        count = frame['id'].count()
+        count = frame['employee_record_id'].nunique()
+        employee_ids = {}
 
-        dict_ = generate_model_object_dictionary(
-            request, date.year, date.month, date.day, count
-        )
-        defaults = {'count_or_sum': count}
+        for id in frame.employee_record_id.values:
+            employee_ids.setdefault(int(id), 1)
+
+        dict_ = generate_model_object_dictionary(request, date.year,
+                                                 date.month, date.day, count)
+        dict_['employee_record_ids'] = employee_ids
+
+        defaults = {'count_or_sum': count, 'employee_record_ids': employee_ids}
 
         try:
             obj = ReportMobileAppUsersModel.objects.get(
-                year_month_day=dict_['year_month_day']
-            )
+                year_month_day=dict_['year_month_day'])
             # obj = ReportTotalOfficesModel.objects.get(report_day=report_day)
             for key, value in defaults.items():
                 setattr(obj, key, value)
@@ -112,7 +115,7 @@ def update(objs, request=None, *args, **kwargs):
     print()
     print('start processing mobile_app_users report')
 
-    values = objs.values('id', 'is_mobile', 'created')
+    values = objs.values('id', 'is_mobile', 'created', 'employee_record_id')
     dataframe = pd.DataFrame(values)
 
     dataframe = dataframe.loc[dataframe.is_mobile == 1]

@@ -9,7 +9,6 @@ from django.db.models import Q
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 env = environ.Env(DEBUG=(bool, False))
 env_file = os.path.join(BASE_DIR, ".env")
 environ.Env.read_env(env_file)
@@ -25,7 +24,6 @@ SECRET_KEY = env('SECRET_KEY')
 # DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -80,10 +78,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'src.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
 
 DATABASES = {
     'default': {
@@ -93,7 +89,9 @@ DATABASES = {
         'PASSWORD': env('DB_PASSWORD'),
         'HOST': env('DB_HOST'),
         'PORT': env('DB_PORT'),
-        'OPTIONS': {'charset': 'utf8mb4'},
+        'OPTIONS': {
+            'charset': 'utf8mb4'
+        },
     },
     'source_db': {
         'ENGINE': 'django.db.backends.mysql',
@@ -102,29 +100,33 @@ DATABASES = {
         'PASSWORD': env('SOURCE_DB_PASSWORD'),
         'HOST': env('SOURCE_DB_HOST'),
         'PORT': env('SOURCE_DB_PORT'),
-        'OPTIONS': {'charset': 'utf8mb4'},
+        'OPTIONS': {
+            'charset': 'utf8mb4'
+        },
     },
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -139,7 +141,6 @@ USE_L10N = True
 
 # USE_TZ = True
 USE_TZ = False
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
@@ -162,7 +163,6 @@ DATA_BASE_DIR_PATH = os.path.join(BASE_DIR, 'Data')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
 SYSTEM_UPDATE_RUNNING = False
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = None
@@ -172,7 +172,8 @@ AUTHENTICATION_BACKENDS = (
     'users.custom_backends.NdoptorAuthenticationBackend',
 )
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'DEFAULT_PAGINATION_CLASS':
+    'rest_framework.pagination.LimitOffsetPagination',
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
@@ -181,13 +182,11 @@ REST_FRAMEWORK = {
 
 LOGOUT_REDIRECT_URL = 'home'
 
-
 SSO_LOGIN_URL = 'https://n-doptor-accounts-stage.nothi.gov.bd/login'
 SSO_LOGOUT_URL = 'https://n-doptor-accounts-stage.nothi.gov.bd/logout'
 
 QUERY_CREATED_DATE = Q(created__gte=datetime(2013, 11, 1, 0, 0, 0)) | Q(
-    created__isnull=True
-)
+    created__isnull=True)
 
 if settings.DEBUG:
     INTERNAL_IPS = [
