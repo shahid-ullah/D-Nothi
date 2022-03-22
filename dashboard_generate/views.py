@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -21,7 +21,7 @@ from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
 User = get_user_model()
 
 
-@login_required(login_url='/sso_login_handler/')
+# @login_required(login_url='/sso_login_handler/')
 def total_offices_view(request):
     year_map, month_map, day_map = hf.get_cache_or_calculate(
         'total_offices', hf.generate_year_month_and_day_map,
@@ -36,7 +36,7 @@ def total_offices_view(request):
     return render(request, 'dashboard_generate/total_offices.html', context)
 
 
-@login_required(login_url='/sso_login_handler/')
+# @login_required(login_url='/sso_login_handler/')
 def nispottikritto_nothi_view(request):
     year_map, month_map, day_map = hf.get_cache_or_calculate(
         'nispottikritto_nothi',
@@ -54,7 +54,7 @@ def nispottikritto_nothi_view(request):
                   context)
 
 
-@login_required(login_url='/sso_login_handler/')
+# @login_required(login_url='/sso_login_handler/')
 def nothi_users_total_view(request):
     year_map, month_map, day_map = hf.get_cache_or_calculate(
         'nothi_users_total', hf.generate_year_month_and_day_map,
@@ -70,7 +70,7 @@ def nothi_users_total_view(request):
                   context)
 
 
-@login_required(login_url='/sso_login_handler/')
+# @login_required(login_url='/sso_login_handler/')
 def total_upokarvogi_view(request):
     year_map, month_map, day_map = hf.get_cache_or_calculate(
         'upokarvogi', hf.generate_year_month_and_day_map,
@@ -85,7 +85,7 @@ def total_upokarvogi_view(request):
     return render(request, 'dashboard_generate/total_upokarvogi.html', context)
 
 
-@login_required(login_url='/sso_login_handler/')
+# @login_required(login_url='/sso_login_handler/')
 def nothi_users_male_view(request):
     year_map, month_map, day_map = hf.get_cache_or_calculate(
         'nothi_users_male',
@@ -102,7 +102,7 @@ def nothi_users_male_view(request):
     return render(request, 'dashboard_generate/nothi_users_male.html', context)
 
 
-@login_required(login_url='/sso_login_handler/')
+# @login_required(login_url='/sso_login_handler/')
 def nothi_users_female_view(request):
     year_map, month_map, day_map = hf.get_cache_or_calculate(
         'nothi_users_female',
@@ -120,7 +120,7 @@ def nothi_users_female_view(request):
                   context)
 
 
-@login_required(login_url='/sso_login_handler/')
+# @login_required(login_url='/sso_login_handler/')
 def note_nisponno_view(request):
     year_map, month_map, day_map = hf.get_cache_or_calculate(
         'note_nisponno', hf.generate_year_month_and_day_map,
@@ -135,7 +135,7 @@ def note_nisponno_view(request):
     return render(request, 'dashboard_generate/note_nisponno.html', context)
 
 
-@login_required(login_url='/sso_login_handler/')
+# @login_required(login_url='/sso_login_handler/')
 def potrojari_view(request):
     year_map, month_map, day_map = hf.get_cache_or_calculate(
         'potrojari', hf.generate_year_month_and_day_map, ReportPotrojariModel)
@@ -149,7 +149,7 @@ def potrojari_view(request):
     return render(request, 'dashboard_generate/potrojari.html', context)
 
 
-@login_required(login_url='/sso_login_handler/')
+# @login_required(login_url='/sso_login_handler/')
 def login_total_users_view(request):
     year_map, month_map, day_map = hf.get_cache_or_calculate(
         'login_total_users',
@@ -167,7 +167,7 @@ def login_total_users_view(request):
                   context)
 
 
-@login_required(login_url='/sso_login_handler/')
+# @login_required(login_url='/sso_login_handler/')
 def login_male_users_view(request):
     year_map, month_map, day_map = hf.get_cache_or_calculate(
         'login_male_users',
@@ -184,7 +184,7 @@ def login_male_users_view(request):
     return render(request, 'dashboard_generate/login_male_users.html', context)
 
 
-@login_required(login_url='/sso_login_handler/')
+# @login_required(login_url='/sso_login_handler/')
 def login_female_users_view(request):
     year_map, month_map, day_map = hf.get_cache_or_calculate(
         'login_female_users',
@@ -202,7 +202,7 @@ def login_female_users_view(request):
                   context)
 
 
-@login_required(login_url='/sso_login_handler/')
+# @login_required(login_url='/sso_login_handler/')
 def mobile_app_users_view(request):
     year_map, month_map, day_map = hf.get_cache_or_calculate(
         'mobile_app_users',
@@ -362,7 +362,7 @@ def process_post_request(request):
         return HttpResponse('Date format not correct')
 
 
-@login_required(login_url='/sso_login_handler/')
+# @login_required(login_url='/sso_login_handler/')
 def custom_report(request):
     if request.method == 'POST':
         return process_post_request(request)
@@ -549,7 +549,7 @@ def custom_report(request):
     )
 
 
-@login_required(login_url='/sso_login_handler/')
+# @login_required(login_url='/sso_login_handler/')
 def report_export_csv_view(request, start_date=None, end_date=None):
     start_date = start_date.split('-')
     end_date = end_date.split('-')
