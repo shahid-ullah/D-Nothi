@@ -15,13 +15,23 @@
       <div class="col-sm-6 col-md-6">
            <canvas id="traffic_day"></canvas>
       </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+           <canvas id="office_login"></canvas>
+      </div>
+    </div>
+    <div>
      <script charset="utf-8">
     var login_map_key = {{ hour_map_key | safe }};
     var login_map_values = {{ hour_map_values | safe }};
     var day_map_keys = {{ day_map_keys | safe }};
     var day_map_values = {{ day_map_values | safe }};
+    var office_login_keys = {{ office_login_keys | safe }};
+    var office_login_values = {{ office_login_values | safe }};
      const traffic_hour_ctx = document.getElementById('traffic_hour').getContext('2d');
      const traffic_day_ctx = document.getElementById('traffic_day').getContext('2d');
+     const  office_login_ctx = document.getElementById('office_login').getContext('2d');
 
     const chart = new Chart(traffic_hour_ctx, {
       type: 'line',
@@ -55,6 +65,23 @@
       indexAxis: 'x',
         }
     });
+
+    const chart3 = new Chart(office_login_ctx, {
+      type: 'bar',
+      data: {
+        // labels: [0, 1, 2, 3, 4],
+        labels: office_login_keys ,
+        datasets: [{
+          axis: 'y',
+          label: 'High Traffice Hour',
+          data: office_login_values,
+          backgroundColor: [ 'green', 'purple', 'fuchsia', 'lime', 'olive', 'yellow', 'navy', 'teal', 'aqua', 'black', 'silver', 'gray', 'beige', 'blueviolet', 'burlywood', 'chartreuse', ]
+        }]
+      },
+      options: {
+        indexAxis: 'x',
+          }
+      });
  </script>
 
     </div>

@@ -30,11 +30,18 @@ def dashboard_home(request):
     day_map_keys = list(day_map.keys())
     day_map_values = list(day_map.values())
 
+    office_login_map = graph_methods.office_login_map()
+    office_login_keys = list(office_login_map.keys())
+    office_login_values = list(office_login_map.values())
+    # breakpoint()
+
     context = {
         'hour_map_key': hour_map_key,
         'hour_map_values': hour_map_values,
         'day_map_keys': day_map_keys,
-        'day_map_values': day_map_values
+        'day_map_values': day_map_values,
+        'office_login_keys': office_login_keys,
+        'office_login_values': office_login_values,
     }
     return render(request, 'dashboard_generate/dashboard_home.html', context)
 
