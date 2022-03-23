@@ -366,6 +366,7 @@ class LoginHistoryGraphsDataModel(models.Model):
                              on_delete=models.SET_NULL,
                              null=True)
     login_hour_map = models.JSONField(default=EMPTY_DICTIONARY)
+    office_login_map = models.JSONField(default=EMPTY_DICTIONARY)
     report_generate_time = models.DateTimeField(auto_now_add=True)
     report_update_time = models.DateTimeField(auto_now=True)
 
