@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import models
 
 
-def empty_dictionary():
+def EMPTY_DICTIONARY():
     return {}
 
 
@@ -212,7 +212,7 @@ class ReportMobileAppUsersModel(models.Model):
     month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     count_or_sum = models.PositiveIntegerField(default=0)
-    employee_record_ids = models.JSONField(default=empty_dictionary)
+    employee_record_ids = models.JSONField(default=EMPTY_DICTIONARY)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     report_date = models.CharField(max_length=100)
@@ -285,7 +285,7 @@ class ReportLoginTotalUsers(models.Model):
     month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     count_or_sum = models.PositiveIntegerField(default=0)
-    employee_record_ids = models.JSONField(default=empty_dictionary)
+    employee_record_ids = models.JSONField(default=EMPTY_DICTIONARY)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     report_date = models.CharField(max_length=100)
@@ -310,7 +310,7 @@ class ReportLoginMalelUsersModel(models.Model):
     month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     count_or_sum = models.PositiveIntegerField(default=0)
-    employee_record_ids = models.JSONField(default=empty_dictionary)
+    employee_record_ids = models.JSONField(default=EMPTY_DICTIONARY)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     report_date = models.CharField(max_length=100)
@@ -335,7 +335,7 @@ class ReportLoginFemalelUsersModel(models.Model):
     month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     count_or_sum = models.PositiveIntegerField(default=0)
-    employee_record_ids = models.JSONField(default=empty_dictionary)
+    employee_record_ids = models.JSONField(default=EMPTY_DICTIONARY)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     report_date = models.CharField(max_length=100)
@@ -352,10 +352,23 @@ class DashboardUpdateLog(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.SET_NULL,
                              null=True)
-    status = models.JSONField(default=empty_dictionary)
+    status = models.JSONField(default=EMPTY_DICTIONARY)
     update_start_time = models.DateTimeField(blank=True, null=True)
     update_completion_time = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         db_table = "dashboard_update_log"
+        ordering = ['-id']
+
+
+class LoginHistoryGraphsDataModel(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.SET_NULL,
+                             null=True)
+    login_hour_map = models.JSONField(default=EMPTY_DICTIONARY)
+    report_generate_time = models.DateTimeField(auto_now_add=True)
+    report_update_time = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "login_history_graphs_data"
         ordering = ['-id']
