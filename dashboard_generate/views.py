@@ -8,6 +8,7 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import render
 
+from . import graph_methods
 from . import helper_functions as hf
 from .forms import ReportDateRangeForm
 from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
@@ -19,6 +20,23 @@ from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
                      ReportTotalUsersModel, ReportUpokarvogiModel)
 
 User = get_user_model()
+
+
+def dashboard_home(request):
+    hour_map = graph_methods.hour_traffic()
+    day_map = graph_methods.day_traffic()
+    hour_map_key = list(hour_map.keys())
+    hour_map_values = list(hour_map.values())
+    day_map_keys = list(day_map.keys())
+    day_map_values = list(day_map.values())
+
+    context = {
+        'hour_map_key': hour_map_key,
+        'hour_map_values': hour_map_values,
+        'day_map_keys': day_map_keys,
+        'day_map_values': day_map_values
+    }
+    return render(request, 'dashboard_generate/dashboard_home.html', context)
 
 
 # @login_required(login_url='/sso_login_handler/')

@@ -1,14 +1,14 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import (DashboardUpdateLog, ReportAndroidUsersModel,
-                     ReportFemaleNothiUsersModel, ReportIOSUsersModel,
-                     ReportLoginFemalelUsersModel, ReportLoginMalelUsersModel,
-                     ReportLoginTotalUsers, ReportMaleNothiUsersModel,
-                     ReportMobileAppUsersModel, ReportNispottikrittoNothiModel,
-                     ReportNoteNisponnoModel, ReportPotrojariModel,
-                     ReportTotalOfficesModel, ReportTotalUsersModel,
-                     ReportUpokarvogiModel)
+from .models import (DashboardUpdateLog, LoginHistoryGraphsDataModel,
+                     ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
+                     ReportIOSUsersModel, ReportLoginFemalelUsersModel,
+                     ReportLoginMalelUsersModel, ReportLoginTotalUsers,
+                     ReportMaleNothiUsersModel, ReportMobileAppUsersModel,
+                     ReportNispottikrittoNothiModel, ReportNoteNisponnoModel,
+                     ReportPotrojariModel, ReportTotalOfficesModel,
+                     ReportTotalUsersModel, ReportUpokarvogiModel)
 
 
 @admin.register(ReportTotalOfficesModel)
@@ -113,3 +113,8 @@ class DashboardUpdateLogAdmin(admin.ModelAdmin):
     list_display = [
         field.name for field in DashboardUpdateLog._meta.get_fields()
     ]
+
+
+@admin.register(LoginHistoryGraphsDataModel)
+class LoginHistoryGraphsDataModelAdmin(admin.ModelAdmin):
+    list_display = ['id']

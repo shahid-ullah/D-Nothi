@@ -1,0 +1,64 @@
+{% extends 'monthly_report/base.html' %}
+
+{% block title %}ড্যাশবোর্ড{% endblock %}
+{% block inline_css %}
+
+{% endblock inline_css %}
+
+{% block body_block %}
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <div class="row">
+      <div class="col-sm-6 col-md-6">
+           <canvas id="traffic_hour"></canvas>
+      </div>
+      <div class="col-sm-6 col-md-6">
+           <canvas id="traffic_day"></canvas>
+      </div>
+     <script charset="utf-8">
+    var login_map_key = {{ hour_map_key | safe }};
+    var login_map_values = {{ hour_map_values | safe }};
+    var day_map_keys = {{ day_map_keys | safe }};
+    var day_map_values = {{ day_map_values | safe }};
+     const traffic_hour_ctx = document.getElementById('traffic_hour').getContext('2d');
+     const traffic_day_ctx = document.getElementById('traffic_day').getContext('2d');
+
+    const chart = new Chart(traffic_hour_ctx, {
+      type: 'line',
+      data: {
+        // labels: [0, 1, 2, 3, 4],
+        labels: login_map_key ,
+        datasets: [{
+          axis: 'y',
+          label: 'High Traffice Hour',
+          data: login_map_values,
+          backgroundColor: [ 'green', 'purple', 'fuchsia', 'lime', 'olive', 'yellow', 'navy', 'teal', 'aqua', 'black', 'silver', 'gray', 'beige', 'blueviolet', 'burlywood', 'chartreuse', ]
+        }]
+      },
+      options: {
+        indexAxis: 'x',
+          }
+      });
+
+  const chart2 = new Chart(traffic_day_ctx, {
+    type: 'line',
+    data: {
+      labels: day_map_keys,
+      datasets: [{
+        axis: 'y',
+        label: 'High Traffice Day',
+        data: day_map_values,
+        backgroundColor: [ 'green', 'purple', 'fuchsia', 'lime', 'olive', 'yellow', 'navy', 'teal', 'aqua', 'black', 'silver', 'gray', 'beige', 'blueviolet', 'burlywood', 'chartreuse', ]
+      }]
+    },
+    options: {
+      indexAxis: 'x',
+        }
+    });
+ </script>
+
+    </div>
+{% endblock %}
+
+{% block local_js %}
+{%  endblock local_js %}
