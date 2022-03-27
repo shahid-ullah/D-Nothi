@@ -6,62 +6,28 @@ from dashboard_generate.models import (ReportLoginFemalelUsersModel,
                                        ReportLoginMalelUsersModel)
 
 
-def zero_padding_first_ten_digits():
+def get_single_digit_maps():
     map = {}
-    for i in range(0, 11):
-        key1 = f"{i}"
-        key2 = f"0{i}"
+    for i in range(0, 10):
         value = f"0{i}"
-        map.setdefault(key1, value)
-        map.setdefault(key2, value)
+        map.setdefault(i, value)
 
     return map
 
 
-def initialize_day_map():
-    day_map_dict = {}
-    for i in range(32):
-        if i < 10:
-            key1 = str(i)
-            key2 = '0' + str(i)
-            value = '0' + str(i)
-            day_map_dict.setdefault(key1, value)
-            day_map_dict.setdefault(key2, value)
-        else:
-            key = str(i)
-            value = str(i)
-            day_map_dict.setdefault(key, value)
-
-    return day_map_dict
-
-
-def initialize_month_map():
-    month_map_dict = {}
-    for i in range(13):
-        if i < 10:
-            key1 = str(i)
-            key2 = '0' + str(i)
-            value = '0' + str(i)
-            month_map_dict.setdefault(key1, value)
-            month_map_dict.setdefault(key2, value)
-        else:
-            key = str(i)
-            value = str(i)
-            month_map_dict.setdefault(key, value)
-    return month_map_dict
-
-
-DAY_MAP_DICT = initialize_day_map()
-MONTH_MAP_DICT = initialize_month_map()
+SINGLE_DIGIT_KEY_MAPS = get_single_digit_maps()
 
 
 def generate_year_month_day_key_and_report_date(year, month, day):
+    if month < 10:
+        month = SINGLE_DIGIT_KEY_MAPS[month]
+
+    if day < 10:
+        day = SINGLE_DIGIT_KEY_MAPS[day]
+
     year = str(year)
     month = str(month)
     day = str(day)
-
-    month = MONTH_MAP_DICT[month]
-    day = DAY_MAP_DICT[day]
 
     year_month_day = year + month + day
     report_date = year + "-" + month + "-" + day
@@ -126,11 +92,6 @@ def update(request, user_login_history_values, employee_values, *args,
     try:
         print()
         print('start processing login male & female nothi users report')
-        # user_login_history_values = user_login_history_objs.values(
-        #     'employee_record_id',
-        #     'created',
-        # )
-        # employee_records_values = employee_objs.values('id', 'gender')
         user_login_history_dataframe = pd.DataFrame(user_login_history_values)
         employee_records_dataframe = pd.DataFrame(employee_values)
 
@@ -170,6 +131,6 @@ def update(request, user_login_history_values, employee_values, *args,
         print('End processing login male & female nothi users report')
         print()
     except Exception as e:
-        login_male_last_report_date = ''
-        login_female_last_report_date = ''
+        login_male_last_report_date = str(e)
+        login_female_last_report_date = str(e)
     return str(login_male_last_report_date), str(login_female_last_report_date)
