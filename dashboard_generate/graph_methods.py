@@ -5,10 +5,41 @@ import random
 from .models import LoginHistoryGraphsDataModel
 
 
+def get_hour_maps():
+    HOUR_MAPS = {
+        '00': '12 AM',
+        '01': '1 AM',
+        '02': '2 AM',
+        '03': '3 AM',
+        '04': '4 AM',
+        '05': '5 AM',
+        '06': '6 AM',
+        '07': '7 AM',
+        '08': '8 AM',
+        '09': '9 AM',
+        '10': '10 AM',
+        '11': '11 AM',
+        '12': '12 PM',
+        '13': '1 PM',
+        '14': '2 PM',
+        '15': '3 PM',
+        '16': '4 PM',
+        '17': '5 PM',
+        '18': '6 PM',
+        '19': '7 PM',
+        '20': '8 PM',
+        '21': '9 PM',
+        '22': '10 PM',
+        '23': '11 PM',
+    }
+    return HOUR_MAPS
+
+
 def hour_traffic():
     object = LoginHistoryGraphsDataModel.objects.last()
     login_maps = object.login_hour_map
     hour_map = {}
+    HOUR_MAPS = get_hour_maps()
 
     for key, value in login_maps.items():
         hour = key[8:]
@@ -18,6 +49,7 @@ def hour_traffic():
         k: v
         for k, v in sorted(hour_map.items(), key=lambda item: item[0])
     }
+    hour_map = {HOUR_MAPS[k]: v for k, v in hour_map.items()}
 
     return hour_map
 
