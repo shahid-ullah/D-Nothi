@@ -6,6 +6,18 @@ from dashboard_generate.models import (ReportLoginFemalelUsersModel,
                                        ReportLoginMalelUsersModel)
 
 
+def zero_padding_first_ten_digits():
+    map = {}
+    for i in range(0, 11):
+        key1 = f"{i}"
+        key2 = f"0{i}"
+        value = f"0{i}"
+        map.setdefault(key1, value)
+        map.setdefault(key2, value)
+
+    return map
+
+
 def initialize_day_map():
     day_map_dict = {}
     for i in range(32):
@@ -59,8 +71,7 @@ def generate_year_month_day_key_and_report_date(year, month, day):
 
 def generate_model_object_dictionary(request, year, month, day, count):
     year_month_day, report_date = generate_year_month_day_key_and_report_date(
-        year, month, day
-    )
+        year, month, day)
     dict_ = {}
     dict_['year'] = year
     dict_['month'] = month
@@ -93,9 +104,8 @@ def format_and_load_to_mysql_db(request, groupby_date, model):
         for id in frame.employee_record_id.values:
             employee_ids.setdefault(int(id), 1)
 
-        dict_ = generate_model_object_dictionary(
-            request, date.year, date.month, date.day, count
-        )
+        dict_ = generate_model_object_dictionary(request, date.year,
+                                                 date.month, date.day, count)
         dict_['employee_record_ids'] = employee_ids
         defaults = {'count_or_sum': count, 'employee_record_ids': employee_ids}
 
@@ -111,55 +121,55 @@ def format_and_load_to_mysql_db(request, groupby_date, model):
     return last_report_date
 
 
-def update(request, user_login_history_objs, employee_objs, *args, **kwargs):
-    print()
-    print('start processing login male & female nothi users report')
-    user_login_history_values = user_login_history_objs.values(
-        'employee_record_id',
-        'created',
-    )
-    employee_records_values = employee_objs.values('id', 'gender')
-    user_login_history_dataframe = pd.DataFrame(user_login_history_values)
-    employee_records_dataframe = pd.DataFrame(employee_records_values)
+def update(request, user_login_history_values, employee_values, *args,
+           **kwargs):
+    try:
+        print()
+        print('start processing login male & female nothi users report')
+        # user_login_history_values = user_login_history_objs.values(
+        #     'employee_record_id',
+        #     'created',
+        # )
+        # employee_records_values = employee_objs.values('id', 'gender')
+        user_login_history_dataframe = pd.DataFrame(user_login_history_values)
+        employee_records_dataframe = pd.DataFrame(employee_values)
 
-    user_login_history_dataframe = user_login_history_dataframe[
-        ~user_login_history_dataframe.employee_record_id.isnull()
-    ]
-    user_login_history_dataframe = user_login_history_dataframe.astype(
-        {'employee_record_id': int}
-    )
+        user_login_history_dataframe = user_login_history_dataframe[
+            ~user_login_history_dataframe.employee_record_id.isnull()]
+        user_login_history_dataframe = user_login_history_dataframe.astype(
+            {'employee_record_id': int})
 
-    employee_records_dataframe = employee_records_dataframe[
-        ~employee_records_dataframe.id.isnull()
-    ]
-    employee_records_dataframe = employee_records_dataframe.astype({'id': int})
-    dataframe = pd.merge(
-        user_login_history_dataframe,
-        employee_records_dataframe,
-        how='left',
-        left_on='employee_record_id',
-        right_on='id',
-        suffixes=('login_history', 'employee_records'),
-    )
-    dataframe['created'] = dataframe.created.fillna(method='bfill')
-    dataframe = dataframe.astype({'gender': str})
-    login_male_nothi_users_df = dataframe[dataframe.gender == '1']
-    login_female_nothi_users_df = dataframe[dataframe.gender == '2']
-    login_male_groupby_date = login_male_nothi_users_df.groupby(
-        login_male_nothi_users_df.created.dt.date
-    )
-    login_male_last_report_date = format_and_load_to_mysql_db(
-        request, login_male_groupby_date, ReportLoginMalelUsersModel
-    )
+        employee_records_dataframe = employee_records_dataframe[
+            ~employee_records_dataframe.id.isnull()]
+        employee_records_dataframe = employee_records_dataframe.astype(
+            {'id': int})
+        dataframe = pd.merge(
+            user_login_history_dataframe,
+            employee_records_dataframe,
+            how='left',
+            left_on='employee_record_id',
+            right_on='id',
+            suffixes=('_login_history', '_employee_records'),
+        )
+        dataframe[
+            'created_login_history'] = dataframe.created_login_history.fillna(
+                method='bfill')
+        dataframe = dataframe.astype({'gender': str})
+        login_male_nothi_users_df = dataframe[dataframe.gender == '1']
+        login_female_nothi_users_df = dataframe[dataframe.gender == '2']
+        login_male_groupby_date = login_male_nothi_users_df.groupby(
+            login_male_nothi_users_df.created_login_history.dt.date)
+        login_male_last_report_date = format_and_load_to_mysql_db(
+            request, login_male_groupby_date, ReportLoginMalelUsersModel)
 
-    login_female_groupby_date = login_female_nothi_users_df.groupby(
-        login_female_nothi_users_df.created.dt.date
-    )
-    login_female_last_report_date = format_and_load_to_mysql_db(
-        request, login_female_groupby_date, ReportLoginFemalelUsersModel
-    )
+        login_female_groupby_date = login_female_nothi_users_df.groupby(
+            login_female_nothi_users_df.created_login_history.dt.date)
+        login_female_last_report_date = format_and_load_to_mysql_db(
+            request, login_female_groupby_date, ReportLoginFemalelUsersModel)
 
-    print('End processing login male & female nothi users report')
-    print()
-
-    return login_male_last_report_date, login_female_last_report_date
+        print('End processing login male & female nothi users report')
+        print()
+    except Exception as e:
+        login_male_last_report_date = ''
+        login_female_last_report_date = ''
+    return str(login_male_last_report_date), str(login_female_last_report_date)

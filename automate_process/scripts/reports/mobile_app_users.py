@@ -111,23 +111,30 @@ def format_and_load_to_mysql_db(request, groupby_date):
     return last_report_date
 
 
-def update(objs, request=None, *args, **kwargs):
-    print()
-    print('start processing mobile_app_users report')
+def update(values, request=None, *args, **kwargs):
+    status = {}
+    try:
+        print()
+        print('start processing mobile_app_users report')
 
-    values = objs.values('id', 'is_mobile', 'created', 'employee_record_id')
-    dataframe = pd.DataFrame(values)
+        # values = objs.values('id', 'is_mobile', 'created', 'employee_record_id')
+        dataframe = pd.DataFrame(values)
 
-    dataframe = dataframe.loc[dataframe.is_mobile == 1]
-    # remove null values
-    # dataframe = dataframe.loc[dataframe.created.notnull()]
-    dataframe['created'] = dataframe.created.fillna(method='bfill')
-    # add new column: cretead_new as datetime field from operation_date column
-    dataframe = dataframe.loc[dataframe.created.notnull()]
-    groupby_date = dataframe.groupby(dataframe.created.dt.date)
+        dataframe = dataframe.loc[dataframe.is_mobile == 1]
+        # remove null values
+        # dataframe = dataframe.loc[dataframe.created.notnull()]
+        dataframe['created'] = dataframe.created.fillna(method='bfill')
+        # add new column: cretead_new as datetime field from operation_date column
+        dataframe = dataframe.loc[dataframe.created.notnull()]
+        groupby_date = dataframe.groupby(dataframe.created.dt.date)
 
-    last_report_date = format_and_load_to_mysql_db(request, groupby_date)
-    print('End processing mobile_app_users report')
-    print()
+        last_report_date = format_and_load_to_mysql_db(request, groupby_date)
+        print('End processing mobile_app_users report')
+        print()
+        status['last_report_date'] = str(last_report_date)
+        status['status'] = 'success'
+    except Exception as e:
+        status['status'] = str(e)
+        status['last_report_date'] = []
 
-    return last_report_date
+    return status

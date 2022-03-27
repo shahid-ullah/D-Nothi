@@ -1,20 +1,18 @@
-# import json
-
+# automate_process/api.py
 import time
 from datetime import datetime
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-# from django.core.files.base import File
 from rest_framework import authentication, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from dashboard_generate.models import DashboardUpdateLog
 
-from .scripts.tables import (nisponno_records, offices, user_login_history,
-                             user_login_history_employee_records, users,
-                             users_employee_records)
+from .models import (EmployeeRecords, NisponnoRecords, Offices,
+                     UserLoginHistory, Users)
+from .scripts import reports
 
 User = get_user_model()
 
@@ -25,10 +23,9 @@ class updateDashboard(APIView):
     process source db data and dump to dashboard db.
     """
 
-    authentication_classes = [authentication.SessionAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    # authentication_classes = [authentication.SessionAuthentication]
 
-    start_processing = time.perf_counter()
+    # permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, format=None):
         """ """
@@ -36,9 +33,11 @@ class updateDashboard(APIView):
         status = {}
         if settings.SYSTEM_UPDATE_RUNNING:
             print('system update running. please request later')
-            return Response({'status': 'system update running. Please request later'})
+            return Response(
+                {'status': 'system update running. Please request later'})
 
         start_processing_time = time.perf_counter()
+        update_start_time = datetime.now(),
         settings.SYSTEM_UPDATE_RUNNING = True
         try:
             update_log_object = DashboardUpdateLog.objects.create(
@@ -50,62 +49,91 @@ class updateDashboard(APIView):
             print(e)
 
         # Table 1: offices
-        try:
 
-            offices_status = offices_table(request)
-            status['offices'] = offices_status
-
-        except Exception as e:
-            print(e)
-            status['offices'] = str(e)
+        status['offices'] = {}
+        o_objs = Offices.objects.using('source_db').all()[:100]
+        o_values = o_objs.values('id', 'active_status', 'created')
+        total_offices_status = reports.total_offices.update(o_values, request)
+        status['offices']['total_offices'] = total_offices_status
+        o_values = None
 
         # Table 2: nisponno_records
-        try:
-            nisponno_records_status = nisponno_records_table(request)
-            status['nisponno_records'] = nisponno_records_status
-        except Exception as e:
-            print(e)
-            status['nisponno_records'] = str(e)
+        status['nisponno_records'] = {}
+        nr_objs = NisponnoRecords.objects.using('source_db').all()[:100]
+        nr_values = nr_objs.values('id', 'type', 'upokarvogi',
+                                   'operation_date')
+        # nispottikritto_nothi
+        ni_status = reports.nispottikritto_nothi.update(nr_values, request)
+        status['nisponno_records']['nispottikritto_nothi'] = ni_status
+        # upokarvogi
+        st = reports.upokarvogi.update(nr_values, request)
+        status['nisponno_records']['upokarvogi'] = st
+        # potrojari
+        st = reports.potrojari.update(nr_values, request)
+        status['nisponno_records']['potrojari'] = st
+        # note nisponno
+        st = reports.note_nisponno.update(nr_values, request)
+        status['nisponno_records']['note_nisponno'] = st
+        nr_values = None
 
         # Table 3: users
-        try:
-            users_status = users_table(request)
-            status['users'] = users_status
-
-        except Exception as e:
-            print(e)
-            status['users'] = str(e)
+        status['users'] = {}
+        u_objs = Users.objects.using('source_db').all()[:100]
+        u_values = u_objs.values(
+            'id',
+            'username',
+            'user_role_id',
+            'is_admin',
+            'active',
+            'user_status',
+            'created',
+            'modified',
+            'employee_record_id',
+        )
+        st = reports.total_nothi_users.update(u_values, request)
+        status['users']['total_nothi_users'] = st
+        # u_values = None
 
         # Table 4: users_employee_records
-        try:
-            users_emploee_records_status = users_employee_records_table(request)
-            status['users_employee_records'] = users_emploee_records_status
-
-        except Exception as e:
-            print(e)
-            status['users_employee_records'] = str(e)
+        status['users_employee_records'] = {}
+        er_objs = EmployeeRecords.objects.using('source_db').all()[:100]
+        er_values = er_objs.values('id', 'name_eng', 'gender', 'created',
+                                   'modified')
+        # male_female_users
+        st = reports.male_female_nothi_users.update(request, u_values,
+                                                    er_values)
+        status['users_employee_records'] = st
 
         # Table 5: user_login_history
-        try:
-            status_ = user_login_history_table(request)
-            status['user_login_history'] = status_
 
-        except Exception as e:
-            print(e)
-            status['user_login_history'] = str(e)
+        status['user_login_history'] = {}
+        lh_objs = UserLoginHistory.objects.using('source_db').all()[:100]
+        lh_values = lh_objs.values('id', 'is_mobile', 'created',
+                                   'employee_record_id')
+        # mobile_app_users
+        st = reports.mobile_app_users.update(lh_values, request)
+        status['user_login_history']['mobile_app_users'] = st
+        # Android-IOS users
+        st = reports.android_ios_users.update(lh_values, request)
+        status['user_login_history']['android_ios_users'] = st
+        # Login Total users
+        st = reports.login_total_users.update(lh_values, request)
+        status['user_login_history']['login_total_users'] = st
 
         # Table 6: user_login_history_employee_records
-        try:
-            status_ = user_login_history_employee_records_table(request)
-            status['user_login_history_employee_records'] = status_
 
-        except Exception as e:
-            print(e)
-            status['user_login_history_employee_records'] = str(e)
+        # login_male_female_nothi_users
+        status['user_login_history_employee_records'] = {}
+        st1, st2 = reports.login_male_female_users.update(
+            request, lh_values, er_values)
+        status['user_login_history_employee_records']['login_male_users'] = st1
+        status['user_login_history_employee_records'][
+            'login_female_users'] = st2
 
         settings.SYSTEM_UPDATE_RUNNING = False
         end_processing_time = time.perf_counter()
-        status['computation_time'] = end_processing_time - start_processing_time
+        status[
+            'computation_time'] = end_processing_time - start_processing_time
 
         try:
             update_log_object.status = status
@@ -115,39 +143,3 @@ class updateDashboard(APIView):
             print(e)
 
         return Response(status)
-
-
-def user_login_history_table(request=None, *args, **kwargs):
-    user_login_history_status = user_login_history.update(request, *args, **kwargs)
-
-    return user_login_history_status
-
-
-def offices_table(request=None, *args, **kwargs):
-    offices_status = offices.update(request)
-
-    return offices_status
-
-
-def nisponno_records_table(request=None, *args, **kwargs):
-    nisponno_records_status = nisponno_records.update(request)
-
-    return nisponno_records_status
-
-
-def users_table(request=None):
-    users_status = users.update(request)
-
-    return users_status
-
-
-def users_employee_records_table(request=None):
-    users_employee_records_status = users_employee_records.update(request)
-
-    return users_employee_records_status
-
-
-def user_login_history_employee_records_table(request=None):
-    users_employee_records_status = user_login_history_employee_records.update(request)
-
-    return users_employee_records_status

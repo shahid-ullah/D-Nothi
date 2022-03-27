@@ -58,8 +58,7 @@ def generate_year_month_day_key_and_report_date(year, month, day):
 
 def generate_model_object_dictionary(request, year, month, day, count):
     year_month_day, report_date = generate_year_month_day_key_and_report_date(
-        year, month, day
-    )
+        year, month, day)
     dict_ = {}
     dict_['year'] = year
     dict_['month'] = month
@@ -88,15 +87,13 @@ def format_and_load_to_mysql_db(request, groupby_date):
 
         count = frame['id'].count()
 
-        dict_ = generate_model_object_dictionary(
-            request, date.year, date.month, date.day, count
-        )
+        dict_ = generate_model_object_dictionary(request, date.year,
+                                                 date.month, date.day, count)
         defaults = {'count_or_sum': count}
 
         try:
             obj = ReportPotrojariModel.objects.get(
-                year_month_day=dict_['year_month_day']
-            )
+                year_month_day=dict_['year_month_day'])
             # obj = ReportTotalOfficesModel.objects.get(report_day=report_day)
             for key, value in defaults.items():
                 setattr(obj, key, value)
@@ -107,22 +104,30 @@ def format_and_load_to_mysql_db(request, groupby_date):
     return last_report_date
 
 
-def update(objs, request=None, *args, **kwargs):
-    print()
-    print('start processing potrojari report')
+def update(values, request=None, *args, **kwargs):
+    status = {}
+    try:
+        print()
+        print('start processing potrojari report')
 
-    values = objs.values('id', 'type', 'operation_date')
+        # values = objs.values('id', 'type', 'operation_date')
 
-    dataframe = pd.DataFrame(values)
+        dataframe = pd.DataFrame(values)
 
-    dataframe = dataframe.loc[dataframe.type == 'potrojari']
-    # remove null values
-    # dataframe = dataframe.loc[dataframe.operation_date.notnull()]
-    dataframe['operation_date'] = dataframe.operation_date.fillna(method='bfill')
-    groupby_date = dataframe.groupby(dataframe.operation_date.dt.date)
+        dataframe = dataframe.loc[dataframe.type == 'potrojari']
+        # remove null values
+        # dataframe = dataframe.loc[dataframe.operation_date.notnull()]
+        dataframe['operation_date'] = dataframe.operation_date.fillna(
+            method='bfill')
+        groupby_date = dataframe.groupby(dataframe.operation_date.dt.date)
 
-    last_report_date = format_and_load_to_mysql_db(request, groupby_date)
-    print('End processing potrojari report')
-    print()
+        last_report_date = format_and_load_to_mysql_db(request, groupby_date)
+        print('End processing potrojari report')
+        print()
+        status['last_report_date'] = str(last_report_date)
+        status['status'] = 'success'
+    except Exception as e:
+        status['status'] = str(e)
+        status['last_report_date'] = []
 
-    return last_report_date
+    return status

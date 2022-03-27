@@ -59,8 +59,7 @@ def generate_year_month_day_key_and_report_date(year, month, day):
 
 def generate_model_object_dictionary(request, year, month, day, count):
     year_month_day, report_date = generate_year_month_day_key_and_report_date(
-        year, month, day
-    )
+        year, month, day)
     dict_ = {}
     dict_['year'] = year
     dict_['month'] = month
@@ -89,9 +88,8 @@ def format_and_load_to_mysql_db(request, groupby_date, model):
 
         count = frame['id_users'].count()
 
-        dict_ = generate_model_object_dictionary(
-            request, date.year, date.month, date.day, count
-        )
+        dict_ = generate_model_object_dictionary(request, date.year,
+                                                 date.month, date.day, count)
         defaults = {'count_or_sum': count}
 
         try:
@@ -106,65 +104,74 @@ def format_and_load_to_mysql_db(request, groupby_date, model):
     return last_report_date
 
 
-def update(request, users_objs, employee_objs, *args, **kwargs):
-    print()
-    print('start processing male & female nothi users report')
-    users_values = users_objs.values(
-        'id',
-        'username',
-        'user_role_id',
-        'is_admin',
-        'active',
-        'user_status',
-        'created',
-        'modified',
-        'employee_record_id',
-    )
-    employee_records_values = employee_objs.values(
-        'id', 'name_eng', 'gender', 'created', 'modified'
-    )
-    users_dataframe = pd.DataFrame(users_values)
-    employee_records_dataframe = pd.DataFrame(employee_records_values)
+def update(request, user_values, employee_values, *args, **kwargs):
+    status = {}
+    status['male_nothi_users'] = {}
+    status['female_nothi_users'] = {}
+    try:
+        print()
+        print('start processing male & female nothi users report')
+        # users_values = users_objs.values(
+        #     'id',
+        #     'username',
+        #     'user_role_id',
+        #     'is_admin',
+        #     'active',
+        #     'user_status',
+        #     'created',
+        #     'modified',
+        #     'employee_record_id',
+        # )
+        # employee_records_values = employee_objs.values(
+        #     'id', 'name_eng', 'gender', 'created', 'modified'
+        # )
+        users_dataframe = pd.DataFrame(user_values)
+        employee_records_dataframe = pd.DataFrame(employee_values)
 
-    users_dataframe = users_dataframe[~users_dataframe.employee_record_id.isnull()]
-    users_dataframe = users_dataframe.astype({'employee_record_id': int})
+        users_dataframe = users_dataframe[~users_dataframe.employee_record_id.
+                                          isnull()]
+        users_dataframe = users_dataframe.astype({'employee_record_id': int})
 
-    employee_records_dataframe = employee_records_dataframe[
-        ~employee_records_dataframe.id.isnull()
-    ]
-    employee_records_dataframe = employee_records_dataframe.astype({'id': int})
+        employee_records_dataframe = employee_records_dataframe[
+            ~employee_records_dataframe.id.isnull()]
+        employee_records_dataframe = employee_records_dataframe.astype(
+            {'id': int})
 
-    users_gender_df = pd.merge(
-        users_dataframe,
-        employee_records_dataframe,
-        left_on=['employee_record_id'],
-        right_on=['id'],
-        suffixes=('_users', '_employee'),
-    )
-    users_gender_df['created_users'] = users_gender_df.created_users.fillna(
-        method='bfill'
-    )
+        users_gender_df = pd.merge(
+            users_dataframe,
+            employee_records_dataframe,
+            left_on=['employee_record_id'],
+            right_on=['id'],
+            suffixes=('_users', '_employee'),
+        )
+        users_gender_df[
+            'created_users'] = users_gender_df.created_users.fillna(
+                method='bfill')
 
-    users_gender_df = users_gender_df.astype({'gender': str})
+        users_gender_df = users_gender_df.astype({'gender': str})
 
-    male_nothi_users_df = users_gender_df[users_gender_df.gender == '1']
-    female_nothi_users_df = users_gender_df[users_gender_df.gender == '2']
+        male_nothi_users_df = users_gender_df[users_gender_df.gender == '1']
+        female_nothi_users_df = users_gender_df[users_gender_df.gender == '2']
 
-    male_groupby_date = male_nothi_users_df.groupby(
-        male_nothi_users_df.created_users.dt.date
-    )
-    male_last_report_date = format_and_load_to_mysql_db(
-        request, male_groupby_date, ReportMaleNothiUsersModel
-    )
+        male_groupby_date = male_nothi_users_df.groupby(
+            male_nothi_users_df.created_users.dt.date)
+        male_last_report_date = format_and_load_to_mysql_db(
+            request, male_groupby_date, ReportMaleNothiUsersModel)
 
-    female_groupby_date = female_nothi_users_df.groupby(
-        female_nothi_users_df.created_users.dt.date
-    )
-    female_last_report_date = format_and_load_to_mysql_db(
-        request, female_groupby_date, ReportFemaleNothiUsersModel
-    )
+        female_groupby_date = female_nothi_users_df.groupby(
+            female_nothi_users_df.created_users.dt.date)
+        female_last_report_date = format_and_load_to_mysql_db(
+            request, female_groupby_date, ReportFemaleNothiUsersModel)
 
-    print('End processing male & female nothi users report')
-    print()
+        print('End processing male & female nothi users report')
+        print()
 
-    return male_last_report_date, female_last_report_date
+        status['male_nothi_users']['last_report_date'] = str(
+            male_last_report_date)
+        status['female_nothi_users']['last_report_date'] = str(
+            female_last_report_date)
+        status['status'] = 'success'
+    except Exception as e:
+        status['status'] = str(e)
+
+    return status

@@ -60,8 +60,7 @@ def generate_year_month_day_key_and_report_date(year, month, day):
 
 def generate_model_object_dictionary(request, year, month, day, count):
     year_month_day, report_date = generate_year_month_day_key_and_report_date(
-        year, month, day
-    )
+        year, month, day)
     dict_ = {}
     dict_['year'] = year
     dict_['month'] = month
@@ -94,9 +93,8 @@ def format_and_load_to_mysql_db(request, groupby_date):
         for id in frame.employee_record_id.values:
             employee_ids.setdefault(int(id), 1)
 
-        dict_ = generate_model_object_dictionary(
-            request, date.year, date.month, date.day, count
-        )
+        dict_ = generate_model_object_dictionary(request, date.year,
+                                                 date.month, date.day, count)
         dict_['employee_record_ids'] = employee_ids
 
         defaults = {'count_or_sum': count, 'employee_record_ids': employee_ids}
@@ -104,8 +102,7 @@ def format_and_load_to_mysql_db(request, groupby_date):
 
         try:
             obj = ReportLoginTotalUsers.objects.get(
-                year_month_day=dict_['year_month_day']
-            )
+                year_month_day=dict_['year_month_day'])
             for key, value in defaults.items():
                 setattr(obj, key, value)
             obj.save()
@@ -116,20 +113,27 @@ def format_and_load_to_mysql_db(request, groupby_date):
 
 
 def update(objs, request=None, *args, **kwargs):
-    print()
-    print('start processing login total users report')
+    status = {}
+    try:
+        print()
+        print('start processing login total users report')
 
-    values = objs.values('id', 'employee_record_id', 'created')
+        values = objs.values('id', 'employee_record_id', 'created')
 
-    dataframe = pd.DataFrame(values)
+        dataframe = pd.DataFrame(values)
 
-    # remove null values
-    # dataframe = dataframe.loc[dataframe.operation_date.notnull()]
-    dataframe['created'] = dataframe.created.fillna(method='bfill')
-    groupby_date = dataframe.groupby(dataframe.created.dt.date)
+        # remove null values
+        # dataframe = dataframe.loc[dataframe.operation_date.notnull()]
+        dataframe['created'] = dataframe.created.fillna(method='bfill')
+        groupby_date = dataframe.groupby(dataframe.created.dt.date)
 
-    last_report_date = format_and_load_to_mysql_db(request, groupby_date)
-    print('End processing login total users report')
-    print()
+        last_report_date = format_and_load_to_mysql_db(request, groupby_date)
+        print('End processing login total users report')
+        print()
+        status['last_report_date'] = str(last_report_date)
+        status['status'] = 'success'
+    except Exception as e:
+        status['status'] = str(e)
+        status['last_report_date'] = []
 
-    return last_report_date
+    return status
