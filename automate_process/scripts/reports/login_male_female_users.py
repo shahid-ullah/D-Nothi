@@ -24,13 +24,8 @@ def generate_year_month_day_key_and_report_date(year, month, day):
 
     if day < 10:
         day = SINGLE_DIGIT_KEY_MAPS[day]
-
-    year = str(year)
-    month = str(month)
-    day = str(day)
-
-    year_month_day = year + month + day
-    report_date = year + "-" + month + "-" + day
+    year_month_day = f"{year}{month}{day}"
+    report_date = f"{year}-{month}-{day}"
 
     return year_month_day, report_date
 
@@ -38,24 +33,22 @@ def generate_year_month_day_key_and_report_date(year, month, day):
 def generate_model_object_dictionary(request, year, month, day, count):
     year_month_day, report_date = generate_year_month_day_key_and_report_date(
         year, month, day)
-    dict_ = {}
-    dict_['year'] = year
-    dict_['month'] = month
-    dict_['day'] = day
-    dict_['count_or_sum'] = count
-    dict_['year_month_day'] = year_month_day
-    dict_['report_date'] = report_date
-    report_day = datetime(year, month, day)
-
-    dict_['report_day'] = report_day
-
+    model_object_dict = {
+        'year': year,
+        'month': month,
+        'day': day,
+        'count_or_sum': count,
+        'year_month_day': year_month_day,
+        'report_date': report_date,
+        'report_day': datetime(year, month, day)
+    }
     try:
         if request.user.is_authenticated:
-            dict_['creator'] = request.user
+            model_object_dict['creator'] = request.user
     except Exception as e:
         pass
 
-    return dict_
+    return model_object_dict
 
 
 def format_and_load_to_mysql_db(request, groupby_date, model):
@@ -87,13 +80,13 @@ def format_and_load_to_mysql_db(request, groupby_date, model):
     return last_report_date
 
 
-def update(request, user_login_history_values, employee_values, *args,
-           **kwargs):
+def update(request, user_login_history_dataframe, employee_records_dataframe,
+           *args, **kwargs):
     try:
         print()
         print('start processing login male & female nothi users report')
-        user_login_history_dataframe = pd.DataFrame(user_login_history_values)
-        employee_records_dataframe = pd.DataFrame(employee_values)
+        # user_login_history_dataframe = pd.DataFrame(user_login_history_values)
+        # employee_records_dataframe = pd.DataFrame(employee_values)
 
         user_login_history_dataframe = user_login_history_dataframe[
             ~user_login_history_dataframe.employee_record_id.isnull()]
