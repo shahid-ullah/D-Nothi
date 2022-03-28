@@ -3,8 +3,6 @@
 # This is not cumulative count
 from datetime import datetime
 
-import pandas as pd
-
 from dashboard_generate.models import ReportTotalOfficesModel
 
 
