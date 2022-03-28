@@ -1,58 +1,29 @@
 # automate_process/scripts/reports/mobile_app_users.py
 from datetime import datetime
 
-import pandas as pd
-
 from dashboard_generate.models import ReportMobileAppUsersModel
 
 
-def initialize_day_map():
-    day_map_dict = {}
-    for i in range(32):
-        if i < 10:
-            key1 = str(i)
-            key2 = '0' + str(i)
-            value = '0' + str(i)
-            day_map_dict.setdefault(key1, value)
-            day_map_dict.setdefault(key2, value)
-        else:
-            key = str(i)
-            value = str(i)
-            day_map_dict.setdefault(key, value)
+def get_single_digit_maps():
+    map = {}
+    for i in range(0, 10):
+        value = f"0{i}"
+        map.setdefault(i, value)
 
-    return day_map_dict
+    return map
 
 
-def initialize_month_map():
-    month_map_dict = {}
-    for i in range(13):
-        if i < 10:
-            key1 = str(i)
-            key2 = '0' + str(i)
-            value = '0' + str(i)
-            month_map_dict.setdefault(key1, value)
-            month_map_dict.setdefault(key2, value)
-        else:
-            key = str(i)
-            value = str(i)
-            month_map_dict.setdefault(key, value)
-    return month_map_dict
-
-
-DAY_MAP_DICT = initialize_day_map()
-MONTH_MAP_DICT = initialize_month_map()
+SINGLE_DIGIT_KEY_MAPS = get_single_digit_maps()
 
 
 def generate_year_month_day_key_and_report_date(year, month, day):
-    year = str(year)
-    month = str(month)
-    day = str(day)
+    if month < 10:
+        month = SINGLE_DIGIT_KEY_MAPS[month]
 
-    month = MONTH_MAP_DICT[month]
-    day = DAY_MAP_DICT[day]
-
-    year_month_day = year + month + day
-    report_date = year + "-" + month + "-" + day
+    if day < 10:
+        day = SINGLE_DIGIT_KEY_MAPS[day]
+    year_month_day = f"{year}{month}{day}"
+    report_date = f"{year}-{month}-{day}"
 
     return year_month_day, report_date
 
@@ -60,24 +31,22 @@ def generate_year_month_day_key_and_report_date(year, month, day):
 def generate_model_object_dictionary(request, year, month, day, count):
     year_month_day, report_date = generate_year_month_day_key_and_report_date(
         year, month, day)
-    dict_ = {}
-    dict_['year'] = year
-    dict_['month'] = month
-    dict_['day'] = day
-    dict_['count_or_sum'] = count
-    dict_['year_month_day'] = year_month_day
-    dict_['report_date'] = report_date
-    report_day = datetime(year, month, day)
-
-    dict_['report_day'] = report_day
-
+    model_object_dict = {
+        'year': year,
+        'month': month,
+        'day': day,
+        'count_or_sum': count,
+        'year_month_day': year_month_day,
+        'report_date': report_date,
+        'report_day': datetime(year, month, day)
+    }
     try:
         if request.user.is_authenticated:
-            dict_['creator'] = request.user
+            model_object_dict['creator'] = request.user
     except Exception as e:
         pass
 
-    return dict_
+    return model_object_dict
 
 
 def format_and_load_to_mysql_db(request, groupby_date):
@@ -111,14 +80,14 @@ def format_and_load_to_mysql_db(request, groupby_date):
     return last_report_date
 
 
-def update(values, request=None, *args, **kwargs):
+def update(dataframe, request=None, *args, **kwargs):
     status = {}
     try:
         print()
         print('start processing mobile_app_users report')
 
         # values = objs.values('id', 'is_mobile', 'created', 'employee_record_id')
-        dataframe = pd.DataFrame(values)
+        # dataframe = pd.DataFrame(values)
 
         dataframe = dataframe.loc[dataframe.is_mobile == 1]
         # remove null values
