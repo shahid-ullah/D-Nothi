@@ -26,7 +26,7 @@ class updateDashboard(APIView):
 
     # authentication_classes = [authentication.SessionAuthentication]
 
-    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAdminUser]
 
     def get(self, request, format=None):
         """ """

@@ -18,5 +18,10 @@ urlpatterns = [
     # path('api-auth/', include('rest_framework.urls')),
 ]
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += (path('__debug__/', include('debug_toolbar.urls')),)
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
+    urlpatterns += (path('__debug__/', include('debug_toolbar.urls')), )
+
+admin.site.site_header = "D-Nothi admin"
+admin.site.site_title = "D-Nothi admin"
+admin.site.index_title = "Welcome to D-Nothi Dashboard"
