@@ -81,6 +81,7 @@ def update(dataframe, request=None, *args, **kwargs):
     try:
         print()
         print('start processing total_offices report')
+        dataframe = dataframe.copy(deep=True)
 
         # values = objs.values('id', 'active_status', 'created')
 

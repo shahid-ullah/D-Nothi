@@ -81,6 +81,7 @@ def update(dataframe, request=None, *args, **kwargs):
     try:
         print()
         print('start processing nispottikritto_nothi report')
+        dataframe = dataframe.copy(deep=True)
 
         # values = objs.values('id', 'operation_date')
         # dataframe = pd.DataFrame(values)

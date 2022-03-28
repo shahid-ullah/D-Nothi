@@ -83,6 +83,7 @@ def update(dataframe, request=None, *args, **kwags):
         # values = objs.values('id', 'created')
         # dataframe = pd.DataFrame(values)
         # dataframe = dataframe.loc[dataframe.created.notnull()]
+        dataframe = dataframe.copy(deep=True)
         dataframe['created'] = dataframe.created.fillna(method='bfill')
 
         groupby_date = dataframe.groupby(dataframe.created.dt.date)

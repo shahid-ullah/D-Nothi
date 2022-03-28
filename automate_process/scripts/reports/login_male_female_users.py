@@ -88,6 +88,9 @@ def update(request, user_login_history_dataframe, employee_records_dataframe,
         # user_login_history_dataframe = pd.DataFrame(user_login_history_values)
         # employee_records_dataframe = pd.DataFrame(employee_values)
 
+        user_login_history_dataframe = user_login_history_dataframe.copy(
+            deep=True)
+        employee_records_dataframe = employee_records_dataframe.copy(deep=True)
         user_login_history_dataframe = user_login_history_dataframe[
             ~user_login_history_dataframe.employee_record_id.isnull()]
         user_login_history_dataframe = user_login_history_dataframe.astype(

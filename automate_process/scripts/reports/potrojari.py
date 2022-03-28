@@ -83,6 +83,7 @@ def update(dataframe, request=None, *args, **kwargs):
         # values = objs.values('id', 'type', 'operation_date')
 
         # dataframe = pd.DataFrame(values)
+        dataframe = dataframe.copy(deep=True)
 
         dataframe = dataframe.loc[dataframe.type == 'potrojari']
         # remove null values

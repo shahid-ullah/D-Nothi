@@ -82,6 +82,8 @@ def update(request, users_dataframe, employee_records_dataframe, *args,
     status['male_nothi_users'] = {}
     status['female_nothi_users'] = {}
     try:
+        users_dataframe = users_dataframe.copy(deep=True)
+        employee_records_dataframe = employee_records_dataframe.copy(deep=True)
         print()
         print('start processing male & female nothi users report')
         # users_dataframe = pd.DataFrame(user_values)

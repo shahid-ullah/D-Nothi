@@ -2,6 +2,7 @@
 import time
 from datetime import datetime
 
+import pandas as pd
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework import authentication, permissions
@@ -37,7 +38,6 @@ class updateDashboard(APIView):
                 {'status': 'system update running. Please request later'})
 
         start_processing_time = time.perf_counter()
-        update_start_time = datetime.now(),
         settings.SYSTEM_UPDATE_RUNNING = True
         try:
             update_log_object = DashboardUpdateLog.objects.create(
@@ -51,35 +51,47 @@ class updateDashboard(APIView):
         # Table 1: offices
 
         status['offices'] = {}
-        o_objs = Offices.objects.using('source_db').all()[:100]
-        o_values = o_objs.values('id', 'active_status', 'created')
-        total_offices_status = reports.total_offices.update(o_values, request)
+        offices_objects = Offices.objects.using('source_db').all()
+        offices_values = offices_objects.values('id', 'active_status',
+                                                'created')
+        offices_dataframe = pd.DataFrame(offices_values)
+        total_offices_status = reports.total_offices.update(
+            offices_dataframe, request)
         status['offices']['total_offices'] = total_offices_status
-        o_values = None
+        offices_objects = None
+        offices_values = None
+        offices_dataframe = None
 
         # Table 2: nisponno_records
         status['nisponno_records'] = {}
-        nr_objs = NisponnoRecords.objects.using('source_db').all()[:100]
-        nr_values = nr_objs.values('id', 'type', 'upokarvogi',
-                                   'operation_date')
+        nisponno_records_objects = NisponnoRecords.objects.using(
+            'source_db').all()
+        nisponno_records_values = nisponno_records_objects.values(
+            'id', 'type', 'upokarvogi', 'operation_date')
+        nisponno_records_dataframe = pd.DataFrame(nisponno_records_values)
         # nispottikritto_nothi
-        ni_status = reports.nispottikritto_nothi.update(nr_values, request)
-        status['nisponno_records']['nispottikritto_nothi'] = ni_status
+        status_ = reports.nispottikritto_nothi.update(
+            nisponno_records_dataframe, request)
+        status['nisponno_records']['nispottikritto_nothi'] = status_
         # upokarvogi
-        st = reports.upokarvogi.update(nr_values, request)
-        status['nisponno_records']['upokarvogi'] = st
+        status_ = reports.upokarvogi.update(nisponno_records_dataframe,
+                                            request)
+        status['nisponno_records']['upokarvogi'] = status_
         # potrojari
-        st = reports.potrojari.update(nr_values, request)
-        status['nisponno_records']['potrojari'] = st
+        status_ = reports.potrojari.update(nisponno_records_dataframe, request)
+        status['nisponno_records']['potrojari'] = status_
         # note nisponno
-        st = reports.note_nisponno.update(nr_values, request)
-        status['nisponno_records']['note_nisponno'] = st
-        nr_values = None
+        status_ = reports.note_nisponno.update(nisponno_records_dataframe,
+                                               request)
+        status['nisponno_records']['note_nisponno'] = status_
+        nisponno_records_objects = None
+        nisponno_records_values = None
+        nisponno_records_dataframe = None
 
         # Table 3: users
         status['users'] = {}
-        u_objs = Users.objects.using('source_db').all()[:100]
-        u_values = u_objs.values(
+        users_objects = Users.objects.using('source_db').all()
+        users_values = users_objects.values(
             'id',
             'username',
             'user_role_id',
@@ -90,45 +102,64 @@ class updateDashboard(APIView):
             'modified',
             'employee_record_id',
         )
-        st = reports.total_nothi_users.update(u_values, request)
-        status['users']['total_nothi_users'] = st
-        # u_values = None
+        users_dataframe = pd.DataFrame(users_values)
+        status_ = reports.total_nothi_users.update(users_dataframe, request)
+        status['users']['total_nothi_users'] = status_
 
         # Table 4: users_employee_records
         status['users_employee_records'] = {}
-        er_objs = EmployeeRecords.objects.using('source_db').all()[:100]
-        er_values = er_objs.values('id', 'name_eng', 'gender', 'created',
-                                   'modified')
+        employee_records_objects = EmployeeRecords.objects.using(
+            'source_db').all()
+        employee_records_values = employee_records_objects.values(
+            'id', 'name_eng', 'gender', 'created', 'modified')
+        employee_records_dataframe = pd.DataFrame(employee_records_values)
         # male_female_users
-        st = reports.male_female_nothi_users.update(request, u_values,
-                                                    er_values)
-        status['users_employee_records'] = st
+        status_ = reports.male_female_nothi_users.update(
+            request, users_dataframe, employee_records_dataframe)
+        status['users_employee_records'] = status_
+
+        users_objects = None
+        users_values = None
+        users_dataframe = None
+        employee_records_objects = None
+        employee_records_values = None
+        # employee_records_dataframe = None
 
         # Table 5: user_login_history
 
         status['user_login_history'] = {}
-        lh_objs = UserLoginHistory.objects.using('source_db').all()[:100]
-        lh_values = lh_objs.values('id', 'is_mobile', 'created',
-                                   'employee_record_id')
+        login_history_objects = UserLoginHistory.objects.using(
+            'source_db').all()
+        login_history_values = login_history_objects.values(
+            'id', 'is_mobile', 'created', 'employee_record_id', 'device_type')
+        login_history_dataframe = pd.DataFrame(login_history_values)
         # mobile_app_users
-        st = reports.mobile_app_users.update(lh_values, request)
-        status['user_login_history']['mobile_app_users'] = st
+        status_ = reports.mobile_app_users.update(login_history_dataframe,
+                                                  request)
+        status['user_login_history']['mobile_app_users'] = status_
         # Android-IOS users
-        st = reports.android_ios_users.update(lh_values, request)
-        status['user_login_history']['android_ios_users'] = st
+        status_ = reports.android_ios_users.update(login_history_dataframe,
+                                                   request)
+        status['user_login_history']['android_ios_users'] = status_
         # Login Total users
-        st = reports.login_total_users.update(lh_values, request)
+        st = reports.login_total_users.update(login_history_dataframe, request)
         status['user_login_history']['login_total_users'] = st
 
         # Table 6: user_login_history_employee_records
-
         # login_male_female_nothi_users
         status['user_login_history_employee_records'] = {}
-        st1, st2 = reports.login_male_female_users.update(
-            request, lh_values, er_values)
-        status['user_login_history_employee_records']['login_male_users'] = st1
+        male_status, female_status = reports.login_male_female_users.update(
+            request, login_history_dataframe, employee_records_dataframe)
         status['user_login_history_employee_records'][
-            'login_female_users'] = st2
+            'login_male_users'] = male_status
+        status['user_login_history_employee_records'][
+            'login_female_users'] = female_status
+        employee_records_objects = None
+        employee_records_values = None
+        employee_records_dataframe = None
+        login_history_objects = None
+        login_history_values = None
+        login_history_dataframe = None
 
         settings.SYSTEM_UPDATE_RUNNING = False
         end_processing_time = time.perf_counter()

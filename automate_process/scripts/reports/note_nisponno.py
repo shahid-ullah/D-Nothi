@@ -87,6 +87,7 @@ def update(dataframe, request=None, *args, **kwargs):
 
         # dataframe = pd.DataFrame(values)
 
+        dataframe = dataframe.copy(deep=True)
         dataframe = dataframe.loc[dataframe.type != 'potrojari']
         # remove null values
         # dataframe = dataframe.loc[dataframe.operation_date.notnull()]

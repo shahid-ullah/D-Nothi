@@ -79,6 +79,7 @@ def update(dataframe, request=None, *args, **kwargs):
 
     status = {}
     try:
+        dataframe = dataframe.copy(deep=True)
         print()
         print('start processing upokarvogi report')
 

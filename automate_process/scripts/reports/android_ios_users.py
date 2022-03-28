@@ -87,6 +87,7 @@ def update(dataframe, request=None, *args, **kwargs):
         # values = objs.values('id', 'is_mobile', 'device_type', 'created')
         # dataframe = pd.DataFrame(values)
 
+        dataframe = dataframe.copy(deep=True)
         dataframe = dataframe.loc[dataframe.is_mobile == 1]
         # remove null values
         # dataframe = dataframe.loc[dataframe.created.notnull()]
