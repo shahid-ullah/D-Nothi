@@ -4,7 +4,7 @@ from datetime import datetime
 from dashboard_generate.models import ReportMobileAppUsersModel
 
 
-def get_single_digit_maps():
+def get_zero_padding_single_digits_maps():
     map = {}
     for i in range(0, 10):
         value = f"0{i}"
@@ -13,7 +13,7 @@ def get_single_digit_maps():
     return map
 
 
-SINGLE_DIGIT_KEY_MAPS = get_single_digit_maps()
+SINGLE_DIGIT_KEY_MAPS = get_zero_padding_single_digits_maps()
 
 
 def generate_year_month_day_key_and_report_date(year, month, day):
@@ -30,7 +30,8 @@ def generate_year_month_day_key_and_report_date(year, month, day):
 
 def generate_model_object_dictionary(request, year, month, day, count):
     year_month_day, report_date = generate_year_month_day_key_and_report_date(
-        year, month, day)
+        year, month, day
+    )
     model_object_dict = {
         'year': year,
         'month': month,
@@ -38,7 +39,7 @@ def generate_model_object_dictionary(request, year, month, day, count):
         'count_or_sum': count,
         'year_month_day': year_month_day,
         'report_date': report_date,
-        'report_day': datetime(year, month, day)
+        'report_day': datetime(year, month, day),
     }
     try:
         if request.user.is_authenticated:
@@ -55,28 +56,31 @@ def format_and_load_to_mysql_db(request, groupby_date):
     for date, frame in groupby_date:
         last_report_date = date
 
-        count = frame['employee_record_id'].nunique()
+        count = int(frame['employee_record_id'].nunique())
         employee_ids = {}
 
         for id in frame.employee_record_id.values:
             employee_ids.setdefault(int(id), 1)
 
-        dict_ = generate_model_object_dictionary(request, date.year,
-                                                 date.month, date.day, count)
+        dict_ = generate_model_object_dictionary(
+            request, date.year, date.month, date.day, count
+        )
         dict_['employee_record_ids'] = employee_ids
 
         defaults = {'count_or_sum': count, 'employee_record_ids': employee_ids}
 
         try:
-            obj = ReportMobileAppUsersModel.objects.get(
-                year_month_day=dict_['year_month_day'])
-            # obj = ReportTotalOfficesModel.objects.get(report_day=report_day)
-            for key, value in defaults.items():
-                setattr(obj, key, value)
-            obj.save()
+            object = ReportMobileAppUsersModel.objects.get(
+                year_month_day=dict_['year_month_day']
+            )
+            if defaults['count_or_sum'] != int(object.count_or_sum):
+                for key, value in defaults.items():
+                    setattr(object, key, value)
+                object.save()
         except ReportMobileAppUsersModel.DoesNotExist:
-            obj = ReportMobileAppUsersModel(**dict_)
-            obj.save()
+            object = ReportMobileAppUsersModel(**dict_)
+            object.save()
+
     return last_report_date
 
 
@@ -85,9 +89,6 @@ def update(dataframe, request=None, *args, **kwargs):
     try:
         print()
         print('start processing mobile_app_users report')
-
-        # values = objs.values('id', 'is_mobile', 'created', 'employee_record_id')
-        # dataframe = pd.DataFrame(values)
 
         dataframe = dataframe.copy(deep=True)
         dataframe = dataframe.loc[dataframe.is_mobile == 1]

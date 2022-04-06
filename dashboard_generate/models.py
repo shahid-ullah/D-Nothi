@@ -9,13 +9,12 @@ def EMPTY_DICTIONARY():
 
 
 class ReportTotalOfficesModel(models.Model):
-    year_month_day = models.CharField(max_length=100,
-                                      blank=False,
-                                      null=False,
-                                      db_index=True)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                on_delete=models.SET_NULL,
-                                null=True)
+    year_month_day = models.CharField(
+        max_length=100, blank=False, null=False, db_index=True
+    )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
     year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
@@ -33,13 +32,12 @@ class ReportTotalOfficesModel(models.Model):
 
 
 class ReportNispottikrittoNothiModel(models.Model):
-    year_month_day = models.CharField(max_length=100,
-                                      blank=False,
-                                      null=False,
-                                      db_index=True)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                on_delete=models.SET_NULL,
-                                null=True)
+    year_month_day = models.CharField(
+        max_length=100, blank=False, null=False, db_index=True
+    )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
     year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
@@ -57,13 +55,12 @@ class ReportNispottikrittoNothiModel(models.Model):
 
 
 class ReportUpokarvogiModel(models.Model):
-    year_month_day = models.CharField(max_length=100,
-                                      blank=False,
-                                      null=False,
-                                      db_index=True)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                on_delete=models.SET_NULL,
-                                null=True)
+    year_month_day = models.CharField(
+        max_length=100, blank=False, null=False, db_index=True
+    )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
     year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
@@ -81,13 +78,12 @@ class ReportUpokarvogiModel(models.Model):
 
 
 class ReportPotrojariModel(models.Model):
-    year_month_day = models.CharField(max_length=100,
-                                      blank=False,
-                                      null=False,
-                                      db_index=True)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                on_delete=models.SET_NULL,
-                                null=True)
+    year_month_day = models.CharField(
+        max_length=100, blank=False, null=False, db_index=True
+    )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
     year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
@@ -105,13 +101,12 @@ class ReportPotrojariModel(models.Model):
 
 
 class ReportNoteNisponnoModel(models.Model):
-    year_month_day = models.CharField(max_length=100,
-                                      blank=False,
-                                      null=False,
-                                      db_index=True)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                on_delete=models.SET_NULL,
-                                null=True)
+    year_month_day = models.CharField(
+        max_length=100, blank=False, null=False, db_index=True
+    )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
     year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
@@ -129,13 +124,12 @@ class ReportNoteNisponnoModel(models.Model):
 
 
 class ReportTotalUsersModel(models.Model):
-    year_month_day = models.CharField(max_length=100,
-                                      blank=False,
-                                      null=False,
-                                      db_index=True)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                on_delete=models.SET_NULL,
-                                null=True)
+    year_month_day = models.CharField(
+        max_length=100, blank=False, null=False, db_index=True
+    )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
     year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
@@ -153,13 +147,12 @@ class ReportTotalUsersModel(models.Model):
 
 
 class ReportMaleNothiUsersModel(models.Model):
-    year_month_day = models.CharField(max_length=100,
-                                      blank=False,
-                                      null=False,
-                                      db_index=True)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                on_delete=models.SET_NULL,
-                                null=True)
+    year_month_day = models.CharField(
+        max_length=100, blank=False, null=False, db_index=True
+    )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
     year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
@@ -177,13 +170,12 @@ class ReportMaleNothiUsersModel(models.Model):
 
 
 class ReportFemaleNothiUsersModel(models.Model):
-    year_month_day = models.CharField(max_length=100,
-                                      blank=False,
-                                      null=False,
-                                      db_index=True)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                on_delete=models.SET_NULL,
-                                null=True)
+    year_month_day = models.CharField(
+        max_length=100, blank=False, null=False, db_index=True
+    )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
     year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
@@ -201,13 +193,12 @@ class ReportFemaleNothiUsersModel(models.Model):
 
 
 class ReportMobileAppUsersModel(models.Model):
-    year_month_day = models.CharField(max_length=100,
-                                      blank=False,
-                                      null=False,
-                                      db_index=True)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                on_delete=models.SET_NULL,
-                                null=True)
+    year_month_day = models.CharField(
+        max_length=100, blank=False, null=False, db_index=True
+    )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
     year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
@@ -226,13 +217,12 @@ class ReportMobileAppUsersModel(models.Model):
 
 
 class ReportAndroidUsersModel(models.Model):
-    year_month_day = models.CharField(max_length=100,
-                                      blank=False,
-                                      null=False,
-                                      db_index=True)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                on_delete=models.SET_NULL,
-                                null=True)
+    year_month_day = models.CharField(
+        max_length=100, blank=False, null=False, db_index=True
+    )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
     year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
@@ -250,13 +240,12 @@ class ReportAndroidUsersModel(models.Model):
 
 
 class ReportIOSUsersModel(models.Model):
-    year_month_day = models.CharField(max_length=100,
-                                      blank=False,
-                                      null=False,
-                                      db_index=True)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                on_delete=models.SET_NULL,
-                                null=True)
+    year_month_day = models.CharField(
+        max_length=100, blank=False, null=False, db_index=True
+    )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
     year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
@@ -274,13 +263,12 @@ class ReportIOSUsersModel(models.Model):
 
 
 class ReportLoginTotalUsers(models.Model):
-    year_month_day = models.CharField(max_length=100,
-                                      blank=False,
-                                      null=False,
-                                      db_index=True)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                on_delete=models.SET_NULL,
-                                null=True)
+    year_month_day = models.CharField(
+        max_length=100, blank=False, null=False, db_index=True
+    )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
     year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
@@ -299,13 +287,12 @@ class ReportLoginTotalUsers(models.Model):
 
 
 class ReportLoginMalelUsersModel(models.Model):
-    year_month_day = models.CharField(max_length=100,
-                                      blank=False,
-                                      null=False,
-                                      db_index=True)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                on_delete=models.SET_NULL,
-                                null=True)
+    year_month_day = models.CharField(
+        max_length=100, blank=False, null=False, db_index=True
+    )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
     year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
@@ -324,13 +311,12 @@ class ReportLoginMalelUsersModel(models.Model):
 
 
 class ReportLoginFemalelUsersModel(models.Model):
-    year_month_day = models.CharField(max_length=100,
-                                      blank=False,
-                                      null=False,
-                                      db_index=True)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                on_delete=models.SET_NULL,
-                                null=True)
+    year_month_day = models.CharField(
+        max_length=100, blank=False, null=False, db_index=True
+    )
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
     year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
@@ -349,9 +335,9 @@ class ReportLoginFemalelUsersModel(models.Model):
 
 
 class DashboardUpdateLog(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.SET_NULL,
-                             null=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
     status = models.JSONField(default=EMPTY_DICTIONARY)
     update_start_time = models.DateTimeField(blank=True, null=True)
     update_completion_time = models.DateTimeField(blank=True, null=True)
@@ -360,11 +346,14 @@ class DashboardUpdateLog(models.Model):
         db_table = "dashboard_update_log"
         ordering = ['-id']
 
+    def __str__(self):
+        return f"Start time: {self.update_start_time} End time: {self.update_completion_time}"
+
 
 class LoginHistoryGraphsDataModel(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.SET_NULL,
-                             null=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
     login_hour_map = models.JSONField(default=EMPTY_DICTIONARY)
     office_login_map = models.JSONField(default=EMPTY_DICTIONARY)
     report_generate_time = models.DateTimeField(auto_now_add=True)

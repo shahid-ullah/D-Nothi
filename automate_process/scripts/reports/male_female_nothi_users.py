@@ -6,7 +6,7 @@ from dashboard_generate.models import (ReportFemaleNothiUsersModel,
                                        ReportMaleNothiUsersModel)
 
 
-def get_single_digit_maps():
+def get_zero_padding_single_digits_maps():
     map = {}
     for i in range(0, 10):
         value = f"0{i}"
@@ -15,7 +15,7 @@ def get_single_digit_maps():
     return map
 
 
-SINGLE_DIGIT_KEY_MAPS = get_single_digit_maps()
+SINGLE_DIGIT_KEY_MAPS = get_zero_padding_single_digits_maps()
 
 
 def generate_year_month_day_key_and_report_date(year, month, day):
@@ -32,7 +32,8 @@ def generate_year_month_day_key_and_report_date(year, month, day):
 
 def generate_model_object_dictionary(request, year, month, day, count):
     year_month_day, report_date = generate_year_month_day_key_and_report_date(
-        year, month, day)
+        year, month, day
+    )
 
     model_object_dict = {
         'year': year,
@@ -41,7 +42,7 @@ def generate_model_object_dictionary(request, year, month, day, count):
         'count_or_sum': count,
         'year_month_day': year_month_day,
         'report_date': report_date,
-        'report_day': datetime(year, month, day)
+        'report_day': datetime(year, month, day),
     }
     try:
         if request.user.is_authenticated:
@@ -58,26 +59,27 @@ def format_and_load_to_mysql_db(request, groupby_date, model):
     for date, frame in groupby_date:
         last_report_date = date
 
-        count = frame['id_users'].count()
+        count = int(frame['id_users'].count())
 
-        dict_ = generate_model_object_dictionary(request, date.year,
-                                                 date.month, date.day, count)
+        dict_ = generate_model_object_dictionary(
+            request, date.year, date.month, date.day, count
+        )
         defaults = {'count_or_sum': count}
 
         try:
-            obj = model.objects.get(year_month_day=dict_['year_month_day'])
-            # obj = ReportTotalOfficesModel.objects.get(report_day=report_day)
-            for key, value in defaults.items():
-                setattr(obj, key, value)
-            obj.save()
+            object = model.objects.get(year_month_day=dict_['year_month_day'])
+            if defaults['count_or_sum'] != int(object.count_or_sum):
+                for key, value in defaults.items():
+                    setattr(object, key, value)
+                object.save()
         except model.DoesNotExist:
-            obj = model(**dict_)
-            obj.save()
+            object = model(**dict_)
+            object.save()
+
     return last_report_date
 
 
-def update(request, users_dataframe, employee_records_dataframe, *args,
-           **kwargs):
+def update(request, users_dataframe, employee_records_dataframe, *args, **kwargs):
     status = {}
     status['male_nothi_users'] = {}
     status['female_nothi_users'] = {}
@@ -86,17 +88,14 @@ def update(request, users_dataframe, employee_records_dataframe, *args,
         employee_records_dataframe = employee_records_dataframe.copy(deep=True)
         print()
         print('start processing male & female nothi users report')
-        # users_dataframe = pd.DataFrame(user_values)
-        # employee_records_dataframe = pd.DataFrame(employee_values)
 
-        users_dataframe = users_dataframe[~users_dataframe.employee_record_id.
-                                          isnull()]
+        users_dataframe = users_dataframe[~users_dataframe.employee_record_id.isnull()]
         users_dataframe = users_dataframe.astype({'employee_record_id': int})
 
         employee_records_dataframe = employee_records_dataframe[
-            ~employee_records_dataframe.id.isnull()]
-        employee_records_dataframe = employee_records_dataframe.astype(
-            {'id': int})
+            ~employee_records_dataframe.id.isnull()
+        ]
+        employee_records_dataframe = employee_records_dataframe.astype({'id': int})
 
         users_gender_df = pd.merge(
             users_dataframe,
@@ -105,9 +104,9 @@ def update(request, users_dataframe, employee_records_dataframe, *args,
             right_on=['id'],
             suffixes=('_users', '_employee'),
         )
-        users_gender_df[
-            'created_users'] = users_gender_df.created_users.fillna(
-                method='bfill')
+        users_gender_df['created_users'] = users_gender_df.created_users.fillna(
+            method='bfill'
+        )
 
         users_gender_df = users_gender_df.astype({'gender': str})
 
@@ -115,22 +114,24 @@ def update(request, users_dataframe, employee_records_dataframe, *args,
         female_nothi_users_df = users_gender_df[users_gender_df.gender == '2']
 
         male_groupby_date = male_nothi_users_df.groupby(
-            male_nothi_users_df.created_users.dt.date)
+            male_nothi_users_df.created_users.dt.date
+        )
         male_last_report_date = format_and_load_to_mysql_db(
-            request, male_groupby_date, ReportMaleNothiUsersModel)
+            request, male_groupby_date, ReportMaleNothiUsersModel
+        )
 
         female_groupby_date = female_nothi_users_df.groupby(
-            female_nothi_users_df.created_users.dt.date)
+            female_nothi_users_df.created_users.dt.date
+        )
         female_last_report_date = format_and_load_to_mysql_db(
-            request, female_groupby_date, ReportFemaleNothiUsersModel)
+            request, female_groupby_date, ReportFemaleNothiUsersModel
+        )
 
         print('End processing male & female nothi users report')
         print()
 
-        status['male_nothi_users']['last_report_date'] = str(
-            male_last_report_date)
-        status['female_nothi_users']['last_report_date'] = str(
-            female_last_report_date)
+        status['male_nothi_users']['last_report_date'] = str(male_last_report_date)
+        status['female_nothi_users']['last_report_date'] = str(female_last_report_date)
         status['status'] = 'success'
     except Exception as e:
         status['status'] = str(e)
