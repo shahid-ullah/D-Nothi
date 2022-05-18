@@ -52,24 +52,24 @@
       <div>
         <a class="navbar-brand font-weight-bold" href="{%url 'dashboard_home' %}">ডি-নথি</a>
       </div>
-      <div class="d-flex" style="margin-right: 70px;">
-        <div>
-          <p style="margin: 0px; padding:0px;">{{request.session.name_eng}}</p>
-          <p style="margin: 0px; padding:0px;">{{request.session.designation}}</p>
-          <p style="margin: 0px; padding:0px;">{{request.session.office_name_bn}}</p>
-        </div>
+      {# <div class="d-flex" style="margin-right: 70px;"> #}
+      {#   <div> #}
+      {#     <p style="margin: 0px; padding:0px;">{{request.session.name_eng}}</p> #}
+      {#     <p style="margin: 0px; padding:0px;">{{request.session.designation}}</p> #}
+      {#     <p style="margin: 0px; padding:0px;">{{request.session.office_name_bn}}</p> #}
+      {#   </div> #}
 
-        <div>
-          <div class="dropdown show">
-            <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <!-- <img src="{% static 'img/avatars/6.jpg' %}" class="img-avatar" alt="admin@capsclinic.jp"> -->
-            </a>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-              <a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out text-danger" aria-hidden="true"></i>Logout</a>
-            </div>
-          </div>
-        </div>
-      </div>
+      {#   <div> #}
+      {#     <div class="dropdown show"> #}
+      {#       <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> #}
+      {#         <!-- <img src="{% static 'img/avatars/6.jpg' %}" class="img-avatar" alt="admin@capsclinic.jp"> --> #}
+      {#       </a> #}
+      {#       <div class="dropdown-menu" aria-labelledby="dropdownMenuLink"> #}
+      {#         <a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out text-danger" aria-hidden="true"></i>Logout</a> #}
+      {#       </div> #}
+      {#     </div> #}
+      {#   </div> #}
+      {# </div> #}
 
     </header>
 
