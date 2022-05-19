@@ -10,9 +10,9 @@ from users.views import logout_view, sso_login_handler
 
 urlpatterns = [
     path('', include('dashboard_generate.urls')),
-    path('monthly_report/', include('monthly_report.urls')),
+    # path('monthly_report/', include('monthly_report.urls')),
     path('update_dashboard/', updateDashboard.as_view()),
-    path('admin/', admin.site.urls),
+    path('((thele$$!!/', admin.site.urls),
     path('sso_login_handler/', sso_login_handler, name='sso_login_handler'),
     path('logout/', logout_view, name='logout'),
     # path('api-auth/', include('rest_framework.urls')),
