@@ -1,3 +1,4 @@
+# scripts/reports/login_total_users.py
 # SELECT count(DISTINCT(`employee_record_id`)) FROM `user_login_history` WHERE
 # `created` >= '2022-01-01 00:00:00' AND `created` <= '2022-01-31 23:59:59'
 from datetime import datetime

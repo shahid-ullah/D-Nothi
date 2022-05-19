@@ -161,7 +161,7 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = None
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'users.custom_backends.NdoptorAuthenticationBackend',
+    # 'users.custom_backends.NdoptorAuthenticationBackend',
 )
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
@@ -171,7 +171,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
-LOGOUT_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'dashboard_home'
 
 SSO_LOGIN_URL = 'https://n-doptor-accounts-stage.nothi.gov.bd/login'
 SSO_LOGOUT_URL = 'https://n-doptor-accounts-stage.nothi.gov.bd/logout'

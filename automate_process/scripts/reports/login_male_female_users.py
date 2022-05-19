@@ -1,3 +1,10 @@
+# scripts/reports/login_male_female_users.py
+# SELECT count(DISTINCT(user_login_history.employee_record_id)) FROM
+# `user_login_history` LEFT JOIN `employee_records` ON
+# user_login_history.employee_record_id = employee_records.id WHERE
+# employee_records.gender = 2 AND user_login_history.created >= '2022-01-01
+# 00:00:00' AND user_login_history.created <= '2022-01-31 23:59:59';
+
 from datetime import datetime
 
 import pandas as pd

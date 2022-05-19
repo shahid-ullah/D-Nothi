@@ -1,3 +1,4 @@
+# scripts/reports/total_nothi_users.py
 # SELECT count(id) FROM users WHERE date(created) <= '2020-09-30';
 from datetime import datetime
 

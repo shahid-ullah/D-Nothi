@@ -1,4 +1,8 @@
 # automate_process/scripts/reports/mobile_app_users.py
+# SELECT count(distinct(employee_record_id)) FROM
+# `projapoti_db`.`user_login_history` where date(created) <= '2022-02-02'  and
+# date(created) >= '2022-02-02' and is_mobile = 1;
+
 from datetime import datetime
 
 from dashboard_generate.models import ReportMobileAppUsersModel

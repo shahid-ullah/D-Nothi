@@ -1,3 +1,8 @@
+# scripts/reports/male_female_nothi_users.py
+# SELECT COUNT(users.id) FROM users INNER JOIN employee_records on
+# users.employee_record_id = employee_records.id WHERE date(users.created) <=
+# '2020-09-31' and employee_records.gender = 2;
+
 from datetime import datetime
 
 import pandas as pd

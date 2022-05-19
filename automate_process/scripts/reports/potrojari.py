@@ -1,3 +1,6 @@
+# scripts/reports/potrojari.py
+# SELECT count(id) FROM nisponno_records where Date(operation_date) >=
+# '2020-09-01' and Date(operation_date) <= '2020-09-30' and type = 'potrojari';
 from datetime import datetime
 
 from dashboard_generate.models import ReportPotrojariModel
