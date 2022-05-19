@@ -338,6 +338,7 @@ class DashboardUpdateLog(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
     )
+    completion_log = models.CharField(max_length=200)
     status = models.JSONField(default=EMPTY_DICTIONARY)
     update_start_time = models.DateTimeField(blank=True, null=True)
     update_completion_time = models.DateTimeField(blank=True, null=True)
