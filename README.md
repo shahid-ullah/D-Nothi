@@ -1,22 +1,25 @@
 ### Server installation Instructions
 
-- clone the project
-- cd D-Nothi
-- create virtual environment and active virtual environment
-  - $ virtualenv venv
-  - $ source venv/bin/activate
-- Install project dependencies
-  -  pip install -r requirements.txt
-- Run migration
-    - python manage.py migrate
-- collect static files
-  - python manage.py collectstatic
-- Start development server
-   - python manager.py runserver
-
+- **clone the project**
+  - `$ git clone git@github.com:shahid-ullah/D-Nothi.git`
+- **change to project directory**
+  - `$ cd D-Nothi`
+- **create virtual environment and active virtual environment**
+  - `$ virtualenv venv`
+  - `$ source venv/bin/activate`
+- **Install project dependencies**
+  - `$ pip install -r requirements.txt`
+- **Run migration**
+  - `$ python manage.py migrate`
+- **collect static files**
+  - `$ python manage.py collectstatic`
+- **Start development server**
+  - `$ python manager.py runserver`
 
 ### Additional Instructions
--  create .env file in project root directory and put required value
+
+- create .env file in project root directory and put required value
+
 ```
   SECRET_KEY=''
   DEBUG=False
