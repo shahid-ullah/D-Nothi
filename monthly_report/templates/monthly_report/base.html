@@ -15,24 +15,27 @@
 
     {% block cdn_css %}
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-      <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+      {# <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"> #}
     {% endblock cdn_css %}
 
     {% block local_css %}
       <!-- Icons -->
-      <link rel="stylesheet" href="{% static 'vendors/css/flag-icon.min.css' %}">
+      {# <link rel="stylesheet" href="{% static 'vendors/css/flag-icon.min.css' %}"> #}
+      {# <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.5.1/css/flag-icons.min.css" type="text/css" media="screen" title="no title" charset="utf-8"> #}
       <link rel="stylesheet" href="{% static 'vendors/css/font-awesome.min.css' %}">
       <link rel="stylesheet" href="{% static 'vendors/css/simple-line-icons.min.css' %}">
 
       {# <!-- Main styles for this application --> #}
       <link rel="stylesheet" href="{% static 'css/style.core.css' %}">
-      <link rel="stylesheet" href="{% static 'css/custom-style.css' %}">
+      <link rel="stylesheet" href="{% static 'css/custom_style.css' %}">
 
       {# <!-- Styles required by this views --> #}
-      <link rel="stylesheet" href="{% static 'vendors/css/daterangepicker.min.css' %}">
-      <link rel="stylesheet" href="{% static 'vendors/css/gauge.min.css' %}">
-      <link rel="stylesheet" href="{% static 'vendors/css/toastr.min.css' %}">
-      <link rel="stylesheet" href="{% static 'vendors/css/select2.min.css' %}">
+      {# <link rel="stylesheet" href="{% static 'vendors/css/daterangepicker.min.css' %}"> #}
+      {# <link rel="stylesheet" href="{% static 'vendors/css/gauge.min.css' %}"> #}
+      {# <link rel="stylesheet" href="{% static 'vendors/css/toastr.min.css' %}"> #}
+      {# <link rel="stylesheet" href="{% static 'vendors/css/select2.min.css' %}"> #}
+
+      {# <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> #}
 
     {% endblock local_css %}
 
@@ -43,46 +46,26 @@
     {% block internal_css %}
     {% endblock internal_css %}
 
-    {% block extra_head %}{% endblock extra_head %}
+    {% block extra_head %}
+    {% endblock extra_head %}
 
   </head>
 
-  <body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
+  <body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden h-100">
     <header class="app-header navbar">
       <div>
         <a class="navbar-brand font-weight-bold" href="{%url 'dashboard_home' %}">ডি-নথি</a>
       </div>
-      {# <div class="d-flex" style="margin-right: 70px;"> #}
-      {#   <div> #}
-      {#     <p style="margin: 0px; padding:0px;">{{request.session.name_eng}}</p> #}
-      {#     <p style="margin: 0px; padding:0px;">{{request.session.designation}}</p> #}
-      {#     <p style="margin: 0px; padding:0px;">{{request.session.office_name_bn}}</p> #}
-      {#   </div> #}
-
-      {#   <div> #}
-      {#     <div class="dropdown show"> #}
-      {#       <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> #}
-      {#         <!-- <img src="{% static 'img/avatars/6.jpg' %}" class="img-avatar" alt="admin@capsclinic.jp"> --> #}
-      {#       </a> #}
-      {#       <div class="dropdown-menu" aria-labelledby="dropdownMenuLink"> #}
-      {#         <a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out text-danger" aria-hidden="true"></i>Logout</a> #}
-      {#       </div> #}
-      {#     </div> #}
-      {#   </div> #}
-      {# </div> #}
 
     </header>
 
-    <div class="app-body">
-      <div class="sidebar">
+    <div class="app-body h-100">
+      <div class="sidebar bg-dark">
         <nav class="sidebar-nav">
           <ul class="nav">
             <li class="nav-item">
               <a href="{%url 'dashboard_home' %}" class="nav-link"><i class="icon-speedometer"></i>ড্যাশবোর্ড</a>
             </li>
-            {# <li class="nav-item"> #}
-              {#   <a style="font-size: 15px;" href="{% url 'custom_report' %}" class="nav-link"><i class="icon-drop" style=""></i>রিপোর্ট তৈরি করুন</a> #}
-              {# </li> #}
 
             <li class="nav-title">নথি</li>
             <li class="nav-item">
@@ -135,11 +118,10 @@
         <button class="sidebar-minimizer brand-minimizer" type="button"></button>
       </div>
       <!-- Main content -->
-      <main class="main">
+      <main class="main h-100">
 
-        <div class="container-fluid">
+        <div class="container-fluid h-100">
           {% block body_block %}
-            Main content
           {% endblock body_block %}
         </div>
       </main>
@@ -152,13 +134,12 @@
 
     {% block cdn_js %}
 
-      {# <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js" ></script> #}
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
       <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script> -->
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-      <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+      {# <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script> #}
       {# <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> #}
       {# <script src="https://code.highcharts.com/highcharts.src.js"></script> #}
 
@@ -168,20 +149,21 @@
       <!-- Bootstrap and necessary plugins -->
       {# <script src="{% static "vendors/js/popper.min.js" %}"></script> #}
       {# <script src="{% static "vendors/js/bootstrap.min.js" %}"></script> #}
-      <script src="{% static "vendors/js/pace.min.js" %}"></script>
+      {# <script src="{% static "vendors/js/pace.min.js" %}"></script> #}
 
       <!-- Plugins and scripts required by this views -->
-      <script src="{% static "vendors/js/jquery.maskedinput.min.js" %}"></script>
-      <script src="{% static "vendors/js/toastr.min.js" %}"></script>
-      <script src="{% static "vendors/js/gauge.min.js" %}"></script>
-      <script src="{% static "vendors/js/moment.min.js" %}"></script>
-      <script src="{% static "vendors/js/daterangepicker.min.js" %}"></script>
-      <script src="{% static "vendors/js/select2.min.js" %}"></script>
+      {# <script src="{% static "vendors/js/jquery.maskedinput.min.js" %}"></script> #}
+      {# <script src="{% static "vendors/js/toastr.min.js" %}"></script> #}
+      {# <script src="{% static "vendors/js/gauge.min.js" %}"></script> #}
+      {# <script src="{% static "vendors/js/moment.min.js" %}"></script> #}
+      {# <script src="{% static "vendors/js/daterangepicker.min.js" %}"></script> #}
+      {# <script src="{% static "vendors/js/select2.min.js" %}"></script> #}
+      {# <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> #}
 
     {% endblock common_local_js %}
 
     {% block local_js %}
-      <script src="{% static 'js/monthly_report.js' %}"></script>
+      {% comment %} <script src="{% static 'js/monthly_report.js' %}"></script> {% endcomment %}
       <!-- other cdn javascript links -->
     {% endblock local_js %}
 

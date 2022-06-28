@@ -1,0 +1,82 @@
+{% extends 'dashboard_generate/base.html' %}
+{% block title %}ড্যাশবোর্ড{% endblock %}
+
+{% block main_content %}
+    <div class="summary_main_block h-100">
+    <div class="row summary_row1 h-100">
+        <div class="col-md-6 summary_box">
+        <h3 class="font-weight-bold heading">নথি ব্যবহারকারী</h3>
+        <div class="">
+            <div class="title_count">
+            <span>মোট ব্যবহারকারী অফিস</span>
+            <span>{{summary.office_total}}</span>
+            </div>
+            <div class="title_count">
+            <span>মোট ব্যবহারকারী</span>
+            <span>{{summary.users_total}}</span>
+            </div>
+            <div class="title_count">
+            <span>মোট ব্যবহারকারী পুরুষ</span>
+            <span>{{summary.male_users_total}}</span>
+            </div>
+            <div class="title_count">
+            <span>মোট ব্যবহারকারী মহিলা</span>
+            <span>{{summary.female_users_total}}</span>
+            </div>
+        </div>
+        </div>
+        <div class="col-md-6 summary_box">
+        <h3 class="font-weight-bold heading">লগইন পরিসংখ্যান</h3>
+        <div class="">
+            <div class="title_count">
+            <span>মোট লগইন</span>
+            <span>{{summary.login_users}}</span>
+            </div>
+            <div class="title_count">
+            <span>মোট লগইন পুরুষ</span>
+            <span>125000</span>
+            <span>{{summary.male_users_total}}</span>
+            </div>
+            <div class="title_count">
+            <span>মোট লগইন মহিলা</span>
+            <span>{{summary.female_users_total}}</span>
+            </div>
+        </div>
+        </div>
+        <div class="col-md-6 summary_box">
+        <h3 class="font-weight-bold heading">নথি</h3>
+        <div class="">
+            <div class="title_count">
+            <span>নিষ্পত্তিকৃত নথি</span>
+            <span>{{summary.nispottikritto_nothi}}</span>
+            </div>
+            <div class="title_count">
+            <span>নোট নিষ্পন্ন</span>
+            <span>{{summary.note_nisponno}}</span>
+            </div>
+        </div>
+        </div>
+        <div class="col-md-6 summary_box">
+        <h3 class="font-weight-bold heading">পত্রজারি</h3>
+        <div>
+            <div class="title_count">
+            <span>মোট পত্রজারি</span>
+            <span>{{summary.potrojari}}</span>
+            </div>
+        </div>
+        </div>
+        <div class="col-md-6 summary_box">
+        <h3 class="font-weight-bold heading">অন্যান্য</h3>
+        <div class="">
+            <div class="title_count">
+            <span>মোট উপকারভোগী</span>
+            <span>{{summary.upokarvogi}}</span>
+            </div>
+        </div>
+        </div>
+        <div class="col-md-6 summary_box">
+        </div>
+    </div>
+    </div>
+
+{% endblock main_content %}

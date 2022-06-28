@@ -1,3 +1,5 @@
+// monthly_report/static/js/monthly_report.js
+
 // let year_select = document.querySelector('.year_select');
 // console.log('year_select: ', year_select);
 

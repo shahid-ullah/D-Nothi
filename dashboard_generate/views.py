@@ -1,6 +1,7 @@
 import csv
 import json
 from datetime import datetime
+from glob import glob
 
 from django.contrib.auth import get_user_model
 # from django.contrib.auth.decorators import login_required
@@ -23,27 +24,20 @@ User = get_user_model()
 
 
 def dashboard_home(request):
-    hour_map = graph_methods.hour_traffic()
-    day_map = graph_methods.day_traffic()
-    hour_map_key = list(hour_map.keys())
-    hour_map_values = list(hour_map.values())
-    day_map_keys = list(day_map.keys())
-    day_map_values = list(day_map.values())
-
-    office_login_map = graph_methods.office_login_map()
-    office_login_keys = list(office_login_map.keys())
-    office_login_values = list(office_login_map.values())
-    # breakpoint()
-
-    context = {
-        'hour_map_key': hour_map_key,
-        'hour_map_values': hour_map_values,
-        'day_map_keys': day_map_keys,
-        'day_map_values': day_map_values,
-        'office_login_keys': office_login_keys,
-        'office_login_values': office_login_values,
+    summary = {
+        'office_total': 8002,
+        'users_total': 12509,
+        'male_users_total': 12509,
+        'female_users_total': 12509,
+        'login_users': 45609,
+        'male_login_users': 125099,
+        'female_login_users': 12509,
+        'nispottikritto_nothi': 12509,
+        'note_nisponno': 12509,
+        'potrojari': 12509,
+        'upokarvogi': 122509,
     }
-    return render(request, 'dashboard_generate/dashboard_home.html', context)
+    return render(request, 'dashboard_generate/home.html', context={'summary': summary})
 
 
 # @login_required(login_url='/sso_login_handler/')
@@ -188,8 +182,8 @@ def login_total_users_view(request):
         'day_map': json.dumps(day_map, cls=hf.NpEncoder),
     }
 
-    return render(request, 'dashboard_generate/login_total_users.html',
-                  context)
+
+    return  render(request, 'dashboard_generate/login_total_users.html', context)
 
 
 # @login_required(login_url='/sso_login_handler/')

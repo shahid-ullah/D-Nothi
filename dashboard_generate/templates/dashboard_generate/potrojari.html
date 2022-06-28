@@ -1,12 +1,9 @@
-{% extends 'monthly_report/base.html' %}
+{% extends 'dashboard_generate/base.html' %}
 {% load static %}
 
 {% block title %}পত্রজারি{% endblock %}
-{% block inline_css %}
 
-{% endblock inline_css %}
-
-{% block body_block %}
+{% block main_content %}
   <div>
     <script src="{% static 'js/utils.js' %}"></script>
     <script charset="utf-8">
@@ -30,14 +27,6 @@
                  <!-- পত্রজারি (বার্ষিক এবং মাসিক) -->
               </p>
             </figure>
-
-            <script src="https://code.highcharts.com/highcharts.js"></script>
-            <script src="https://code.highcharts.com/modules/data.js"></script>
-            <script src="https://code.highcharts.com/modules/drilldown.js"></script>
-            <script src="https://code.highcharts.com/modules/exporting.js"></script>
-            <script src="https://code.highcharts.com/modules/export-data.js"></script>
-            <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
             <script>
               // Create the chart
@@ -129,7 +118,4 @@
       </div>
     </div>
   </div>
-{% endblock %}
-
-{% block local_js %}
-{%  endblock local_js %}
+{% endblock main_content %}

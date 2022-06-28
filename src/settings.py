@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'debug_toolbar',
     # local apps
-    'monthly_report.apps.MonthlyReportConfig',
+    # 'monthly_report.apps.MonthlyReportConfig',
     'users.apps.UsersConfig',
     'automate_process.apps.AutomateProcessConfig',
     'dashboard_generate.apps.DashboardGenerateConfig',

@@ -10,6 +10,7 @@ dataset-2.csv
 patient-data_now.csv
 subjects_age_8mb.csv
 temporary_data/
+.vscode/
 
 # Django #
 *.log

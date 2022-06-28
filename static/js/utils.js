@@ -73,4 +73,3 @@ function generateDrilldownSeries(year_map, month_map, day_map){
   }
   return drilldown_series
 }
-// console.log('Loaded utils.js')

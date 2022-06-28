@@ -1,0 +1,158 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% block metadata %}
+        <meta charset="UTF-8" />
+        <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+    {% endblock metadata %}
+
+    {% block cdn_css %}
+        <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+        crossorigin="anonymous"
+        />
+    {% endblock cdn_css %}
+
+    {% block local_css %}
+        <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    {% endblock local_css %}
+
+    {% block inline_css %}
+    {% endblock inline_css %}
+    {% block graph_cdn %}
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/modules/data.js"></script>
+        <script src="https://code.highcharts.com/modules/drilldown.js"></script>
+        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+        <script src="https://code.highcharts.com/modules/export-data.js"></script>
+        <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {% endblock graph_cdn %}
+
+    <title>ডি-নথি - {% block title %}{% endblock %}</title>
+  </head>
+  <body>
+  <div class="container-fluid">
+    <div class="row flex-nowrap">
+      <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 sidebar">
+        <div
+          class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100"
+        >
+          <a
+            href="/"
+            class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-black text-decoration-none"
+          >
+            <span class="fs-5 d-none d-sm-inline nav-link">ডি-নথি</span>
+          </a>
+          <ul
+            class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
+            id="menu"
+          >
+            {% comment %} <li class="nav-item">
+                <a href="#" class="nav-link align-middle px-0">
+                    <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">ব্যবহারকারী</span>
+                </a>
+            </li> {% endcomment %}
+
+            <li>
+                <a href="#submenu1" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+                    <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">ব্যবহারকারী</span></a>
+                <ul class="collapse hide nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
+                    <li>
+                        <a href="{% url 'total_offices' %}" class="nav-link px-0"> <span class="d-none d-sm-inline">নথি ব্যবহারকারী অফিস</span></a>
+                    </li>
+                    <li class="w-100">
+                        {% comment %} <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">নথি ব্যবহারকারী</span></a> {% endcomment %}
+                        <a href="#submenu2" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+                            <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">নথি ব্যবহারকারী</span></a>
+                        <ul class="collapse hide nav flex-column ms-1" id="submenu2" data-bs-parent="#submenu1">
+                            <li>
+                                <a href="{% url 'nothi_users_total' %}" class="nav-link px-0"> <span class="d-none d-sm-inline">মোট ব্যবহারকারী</span></a>
+                            </li>
+                            <li>
+                                <a href="{% url 'nothi_users_male' %}" class="nav-link px-0"> <span class="d-none d-sm-inline">মোট ব্যবহারকারী পুরুষ</span></a>
+                            </li>
+                            <li>
+                                <a href="{% url 'nothi_users_female' %}" class="nav-link px-0"> <span class="d-none d-sm-inline">মোট ব্যবহারকারী মহিলা</span></a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        {% comment %} <a href="#" class="nav-link px-0"> <span class="d-none d-sm-inline">লগইন পরিসংখ্যান</span></a> {% endcomment %}
+                        <a href="#submenu3" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+                            <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">লগইন পরিসংখ্যান</span></a>
+                        <ul class="collapse hide nav flex-column ms-1" id="submenu3" data-bs-parent="#submenu1">
+                            <li>
+                                <a href="{% url 'login_total_users' %}" class="nav-link px-0"> <span class="d-none d-sm-inline">মোট লগইন</span></a>
+                            </li>
+                            <li>
+                                <a href="{% url 'login_male_users' %}" class="nav-link px-0"> <span class="d-none d-sm-inline">মোট লগইন পুরুষ</span></a>
+                            </li>
+                            <li>
+                                <a href="{% url 'login_female_users' %}" class="nav-link px-0"> <span class="d-none d-sm-inline">মোট লগইন মহিলা</span></a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="{% url 'mobile_app_users' %}" class="nav-link px-0"> <span class="d-none d-sm-inline">মোবাইল ব্যবহারকারী</span></a>
+                    </li>
+                    <li>
+                        <a href="{% url 'total_upokarvogi' %}" class="nav-link px-0"> <span class="d-none d-sm-inline">মোট উপকারভোগী</span></a>
+                    </li>
+                </ul>
+            </li>
+
+
+
+            <li class="nav-item">
+                <a href="#submenu4" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+                    <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">নথি</span></a>
+                <ul class="collapse hide nav flex-column ms-1" id="submenu4" data-bs-parent="#submenu1">
+                    <li>
+                        <a href="{% url 'nispottikritto_nothi' %}" class="nav-link px-0"> <span class="d-none d-sm-inline">নিষ্পত্তিকৃত নথি</span></a>
+                    </li>
+                    <li>
+                        <a href="{% url 'note_nisponno' %}" class="nav-link px-0"> <span class="d-none d-sm-inline">নোট নিষ্পন্ন</span></a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="#submenu5" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+                    <i class="fs-4 bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">পত্রজারি</span></a>
+                <ul class="collapse hide nav flex-column ms-1" id="submenu5" data-bs-parent="#submenu1">
+                    <li>
+                        <a href="{% url 'potrojari' %}" class="nav-link px-0"> <span class="d-none d-sm-inline">মোট পত্রজারি</span></a>
+                    </li>
+                </ul>
+            </li>
+          </ul>
+          <hr class="bg-success" />
+        </div>
+      </div>
+      <div class="col py-3">
+        {% block main_content %}
+
+        {% endblock main_content %}
+        <footer class="app-footer">
+        <span class="ml-auto">কারিগরি সহায়তায় <a href="https://www.tappware.com">ট্যাপওয়ার</a></span>
+        </footer>
+      </div>
+    </div>
+  </div>
+{% block cdn_js %}
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+      crossorigin="anonymous"
+    ></script>
+{% endblock cdn_js %}
+
+
+</body>
+</html>
