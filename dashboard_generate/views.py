@@ -1,7 +1,8 @@
+# dashboard_generate/veiws.py
 import csv
 import json
 from datetime import datetime
-from glob import glob
+from datetime import date
 
 from django.contrib.auth import get_user_model
 # from django.contrib.auth.decorators import login_required
@@ -9,7 +10,7 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from . import graph_methods
+# from . import graph_methods
 from . import helper_functions as hf
 from .forms import ReportDateRangeForm
 from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
@@ -388,7 +389,6 @@ def custom_report(request):
 
     form = ReportDateRangeForm()
     context = {}
-    from datetime import date
 
     today = date.today()
 

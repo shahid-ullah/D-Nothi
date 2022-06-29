@@ -1,12 +1,9 @@
-{% extends 'monthly_report/base.html' %}
+{% extends 'dashboard_generate/base.html' %}
 {% load crispy_forms_tags %}
 
 {% block title %}রিপোর্ট{% endblock %}
-{% block inline_css %}
 
-{% endblock inline_css %}
-
-{% block body_block %}
+{% block main_content %}
   <div class="row">
     <div class="col-4">
     </div>
@@ -121,7 +118,4 @@
       </div>
     </div>
   </div>
-{% endblock %}
-
-{# {% block local_js %} #}
-{# {%  endblock local_js %} #}
+{% endblock main_content %}
