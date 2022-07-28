@@ -22,14 +22,14 @@ class updateDashboard(APIView):
     """
     update dashboard data.
     process source db data and dump to dashboard db.
-    Table: Offices
+    Table: OFFICES
         1. total_offices
-    Table: NisponnoRecords
+    Table: NISPONNORECORDS
         1. nispottikritto_nothi
         2. upokarvogi
         3. potrojari
         4. note_nisponno
-    Table: Users
+    Table: USERS
         1. total_nothi_users
     Table: USERS_EMPLOYEE_RECORDS
         1. male nothi users
@@ -77,6 +77,7 @@ class updateDashboard(APIView):
 
         status = {}
         total_process = 13
+        object = None
         if settings.SYSTEM_UPDATE_RUNNING:
             print('system update running. please request later')
             return Response({'status': 'system update running. Please request later'})
@@ -84,9 +85,9 @@ class updateDashboard(APIView):
         start_processing_time = time.perf_counter()
         settings.SYSTEM_UPDATE_RUNNING = True
 
-        object = self.update_log(request, object=None, process_running=1, total_process=total_process)
+        object = self.update_log(request, object=object, process_running=1, total_process=total_process)
 
-        # Table 1: offices
+        # Table 1: OFFICES
 
         status['offices'] = {}
         offices_objects = Offices.objects.using('source_db').all()
@@ -99,7 +100,7 @@ class updateDashboard(APIView):
         offices_dataframe = None
         object = self.update_log(request, object=object, process_running=2, total_process=total_process)
 
-        # Table 2: nisponno_records
+        # Table 2: NISPONNO_RECORDS
         status['nisponno_records'] = {}
         nisponno_records_objects = NisponnoRecords.objects.using('source_db').all()
         nisponno_records_values = nisponno_records_objects.values(
