@@ -1,47 +1,5 @@
-html, head, body {
-    height: 100%;
-    width: 100%;
-}
 .app-body {
     background-color: rgb(255, 255, 255);
-    margin-top: 40px;
-}
-
-.summary_main_block {
-    background-color: white;
-}
-
-/* .summary_main_block .row {
-    height: 33%;
-} */
-/* .summary_row1 {
-    height: 33%;
-} */
-
-/* .summary_row2 {
-    height: 33%;
-} */
-/* .summary_row3 { */
-    /* background-color: #aaaaaa; */
-    /* height: 34%; */
-/* } */
-.summary_box {
-    background-color: whitesmoke;
-    border: 10px solid white;
-    padding: 40px;
-    /* padding: 5px; */
-    /* margin-top: 5px; */
-    /* margin-bottom: 10px; */
-    /* margin-left: 10px; */
-    /* margin: 2px; */
-}
-.summary_box .heading {
-    /* background-color: red; */
-    color: #174b67;
-}
-.title_count {
-    color: #787373;
-    /* color: red; */
 }
 
 .app-header.navbar {
@@ -59,17 +17,17 @@ app-header.navbar {
 }
 
 .sidebar {
-    border-right: 2px solid black;
+    border-right: 1px solid #aaaaaa;
     background-color: rgb(255, 255, 255);
 }
 
-/* .sidebar .nav-link, .sidebar .navbar .dropdown-toggle, .navbar .sidebar .dropdown-toggle {
+.sidebar .nav-link, .sidebar .navbar .dropdown-toggle, .navbar .sidebar .dropdown-toggle {
     color: black;
 }
 
 .sidebar .nav-link:hover, .sidebar .nav-link:focus, .sidebar .nav-link.active {
     background-color: #ff7473 !important;
-} */
+}
 
 .a {
     color: #f64846;
@@ -90,11 +48,3 @@ app-header.navbar {
     text-align: center;
     background: #fff;
 }
-
-.app-footer {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  padding-right: 20px;
-  z-index: 1020;
-  height: 50px; }
