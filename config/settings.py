@@ -21,7 +21,7 @@ environ.Env.read_env(env_file)
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'automate_process.apps.AutomateProcessConfig',
     'dashboard_generate.apps.DashboardGenerateConfig',
+    'dashboard_ui.apps.DashboardUIConfig',
 ]
 
 MIDDLEWARE = [
