@@ -1,9 +1,9 @@
-{% extends 'dashboard_generate/base.html' %}
+{% extends 'dashboard_ui/base_site.html' %}
 {% load static %}
 
 {% block title %}মোট ব্যবহারকারী (লগইন){% endblock %}
 
-{% block main_content %}
+{% block content %}
   <div>
     <script src="{% static 'js/utils.js' %}"></script>
     <script charset="utf-8">
@@ -117,4 +117,4 @@
       </div>
     </div>
   </div>
-{% endblock main_content %}
+{% endblock content %}

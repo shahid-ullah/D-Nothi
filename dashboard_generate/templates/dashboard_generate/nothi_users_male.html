@@ -1,9 +1,9 @@
-{% extends 'dashboard_generate/base.html' %}
+{% extends 'dashboard_ui/base_site.html' %}
 {% load static %}
 
 {% block title %}নথি ব্যবহারকারী (পুরুষ){% endblock %}
 
-{% block main_content %}
+{% block content %}
   <div>
     <script src="{% static 'js/utils.js' %}"></script>
     <script charset="utf-8">
@@ -118,4 +118,4 @@
       </div>
     </div>
   </div>
-{% endblock main_content %}
+{% endblock content %}

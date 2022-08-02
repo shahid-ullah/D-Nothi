@@ -37,6 +37,7 @@ def dashboard_home(request):
         'note_nisponno': 12509,
         'potrojari': 12509,
         'upokarvogi': 122509,
+        'mobile_app_users': 122509,
     }
     # return render(request, 'dashboard_generate/home.html', context={'summary': summary})
     return render(request, 'dashboard_ui/index.html', context={'summary': summary})

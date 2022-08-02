@@ -1,8 +1,8 @@
-{% extends 'dashboard_generate/base.html' %}
+{% extends 'dashboard_ui/base_site.html' %}
 {% load static %}
 
 {% block title %}নিষ্পত্তিকৃত নথি{% endblock %}
-{% block main_content %}
+{% block content %}
   <div>
     <script src="{% static 'js/utils.js' %}"></script>
     <script charset="utf-8">
@@ -12,7 +12,7 @@
     </script>
   </div>
   <div class="row">
-    <div class="col-sm-12 col-md-12">
+    <div class="col-sm-12 col-md-12 graph_column">
       <div class="card">
         <div class="card-header card-header-custom2">
           নিষ্পত্তিকৃত নথি
@@ -116,4 +116,4 @@
       </div>
     </div>
   </div>
-{% endblock main_content %}
+{% endblock content %}
