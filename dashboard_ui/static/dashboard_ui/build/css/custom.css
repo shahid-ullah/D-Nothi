@@ -1629,19 +1629,21 @@ ul.quick-list li i {
 }
 .widget_summary .w_right {
     float: left;
-    text-align: right
+    text-align: right;
+    margin-top: -5px;
 }
 .widget_summary .w_right span {
     font-size: 20px
 }
-.w_20 {
-    width: 20%
+.w_35 {
+    width: 35%;
+    margin-left: 5px;
 }
-.w_25 {
-    width: 25%
+.w_15 {
+    width: 15%
 }
-.w_55 {
-    width: 55%
+.w_50 {
+    width: 50%
 }
 h5.graph_title {
     text-align: left;

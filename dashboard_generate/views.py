@@ -2,8 +2,8 @@
 import csv
 import json
 from datetime import date, datetime
-import pandas as pd
 
+import pandas as pd
 from django.contrib.auth import get_user_model
 # from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
@@ -136,23 +136,19 @@ def dashboard_home(request):
     if not mobile_app_users:
         mobile_app_users = 0
 
+    # Generate nispottikritto nothi plot data
+    objs_nispottikritto_nothi = ReportNispottikrittoNothiModel.objects.all()
+    values_nispottikritto_nothi = objs_nispottikritto_nothi.values('count_or_sum', 'report_day')
 
-
-    # nispottikritto_nothi plot data
-
-    objs = ReportNispottikrittoNothiModel.objects.all()
-    values = objs.values()
-    df = pd.DataFrame(values)
-    df = df.sort_values(by='report_day', ascending=False)
-    df_group_by = df.groupby(df.report_day.dt.year, sort=False)['count_or_sum'].sum()
-
-    years = list(df_group_by.index)
-    years = [int(year) for year in years]
-    values = list(df_group_by.values)
-    values = [int(value) for value in values]
-
-    nispottikritto_nothi_plot = {'years': years, 'values': values}
-
+    df_nispottikritto_nothi = pd.DataFrame(values_nispottikritto_nothi)
+    df_nispottikritto_nothi= df_nispottikritto_nothi.sort_values(by='report_day', ascending=False)
+    year_group_sum_nispottikritto_nothi= df_nispottikritto_nothi.groupby(df_nispottikritto_nothi.report_day.dt.year, sort=False)['count_or_sum'].sum()
+    years = [int(year) for year in year_group_sum_nispottikritto_nothi.index]
+    values = [int(value) for value in year_group_sum_nispottikritto_nothi.values]
+    values = [517867775, 837973497]
+    percentages = [round(value*100/sum(values)) for value in values]
+    # nispottikritto_nothi_plot = {'years': years, 'values': values}
+    nispottikritto_nothi_plot = [{'year': year, 'value': value, 'percentage': percentage} for year, value, percentage in zip(years, values, percentages)]
 
     summary = {
         'office_total': office_count,
