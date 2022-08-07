@@ -28,6 +28,73 @@ class NpEncoder(json.JSONEncoder):
         return super(NpEncoder, self).default(obj)
 
 
+MONTH_MAP = {
+    1: 'January',
+    2: 'February',
+    3: 'March',
+    4: 'April',
+    5: 'May',
+    6: 'June',
+    7: 'July',
+    8: 'August',
+    9: 'September',
+    10: 'October',
+    11: 'November',
+    12: 'December',
+}
+
+def login_stack_bar_chart():
+
+    login_male_objs = ReportLoginMalelUsersModel.objects.all()
+    login_female_objs = ReportLoginFemalelUsersModel.objects.all()
+
+    login_male_values = login_male_objs.values()
+    login_female_values = login_female_objs.values()
+
+    login_male_df = pd.DataFrame(login_male_values)
+    login_female_df = pd.DataFrame(login_female_values)
+    login_male_df = login_male_df.sort_values(by='report_day', ascending=False)
+    login_female_df = login_female_df.sort_values(by='report_day', ascending=False)
+
+    login_male_groups = login_male_df.groupby([login_male_df.report_day.dt.year, login_male_df.report_day.dt.month], sort=False)
+    login_female_groups = login_female_df.groupby([login_female_df.report_day.dt.year, login_female_df.report_day.dt.month], sort=False)
+
+    male_list = []
+    female_list = []
+
+    max_months_result = 5
+    months = []
+
+    count = 0
+
+    for gr, frame in login_male_groups:
+        if count > max_months_result:
+            break
+
+        month = MONTH_MAP[int(gr[1])]
+        x = f'{gr[0]} {month}'
+
+        temporary_dic = {}
+        for value in frame.employee_record_ids.values:
+            temporary_dic.update(value)
+
+        male_list.append(len(temporary_dic))
+        months.append(x)
+
+    count = 0
+    for gr, frame in login_female_groups:
+        if count > max_months_result:
+            break
+        x = f'{gr[0]}_{gr[1]}'
+        temporary_dic = {}
+        for value in frame.employee_record_ids.values:
+            temporary_dic.update(value)
+        female_list.append(len(temporary_dic))
+
+    chart_data_map = {'male_list': male_list, 'female_list': female_list, 'months': months}
+
+    return chart_data_map
+
 def get_cache_or_calculate(report_type, mapping_method, model):
     global CACHED_DICTIONARY
     cached = CACHED_DICTIONARY.setdefault(report_type, {})
@@ -102,12 +169,13 @@ def generate_login_users_year_month_day_map(objs):
     day_map = {}
 
     for year, year_frame in dataframe.groupby('year'):
+        year = int(year)
         year_dict = {}
 
         for ids_dict in year_frame['employee_record_ids'].values:
             year_dict.update(ids_dict)
 
-        year_map[year] = len(year_dict)
+        year_map[year] = int(len(year_dict))
 
         month_map[year] = {}
         day_map[year] = {}
@@ -115,6 +183,7 @@ def generate_login_users_year_month_day_map(objs):
         month_group_by = year_frame.groupby('month')
 
         for month, month_frame in month_group_by:
+            month = int(month)
             month_dict = {}
             for ids_dict in month_frame['employee_record_ids'].values:
                 month_dict.update(ids_dict)
@@ -124,7 +193,8 @@ def generate_login_users_year_month_day_map(objs):
 
             day_group_by = month_frame.groupby('day')
             for day, day_frame in day_group_by:
-                day_map[year][month][day] = day_frame['count_or_sum'].sum()
+                day = int(day)
+                day_map[year][month][day] = int(day_frame['count_or_sum'].sum())
 
     return year_map, month_map, day_map
 
