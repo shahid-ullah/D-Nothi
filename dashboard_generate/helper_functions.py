@@ -269,9 +269,9 @@ def generate_nispottikritto_nothi_plot_data():
         df_nispottikritto_nothi = pd.DataFrame(values_nispottikritto_nothi)
         df_nispottikritto_nothi= df_nispottikritto_nothi.sort_values(by='report_day', ascending=False)
         year_group_sum_nispottikritto_nothi= df_nispottikritto_nothi.groupby(df_nispottikritto_nothi.report_day.dt.year, sort=False)['count_or_sum'].sum()
-        years = [int(year) for year in year_group_sum_nispottikritto_nothi.index]
-        values = [int(value) for value in year_group_sum_nispottikritto_nothi.values]
-        percentages = [round(value*100/sum(values)) for value in values]
+        years = [int(year) for year in year_group_sum_nispottikritto_nothi.index][:5]
+        values = [int(value) for value in year_group_sum_nispottikritto_nothi.values][:5]
+        percentages = [round(value*100/sum(values)) for value in values][:5]
         nispottikritto_nothi_plot_data = [{'year': year, 'value': value, 'percentage': percentage} for year, value, percentage in zip(years, values, percentages)]
     except Exception as _:
         nispottikritto_nothi_plot_data = [{}]
