@@ -1,0 +1,126 @@
+
+{% load static %}
+{% block content %}
+  <div>
+    <script src="{% static 'js/utils.js' %}"></script>
+    <script src="{% static 'dashboard_ui/vendors/jquery/dist/jquery.min.js' %}"></script>
+    {{ data.plot_note_nisponno_data|json_script:"plot_note_nisponno_data" }}
+
+    <script></script>
+    <script charset="utf-8">
+
+        const plot_note_nisponno_data = JSON.parse(document.getElementById('plot_note_nisponno_data').textContent);
+        const year_map = plot_note_nisponno_data.year_map;
+        const month_map = plot_note_nisponno_data.month_map;
+        const day_map = plot_note_nisponno_data.day_map;
+
+    </script>
+  </div>
+  <div class="row">
+    <div class="col-sm-12 col-md-12">
+      <div class="card">
+        <div class="card-header card-header-custom2">
+                নোট নিষ্পন্ন
+        </div>
+        <div class="card-body">
+          <div id="chart_top_illness">
+
+            <figure class="highcharts-figure">
+              <div id="container"></div>
+              <p class="highcharts-description">
+                <!-- নোট নিষ্পন্ন -->
+              </p>
+            </figure>
+
+            <script>
+                $(document).ready(function(){
+
+              // Create the chart
+              let level = 1;
+              let first_level_title = 'বার্ষিক নোট নিষ্পন্ন'
+              let second_level_title = 'মাসিক নোট নিষ্পন্ন'
+              let third_level_title = 'দৈনিক নোট নিষ্পন্ন'
+
+              Highcharts.chart('container', {
+                chart: {
+                  type: 'column',
+                  events: {
+                    drilldown: function (e) {
+                      level = level + 1
+                      if (level == 1){
+                        this.setTitle({ text: first_level_title });
+                      }
+                      if (level == 2){
+                        this.setTitle({ text: second_level_title });
+                      }
+                      if (level == 3){
+                        this.setTitle({ text: third_level_title });
+                      }
+                    },
+                    drillup: function (e) {
+                      level = level - 1;
+                      if (level == 1){
+                        this.setTitle({ text: first_level_title });
+                      }
+                      if (level == 2){
+                        this.setTitle({ text: second_level_title });
+                      }
+                      if (level == 3){
+                        this.setTitle({ text: third_level_title });
+                      }
+                    }
+                  }
+                },
+                title: {
+                  text: 'বার্ষিক নোট নিষ্পন্ন'
+                },
+                subtitle: {
+                  text: ''
+                },
+                accessibility: {
+                  announceNewData: {
+                    enabled: true
+                  }
+                },
+                xAxis: {
+                  type: 'category'
+                },
+                yAxis: {
+                  title: {
+                      text: 'নোট নিষ্পন্ন সংখ্যা'
+                  }
+
+                },
+                credits: {
+                  enabled: false
+                },
+                legend: {
+                  enabled: false
+                },
+                plotOptions: {
+                  series: {
+                    borderWidth: 0,
+                    dataLabels: {
+                      enabled: true,
+                    }
+                  }
+                },
+
+                tooltip: {
+                  headerFormat: '<span style="font-size:11px"> </span>',
+                  pointFormat: '<span style="color:{point.color}"><b>{point.y}</b><br/>'
+                },
+
+                series: generateGeneralSeries(year_map, 'year'),
+                drilldown: {
+                  series: generateDrilldownSeries(year_map, month_map, day_map)
+                }
+              });
+                });
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

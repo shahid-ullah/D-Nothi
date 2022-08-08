@@ -14,68 +14,68 @@
     <div class="row tile_count">
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fas fa-building	"></i> মোট ব্যবহারকারী অফিস</span>
-        <div class="count text-primary">{{summary.office_total | intcomma}}</div>
+        <div class="count text-primary">{{data.report_summary_count.office_total | intcomma}}</div>
         <!-- <span class="count_bottom"><i class="green">4% </i> From last Week</span> -->
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-user"></i> মোট ব্যবহারকারী</span>
-        <div class="count text-secondary">{{summary.users_total | intcomma}}</div>
+        <div class="count text-secondary">{{data.report_summary_count.users_total | intcomma}}</div>
         <!-- <span class="count_bottom"><i class="green">4% </i> From last Week</span> -->
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-user"></i> মোট ব্যবহারকারী (পুরুষ)</span>
-        <div class="count text-success">{{summary.male_users_total | intcomma}}</div>
+        <div class="count text-success">{{data.report_summary_count.male_users_total | intcomma}}</div>
         <!-- <span class="count_bottom"><i class="green">4% </i> From last week</span> -->
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-user"></i> মোট ব্যবহারকারী (মহিলা)</span>
-        <div class="count text-danger">{{summary.female_users_total | intcomma}}</div>
+        <div class="count text-danger">{{data.report_summary_count.female_users_total | intcomma}}</div>
         <!-- <span class="count_bottom"><i class="green">4% </i> From last Week</span> -->
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-user"></i> মোট লগইন</span>
-        <div class="count text-warning">{{summary.login_users | intcomma}}</div>
+        <div class="count text-warning">{{data.report_summary_count.login_users | intcomma}}</div>
         <span class=""><i class="green"></i>বর্তমান মাস</span>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-user"></i> মোট লগইন (পুরুষ)</span>
-        <div class="count">{{summary.male_login_users}}</div>
+        <div class="count">{{data.report_summary_count.male_login_users}}</div>
         <!-- <span class="count_bottom"><i class="green">4% </i> From last Week</span> -->
         <span class=""><i class="green"></i>বর্তমান মাস</span>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-user"></i> মোট লগইন (মহিলা)</span>
-        <div class="count">{{summary.female_login_users | intcomma}}</div>
+        <div class="count">{{data.report_summary_count.female_login_users | intcomma}}</div>
         <!-- <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>3% </i> From last Week</span> -->
         <span class=""><i class="green"></i>বর্তমান মাস</span>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa-solid fa-calculator"></i> নিষ্পত্তিকৃত নথি</span>
-        <div class="count green">{{summary.nispottikritto_nothi | intcomma}}</div>
+        <div class="count green">{{data.report_summary_count.nispottikritto_nothi | intcomma}}</div>
         <!-- <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span> -->
         <span class=""><i class="green"></i>বর্তমান মাস</span>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa-solid fa-calculator"></i> নোট নিষ্পন্ন</span>
-        <div class="count">{{summary.note_nisponno | intcomma}}</div>
+        <div class="count">{{data.report_summary_count.note_nisponno | intcomma}}</div>
         <!-- <span class="count_bottom"><i class="red"><i class="fa fa-sort-desc"></i>12% </i> From last Week</span> -->
         <span class=""><i class="green"></i>বর্তমান মাস</span>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa-solid fa-calculator"></i> মোট পত্রজারি</span>
-        <div class="count">{{summary.potrojari | intcomma}}</div>
+        <div class="count">{{data.report_summary_count.potrojari | intcomma}}</div>
         <!-- <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span> -->
         <span class=""><i class="green"></i>বর্তমান মাস</span>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-user"></i> মোট উপকারভোগী</span>
-        <div class="count">{{summary.upokarvogi | intcomma}}</div>
+        <div class="count">{{data.report_summary_count.upokarvogi | intcomma}}</div>
         <!-- <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span> -->
         <span class=""><i class="green"></i>বর্তমান মাস</span>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-user"></i> লগইন মোবাইল ব্যবহারকারী</span>
-        <div class="count">{{summary.mobile_app_users | intcomma}}</div>
+        <div class="count">{{data.report_summary_count.mobile_app_users | intcomma}}</div>
         <span class=""><i class="green"></i>বর্তমান মাস</span>
       </div>
     </div>
@@ -100,13 +100,13 @@
 
           <div class="col-md-3 col-sm-3 col-xs-12 bg-white">
             <div class="x_title">
-              <h2>ব্রাউজার ব্যবহার</h2>
+              <h2>Browser usage statistics</h2>
               <div class="clearfix"></div>
             </div>
 
             <div class="col-md-12 col-sm-12 col-xs-6">
               <div>
-                <p>গুগুল ক্রোম</p>
+                <p>Google Chrome</p>
                 <div class="">
                   <div class="progress progress_sm" style="width: 76%;">
                     <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="70"></div>
@@ -114,7 +114,7 @@
                 </div>
               </div>
               <div>
-                <p>ফায়ারফক্স</p>
+                <p>Firefox</p>
                 <div class="">
                   <div class="progress progress_sm" style="width: 76%;">
                     <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="10"></div>
@@ -124,7 +124,7 @@
             </div>
             <div class="col-md-12 col-sm-12 col-xs-6">
               <div>
-                <p>অন্যান্য</p>
+                <p>Others</p>
                 <div class="">
                   <div class="progress progress_sm" style="width: 76%;">
                     <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="20"></div>
@@ -158,7 +158,7 @@
             </div>
             <div class="x_content">
               <h4>নিষ্পত্তিকৃত নথি (সর্বশেষ ৫ বছর)</h4>
-              {% for obj in summary.nispottikritto_nothi_plot %}
+              {% for obj in data.nispottikritto_nothi_plot %}
               <div class="widget_summary">
                 <div class="w_left w_15">
                   <span>{{obj.year}}</span>
@@ -199,10 +199,10 @@
                   </th>
                   <th>
                     <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
-                      <p class="">ই-মেইল</p>
+                      <p class="">E-mail</p>
                     </div>
                     <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
-                      <p class="">ব্যবহারকারী</p>
+                      <p class="">Users</p>
                     </div>
                   </th>
                 </tr>
@@ -240,10 +240,17 @@
 
 
         <div class="col-md-4 col-sm-4 col-xs-12">
-          <h2>মোবাইল অপারেটর</h2>
+          <!-- <h2>মোবাইল অপারেটর</h2> -->
+          <h2>Mobile Operator</h2>
           <figure class="highcharts-figure">
             <div id="mobileOperatorContainer"></div>
           </figure>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          {% include 'dashboard_generate/note_nisponno_generic.html' %}
         </div>
       </div>
 
@@ -307,7 +314,6 @@
   {% endblock javascripts %}
 
   {% block custom_js_var %}
-    {{ summary|json_script:"hello-data" }}
-    {{ summary.stack_bar_chart|json_script:"stack_bar_chart" }}
-    {{ summary.nispottikritto_nothi_plot|json_script:"nispottikritto_nothi_plot" }}
+    {{ data.stack_bar_chart|json_script:"stack_bar_chart" }}
+    {{ data.nispottikritto_nothi_plot|json_script:"nispottikritto_nothi_plot" }}
   {% endblock custom_js_var %}

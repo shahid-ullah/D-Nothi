@@ -1,5 +1,8 @@
 $(document).ready(function () {
   Highcharts.chart("mobileOperatorContainer", {
+    credits: {
+      enabled: false
+    },
     chart: {
       type: "pie",
       height: "300px",
@@ -22,7 +25,7 @@ $(document).ready(function () {
     },
     series: [
       {
-        name: "Delivered amount",
+        name: "Total",
         data: [
           ["GP", 72857],
           ["BL", 14615],

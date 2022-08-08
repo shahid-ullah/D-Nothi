@@ -1,6 +1,7 @@
 # dashboard_generate/helper_functions.py
 import json
 import time
+from datetime import date
 
 import numpy as np
 import pandas as pd
@@ -42,6 +43,165 @@ MONTH_MAP = {
     11: 'November',
     12: 'December',
 }
+
+
+def get_report_summary_count():
+
+    today = date.today()
+    year = today.year
+    month = today.month
+
+    report_summary_count = {}
+
+    # office_total calculate
+    try:
+        office_count_dict = ReportTotalOfficesModel.objects.aggregate(Sum('count_or_sum'))
+        office_total = int(office_count_dict['count_or_sum__sum'])
+
+        if not office_total:
+            office_total = 0
+    except Exception as _:
+        office_total = 0
+
+    # users total calculate
+    try:
+        users_total_dict = ReportTotalUsersModel.objects.aggregate(Sum('count_or_sum'))
+        users_total = int(users_total_dict['count_or_sum__sum'])
+
+        if not users_total:
+            users_total = 0
+    except Exception as _:
+        users_total = 0
+
+    # male users total calculate
+    try:
+        nothi_users_male_dict = ReportMaleNothiUsersModel.objects.aggregate(
+            Sum('count_or_sum'))
+        male_users_total = int(nothi_users_male_dict['count_or_sum__sum'])
+
+        if not male_users_total:
+            male_users_total = 0
+    except Exception as _:
+        male_users_total = 0
+
+    # female users total calculate
+    try:
+        nothi_users_female_dict = ReportFemaleNothiUsersModel.objects.aggregate(
+            Sum('count_or_sum'))
+        female_users_total = int(nothi_users_female_dict['count_or_sum__sum'])
+
+        if not female_users_total:
+            female_users_total = 0
+    except Exception as _:
+        female_users_total = 0
+
+    # login users total calculate for current month
+    try:
+        login_total_users_objects = ReportLoginTotalUsers.objects.filter(
+            year=year, month=month)
+        login_total_users_dict = login_total_users_objects.aggregate(
+            Sum('count_or_sum'))
+        login_users_total = int(login_total_users_dict['count_or_sum__sum'])
+        if not login_users_total:
+            login_users_total = 0
+    except Exception as _:
+        login_users_total = 0
+
+    # login male users total calculate for current month
+    try:
+        login_male_users_objects = ReportLoginMalelUsersModel.objects.filter(
+            year=year, month=month)
+        login_male_users_dict = login_male_users_objects.aggregate(
+            Sum('count_or_sum'))
+        login_male_users_total = int(login_male_users_dict['count_or_sum__sum'])
+        if not login_male_users_total:
+            login_male_users_total = 0
+    except Exception as _:
+        login_male_users_total = 0
+
+    # login female users total calculate for current month
+    try:
+        login_female_users_objects = ReportLoginFemalelUsersModel.objects.filter(
+            year=year, month=month)
+        login_female_users_dict = login_female_users_objects.aggregate(
+            Sum('count_or_sum'))
+        female_login_users_total = int(login_female_users_dict['count_or_sum__sum'])
+        if not female_login_users_total:
+            female_login_users_total = 0
+    except Exception as _:
+        female_login_users_total = 0
+
+    # nispottikritto_nothi total calculate for current month
+    try:
+        nispottikritto_nothi_objects = ReportNispottikrittoNothiModel.objects.filter(
+            year=year, month=month)
+        nispottikritto_nothi_dict = nispottikritto_nothi_objects.aggregate(
+            Sum('count_or_sum'))
+        nispottikritto_nothi_count = int(nispottikritto_nothi_dict['count_or_sum__sum'])
+        if not nispottikritto_nothi_count:
+            nispottikritto_nothi_count = 0
+    except Exception as _:
+        nispottikritto_nothi_count = 0
+
+    # upokarvogi total calculate for current month
+    try:
+        upokarvogi_objects = ReportUpokarvogiModel.objects.filter(year=year,
+                                                                  month=month)
+        upokarvogi_dict = upokarvogi_objects.aggregate(Sum('count_or_sum'))
+        upokarvogi = int(upokarvogi_dict['count_or_sum__sum'])
+        if not upokarvogi:
+            upokarvogi = 0
+    except Exception as _:
+        upokarvogi = 0
+
+    # potrojari total calculate for current month
+    try:
+        potrojari_objects = ReportPotrojariModel.objects.filter(year=year,
+                                                                month=month)
+        potrojari_dict = potrojari_objects.aggregate(Sum('count_or_sum'))
+        potrojari = int(potrojari_dict['count_or_sum__sum'])
+        if not potrojari:
+            potrojari = 0
+    except Exception as _:
+        potrojari = 0
+
+    # note nisponno total calculate for current month
+    try:
+        note_nisponno_objects = ReportNoteNisponnoModel.objects.filter(year=year,
+                                                                       month=month)
+        note_nisponno_dict = note_nisponno_objects.aggregate(Sum('count_or_sum'))
+        note_nisponno = int(note_nisponno_dict['count_or_sum__sum'])
+        if not note_nisponno:
+            note_nisponno = 0
+    except Exception as _:
+        note_nisponno = 0
+
+    # mobile app users total calculate for current month
+    try:
+        mobile_app_users_objects = ReportMobileAppUsersModel.objects.filter(
+            year=year, month=month)
+        mobile_app_users_dict = mobile_app_users_objects.aggregate(
+            Sum('count_or_sum'))
+        mobile_app_users = int(mobile_app_users_dict['count_or_sum__sum'])
+        if not mobile_app_users:
+            mobile_app_users = 0
+    except Exception as _:
+        mobile_app_users = 0
+
+    report_summary_count['office_total'] = office_total
+    report_summary_count['users_total'] = users_total
+    report_summary_count['male_users_total'] = male_users_total
+    report_summary_count['female_users_total'] = female_users_total
+    report_summary_count['login_users'] = login_users_total
+    report_summary_count['male_login_users'] = login_male_users_total
+    report_summary_count['female_login_users'] = female_login_users_total
+    report_summary_count['nispottikritto_nothi'] = nispottikritto_nothi_count
+    report_summary_count['note_nisponno'] = note_nisponno
+    report_summary_count['potrojari'] = potrojari
+    report_summary_count['upokarvogi'] = upokarvogi
+    report_summary_count['mobile_app_users'] = mobile_app_users
+
+    return report_summary_count
 
 def login_stack_bar_chart():
 
@@ -95,6 +255,22 @@ def login_stack_bar_chart():
 
     return chart_data_map
 
+
+def generate_nispottikritto_nothi_plot_data():
+    objs_nispottikritto_nothi = ReportNispottikrittoNothiModel.objects.all()
+    values_nispottikritto_nothi = objs_nispottikritto_nothi.values('count_or_sum', 'report_day')
+
+    df_nispottikritto_nothi = pd.DataFrame(values_nispottikritto_nothi)
+    df_nispottikritto_nothi= df_nispottikritto_nothi.sort_values(by='report_day', ascending=False)
+    year_group_sum_nispottikritto_nothi= df_nispottikritto_nothi.groupby(df_nispottikritto_nothi.report_day.dt.year, sort=False)['count_or_sum'].sum()
+    years = [int(year) for year in year_group_sum_nispottikritto_nothi.index]
+    values = [int(value) for value in year_group_sum_nispottikritto_nothi.values]
+    percentages = [round(value*100/sum(values)) for value in values]
+    nispottikritto_nothi_plot_data = [{'year': year, 'value': value, 'percentage': percentage} for year, value, percentage in zip(years, values, percentages)]
+
+    return nispottikritto_nothi_plot_data
+
+
 def get_cache_or_calculate(report_type, mapping_method, model):
     global CACHED_DICTIONARY
     cached = CACHED_DICTIONARY.setdefault(report_type, {})
@@ -142,20 +318,20 @@ def generate_year_month_and_day_map(objs):
 
     year_group_by = dataframe.groupby('year')
     for year, year_frame in year_group_by:
-        year_map[year] = year_frame['count_or_sum'].sum()
+        year_map[year] = int(year_frame['count_or_sum'].sum())
         month_map[year] = {}
         day_map[year] = {}
 
         month_group_by = year_frame.groupby('month')
 
         for month, month_frame in month_group_by:
-            month_map[year][month] = month_frame['count_or_sum'].sum()
+            month_map[year][month] = int(month_frame['count_or_sum'].sum())
 
             day_map[year][month] = {}
 
             day_group_by = month_frame.groupby('day')
             for day, day_frame in day_group_by:
-                day_map[year][month][day] = day_frame['count_or_sum'].sum()
+                day_map[year][month][day] = int(day_frame['count_or_sum'].sum())
 
     return year_map, month_map, day_map
 

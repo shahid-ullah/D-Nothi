@@ -15,20 +15,20 @@
 
       {% block stylesheets %}
         <!-- Bootstrap -->
-        <link href="/static/dashboard_ui/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="{% static 'dashboard_ui/vendors/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
         <!-- Font Awesome -->
-        <link href="/static/dashboard_ui/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+        <link href="{% static 'dashboard_ui/vendors/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <!-- NProgress -->
-        <link href="/static/dashboard_ui/vendors/nprogress/nprogress.css" rel="stylesheet">
+        <link href="{% static 'dashboard_ui/vendors/nprogress/nprogress.css' %}" rel="stylesheet">
         <!-- bootstrap-daterangepicker -->
-        <link href="/static/dashboard_ui/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+        <link href="{% static 'dashboard_ui/vendors/bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet">
         <!-- iCheck -->
-        <link href="/static/dashboard_ui/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+        <link href="{% static 'dashboard_ui/vendors/iCheck/skins/flat/green.css' %}" rel="stylesheet">
         <!-- bootstrap-progressbar -->
-        <link href="/static/dashboard_ui/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+        <link href="{% static 'dashboard_ui/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css' %}" rel="stylesheet">
         <!-- JQVMap -->
-        <link href="/static/dashboard_ui/vendors/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
+        <link href="{% static 'dashboard_ui/vendors/jqvmap/dist/jqvmap.min.css' %}" rel="stylesheet"/>
       {% endblock stylesheets %}
       {% block graph_cdn %}
         <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -40,8 +40,8 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       {% endblock graph_cdn %}
       <!-- Custom Theme Style -->
-      <!-- <link href="{% static 'dashboard_ui/build/css/custom.css' }" rel="stylesheet"> -->
-      <link href="/static/dashboard_ui/build/css/custom.css" rel="stylesheet">
+      <link href="{% static 'dashboard_ui/build/css/custom.css' %}" rel="stylesheet">
+      <!-- <link href="/static/dashboard_ui/build/css/custom.css" rel="stylesheet"> -->
     {% endblock head %}
   </head>
 
