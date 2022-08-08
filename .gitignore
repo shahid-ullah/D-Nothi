@@ -54,7 +54,7 @@ instance/
 .python
 .Python build/
 develop-eggs/
-dist/
+# dist/
 downloads/
 eggs/
 .eggs/
