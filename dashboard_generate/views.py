@@ -35,15 +35,20 @@ def dashboard_home(request):
     # Plot note_nisponno data
     plot_note_nisponno_data = {}
 
-    year_map, month_map, day_map = helper_functions.get_cache_or_calculate(
-        'note_nisponno', helper_functions.generate_year_month_and_day_map,
-        ReportNoteNisponnoModel)
-    plot_note_nisponno_data['year_map'] = year_map
-    plot_note_nisponno_data['month_map'] = month_map
-    plot_note_nisponno_data['day_map'] = day_map
+    try:
+        year_map, month_map, day_map = helper_functions.get_cache_or_calculate(
+            'note_nisponno', helper_functions.generate_year_month_and_day_map,
+            ReportNoteNisponnoModel)
+        plot_note_nisponno_data['year_map'] = year_map
+        plot_note_nisponno_data['month_map'] = month_map
+        plot_note_nisponno_data['day_map'] = day_map
+    except Exception as _:
+        plot_note_nisponno_data['year_map'] = {}
+        plot_note_nisponno_data['month_map'] = {}
+        plot_note_nisponno_data['day_map'] = {}
 
     # plot login stack bar data
-    stack_bar_chart = helper_functions.login_stack_bar_chart()
+    stack_bar_chart = helper_functions.generate_login_stack_bar_chart_data()
 
     # plot nispottikritto nothi data
     nispottikritto_nothi_plot = helper_functions.generate_nispottikritto_nothi_plot_data()

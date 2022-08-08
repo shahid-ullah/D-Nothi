@@ -203,70 +203,76 @@ def get_report_summary_count():
 
     return report_summary_count
 
-def login_stack_bar_chart():
+def generate_login_stack_bar_chart_data():
 
-    login_male_objs = ReportLoginMalelUsersModel.objects.all()
-    login_female_objs = ReportLoginFemalelUsersModel.objects.all()
+    try:
+        login_male_objs = ReportLoginMalelUsersModel.objects.all()
+        login_female_objs = ReportLoginFemalelUsersModel.objects.all()
 
-    login_male_values = login_male_objs.values()
-    login_female_values = login_female_objs.values()
+        login_male_values = login_male_objs.values()
+        login_female_values = login_female_objs.values()
 
-    login_male_df = pd.DataFrame(login_male_values)
-    login_female_df = pd.DataFrame(login_female_values)
-    login_male_df = login_male_df.sort_values(by='report_day', ascending=False)
-    login_female_df = login_female_df.sort_values(by='report_day', ascending=False)
+        login_male_df = pd.DataFrame(login_male_values)
+        login_female_df = pd.DataFrame(login_female_values)
+        login_male_df = login_male_df.sort_values(by='report_day', ascending=False)
+        login_female_df = login_female_df.sort_values(by='report_day', ascending=False)
 
-    login_male_groups = login_male_df.groupby([login_male_df.report_day.dt.year, login_male_df.report_day.dt.month], sort=False)
-    login_female_groups = login_female_df.groupby([login_female_df.report_day.dt.year, login_female_df.report_day.dt.month], sort=False)
+        login_male_groups = login_male_df.groupby([login_male_df.report_day.dt.year, login_male_df.report_day.dt.month], sort=False)
+        login_female_groups = login_female_df.groupby([login_female_df.report_day.dt.year, login_female_df.report_day.dt.month], sort=False)
 
-    male_list = []
-    female_list = []
+        male_list = []
+        female_list = []
 
-    max_months_result = 5
-    months = []
+        max_months_result = 5
+        months = []
 
-    count = 0
+        count = 0
 
-    for gr, frame in login_male_groups:
-        if count > max_months_result:
-            break
+        for gr, frame in login_male_groups:
+            if count > max_months_result:
+                break
 
-        month = MONTH_MAP[int(gr[1])]
-        x = f'{gr[0]} {month}'
+            month = MONTH_MAP[int(gr[1])]
+            x = f'{gr[0]} {month}'
 
-        temporary_dic = {}
-        for value in frame.employee_record_ids.values:
-            temporary_dic.update(value)
+            temporary_dic = {}
+            for value in frame.employee_record_ids.values:
+                temporary_dic.update(value)
 
-        male_list.append(len(temporary_dic))
-        months.append(x)
+            male_list.append(len(temporary_dic))
+            months.append(x)
 
-    count = 0
-    for gr, frame in login_female_groups:
-        if count > max_months_result:
-            break
-        x = f'{gr[0]}_{gr[1]}'
-        temporary_dic = {}
-        for value in frame.employee_record_ids.values:
-            temporary_dic.update(value)
-        female_list.append(len(temporary_dic))
+        count = 0
+        for gr, frame in login_female_groups:
+            if count > max_months_result:
+                break
+            x = f'{gr[0]}_{gr[1]}'
+            temporary_dic = {}
+            for value in frame.employee_record_ids.values:
+                temporary_dic.update(value)
+            female_list.append(len(temporary_dic))
 
-    chart_data_map = {'male_list': male_list, 'female_list': female_list, 'months': months}
+        chart_data_map = {'male_list': male_list, 'female_list': female_list, 'months': months}
+    except Exception as _:
+        chart_data_map = {'male_list': [], 'female_list': [], 'months': []}
 
     return chart_data_map
 
 
 def generate_nispottikritto_nothi_plot_data():
-    objs_nispottikritto_nothi = ReportNispottikrittoNothiModel.objects.all()
-    values_nispottikritto_nothi = objs_nispottikritto_nothi.values('count_or_sum', 'report_day')
+    try:
+        objs_nispottikritto_nothi = ReportNispottikrittoNothiModel.objects.all()
+        values_nispottikritto_nothi = objs_nispottikritto_nothi.values('count_or_sum', 'report_day')
 
-    df_nispottikritto_nothi = pd.DataFrame(values_nispottikritto_nothi)
-    df_nispottikritto_nothi= df_nispottikritto_nothi.sort_values(by='report_day', ascending=False)
-    year_group_sum_nispottikritto_nothi= df_nispottikritto_nothi.groupby(df_nispottikritto_nothi.report_day.dt.year, sort=False)['count_or_sum'].sum()
-    years = [int(year) for year in year_group_sum_nispottikritto_nothi.index]
-    values = [int(value) for value in year_group_sum_nispottikritto_nothi.values]
-    percentages = [round(value*100/sum(values)) for value in values]
-    nispottikritto_nothi_plot_data = [{'year': year, 'value': value, 'percentage': percentage} for year, value, percentage in zip(years, values, percentages)]
+        df_nispottikritto_nothi = pd.DataFrame(values_nispottikritto_nothi)
+        df_nispottikritto_nothi= df_nispottikritto_nothi.sort_values(by='report_day', ascending=False)
+        year_group_sum_nispottikritto_nothi= df_nispottikritto_nothi.groupby(df_nispottikritto_nothi.report_day.dt.year, sort=False)['count_or_sum'].sum()
+        years = [int(year) for year in year_group_sum_nispottikritto_nothi.index]
+        values = [int(value) for value in year_group_sum_nispottikritto_nothi.values]
+        percentages = [round(value*100/sum(values)) for value in values]
+        nispottikritto_nothi_plot_data = [{'year': year, 'value': value, 'percentage': percentage} for year, value, percentage in zip(years, values, percentages)]
+    except Exception as _:
+        nispottikritto_nothi_plot_data = [{}]
 
     return nispottikritto_nothi_plot_data
 
