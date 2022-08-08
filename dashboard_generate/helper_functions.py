@@ -226,7 +226,7 @@ def generate_login_stack_bar_chart_data():
         max_months_result = 5
         months = []
 
-        count = 0
+        count = 1
 
         for gr, frame in login_male_groups:
             if count > max_months_result:
@@ -243,7 +243,7 @@ def generate_login_stack_bar_chart_data():
             months.append(x)
             count = count + 1
 
-        count = 0
+        count = 1
         for gr, frame in login_female_groups:
             if count > max_months_result:
                 break
