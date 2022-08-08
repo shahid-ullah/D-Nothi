@@ -241,6 +241,7 @@ def generate_login_stack_bar_chart_data():
 
             male_list.append(len(temporary_dic))
             months.append(x)
+            count = count + 1
 
         count = 0
         for gr, frame in login_female_groups:
@@ -251,6 +252,7 @@ def generate_login_stack_bar_chart_data():
             for value in frame.employee_record_ids.values:
                 temporary_dic.update(value)
             female_list.append(len(temporary_dic))
+            count = count + 1
 
         chart_data_map = {'male_list': male_list, 'female_list': female_list, 'months': months}
     except Exception as _:
