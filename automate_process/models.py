@@ -205,3 +205,7 @@ class TrackSourceDBLastFetchTime(models.Model):
     employee_records = models.DateTimeField()
     nisponno_records = models.DateTimeField()
     user_login_history = models.DateTimeField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.created}'
