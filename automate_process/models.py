@@ -62,6 +62,7 @@ class EmployeeRecords(models.Model):
     modified = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        ordering = ['id']
         managed = False
         db_table = 'employee_records'
 
@@ -98,6 +99,7 @@ class Offices(models.Model):
     modified = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        ordering = ['id']
         managed = False
         db_table = 'offices'
 
@@ -133,8 +135,10 @@ class UserLoginHistory(models.Model):
     device_id = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
+        ordering = ['id']
         managed = False
         db_table = 'user_login_history'
+
 
 
 class Users(models.Model):
@@ -164,6 +168,7 @@ class Users(models.Model):
     employee_record_id = models.BigIntegerField(blank=True, null=True)
 
     class Meta:
+        ordering = ['id']
         managed = False
         db_table = 'users'
 
@@ -189,5 +194,14 @@ class NisponnoRecords(models.Model):
     modified = models.DateTimeField()
 
     class Meta:
+        ordering = ['id']
         managed = False
         db_table = 'nisponno_records'
+
+
+class TrackSourceDBLastFetchTime(models.Model):
+    offices = models.DateTimeField()
+    users = models.DateTimeField()
+    employee_records = models.DateTimeField()
+    nisponno_records = models.DateTimeField()
+    user_login_history = models.DateTimeField()
