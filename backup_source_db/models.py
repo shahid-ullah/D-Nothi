@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class BackupEmployeeRecords(models.Model):
     name_eng = models.CharField(max_length=255)
     name_bng = models.CharField(max_length=255)
@@ -54,6 +55,7 @@ class BackupEmployeeRecords(models.Model):
     modified = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        ordering = ['id']
         managed = True
         db_table = 'backup_employee_records'
 
@@ -90,6 +92,7 @@ class BackupOffices(models.Model):
     modified = models.DateTimeField(blank=True, null=True)
 
     class Meta:
+        ordering = ['id']
         managed = True
         db_table = 'backup_offices'
 
@@ -125,6 +128,7 @@ class BackupUserLoginHistory(models.Model):
     device_id = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
+        ordering = ['id']
         managed = True
         db_table = 'backup_user_login_history'
 
@@ -156,6 +160,7 @@ class BackupUsers(models.Model):
     employee_record_id = models.BigIntegerField(blank=True, null=True)
 
     class Meta:
+        ordering = ['id']
         managed = True
         db_table = 'backup_users'
 
@@ -181,7 +186,17 @@ class BackupNisponnoRecords(models.Model):
     modified = models.DateTimeField()
 
     class Meta:
+        ordering = ['id']
         managed = True
         db_table = 'backup_nisponno_records'
 
-# Create your models here.
+class TrackBackupDBLastFetchTime(models.Model):
+    offices = models.DateTimeField()
+    users = models.DateTimeField()
+    employee_records = models.DateTimeField()
+    nisponno_records = models.DateTimeField()
+    user_login_history = models.DateTimeField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.created}'
