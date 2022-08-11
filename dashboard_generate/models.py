@@ -9,20 +9,13 @@ def EMPTY_DICTIONARY():
 
 
 class ReportTotalOfficesModel(models.Model):
-    year_month_day = models.CharField(
-        max_length=100, blank=False, null=False, db_index=True
-    )
-    creator = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
-    )
     year = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     count_or_sum = models.PositiveIntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    report_date = models.CharField(max_length=100)
-    report_day = models.DateTimeField(blank=True, null=True)
+    report_date =  models.DateTimeField(blank=True, null=True)
 
     class Meta:
         db_table = "report_total_offices"

@@ -3,82 +3,21 @@
 # This is not cumulative count
 from datetime import datetime
 
+import pandas as pd
+
+from backup_source_db.models import BackupOffices
 from dashboard_generate.models import ReportTotalOfficesModel
 
 
-def get_zero_padding_single_digits_maps():
-    map = {}
-    for i in range(0, 10):
-        value = f"0{i}"
-        map.setdefault(i, value)
+def generate_object_map(report_date, number_of_offices, *args, **kwargs):
+    object_dic = {}
+    object_dic['year'] = report_date.year
+    object_dic['month'] = report_date.month
+    object_dic['day'] = report_date.day
+    object_dic['report_date'] = str(report_date)
+    object_dic['count_or_sum'] = int(number_of_offices)
 
-    return map
-
-
-SINGLE_DIGIT_KEY_MAPS = get_zero_padding_single_digits_maps()
-
-
-def generate_year_month_day_key_and_report_date(year, month, day):
-    if month < 10:
-        month = SINGLE_DIGIT_KEY_MAPS[month]
-
-    if day < 10:
-        day = SINGLE_DIGIT_KEY_MAPS[day]
-    year_month_day = f"{year}{month}{day}"
-    report_date = f"{year}-{month}-{day}"
-
-    return year_month_day, report_date
-
-
-def generate_model_object_dictionary(request, year, month, day, count):
-    year_month_day, report_date = generate_year_month_day_key_and_report_date(
-        year, month, day
-    )
-    model_object_dict = {
-        'year': year,
-        'month': month,
-        'day': day,
-        'count_or_sum': count,
-        'year_month_day': year_month_day,
-        'report_date': report_date,
-        'report_day': datetime(year, month, day),
-    }
-
-    try:
-        if request.user.is_authenticated:
-            model_object_dict['creator'] = request.user
-    except Exception as e:
-        pass
-
-    return model_object_dict
-
-
-def format_and_load_to_mysql_db(request, groupby_date, *args, **kwargs):
-    last_report_date = ''
-
-    for date, frame in groupby_date:
-        last_report_date = date
-
-        count = int(frame['id'].count())
-
-        dict_ = generate_model_object_dictionary(
-            request, date.year, date.month, date.day, count
-        )
-        defaults = {'count_or_sum': count}
-
-        try:
-            object = ReportTotalOfficesModel.objects.get(
-                year_month_day=dict_['year_month_day']
-            )
-            if int(defaults['count_or_sum']) != int(object.count_or_sum):
-                for key, value in defaults.items():
-                    setattr(object, key, value)
-                object.save()
-        except ReportTotalOfficesModel.DoesNotExist:
-            object = ReportTotalOfficesModel(**dict_)
-            object.save()
-
-    return last_report_date
+    return object_dic
 
 
 def update(dataframe, request=None, *args, **kwargs):
@@ -86,20 +25,50 @@ def update(dataframe, request=None, *args, **kwargs):
     try:
         print()
         print('start processing total_offices report')
-        dataframe = dataframe.copy(deep=True)
+        groupby_date = dataframe.groupby(dataframe.created.dt.date)['id'].size()
 
-        dataframe = dataframe[dataframe.active_status == 1]
-        # dataframe = dataframe.loc[dataframe.created.notnull()]
-        dataframe['created'] = dataframe.created.fillna(method='bfill')
-        groupby_date = dataframe.groupby(dataframe.created.dt.date)
+        batch_objects = []
+        for report_date, number_of_offices in zip(groupby_date.index, groupby_date.values):
+            object_dic = generate_object_map(report_date, number_of_offices)
+            batch_objects.append(ReportTotalOfficesModel(**object_dic))
 
-        last_report_date = format_and_load_to_mysql_db(request, groupby_date)
-        print('End processing total_offices report')
-        print()
-        status['last_report_date'] = str(last_report_date)
-        status['status'] = 'success'
+            if len(batch_objects) >= 100:
+                ReportTotalOfficesModel.objects.bulk_create(batch_objects)
+                batch_objects = []
+
+        ReportTotalOfficesModel.objects.bulk_create(batch_objects)
+
     except Exception as e:
         status['status'] = str(e)
-        status['last_report_date'] = ''
 
     return status
+
+def generate_report_total_offices(request=None, **kwargs):
+    last_fetch_time_object = kwargs['last_fetch_time_object']
+    current_fetch_time_map = kwargs['current_fetch_time_map']
+
+    queryset = None
+    last_fetch_time = None
+    status = 'No new update'
+
+    try:
+        last_fetch_time = last_fetch_time_object.offices
+        queryset = BackupOffices.objects.using('backup_source_db').filter(created__gt=last_fetch_time)
+        queryset = queryset.exclude(created__isnull=True)
+
+    except AttributeError:
+        ReportTotalOfficesModel.objects.all().delete()
+        queryset = BackupOffices.objects.using('backup_source_db').exclude(created__isnull=True)
+
+    if queryset.exists():
+        # update last_fetch_time
+        last_fetch_time = queryset.last().created
+        queryset_values = queryset.values('id', 'active_status', 'created')
+        dataframe = pd.DataFrame(queryset_values)
+        dataframe = dataframe.loc[dataframe.active_status == 1]
+        if not dataframe.empty:
+            status = update(dataframe, request, **kwargs)
+
+    current_fetch_time_map['offices'] = last_fetch_time
+
+    return current_fetch_time_map, status
