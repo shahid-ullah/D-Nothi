@@ -55,111 +55,111 @@ class updateDashboard(APIView):
             return Response({'status': 'system update running. Please request later'})
         settings.SYSTEM_UPDATE_RUNNING = True
 
-        # try:
-        #     reports.backup_source_database.update(request, *args, **kwargs)
-        #     scripts_log['backup_db'] = 'success'
-        # except Exception as e:
-        #     print(e)
-        #     scripts_log['backup_db'] = str(e)
-
-        # try:
-        #     reports.total_offices.generate_report(request, *args, **kwargs)
-        #     scripts_log['total_offices'] = 'success'
-        # except Exception as e:
-        #     print(e)
-        #     scripts_log['total_offices'] = str(e)
-
-        # try:
-        #     reports.nispottikritto_nothi.generate_report(request, *args, **kwargs)
-        #     scripts_log['nispottikritto_nothi'] = 'success'
-        # except Exception as e:
-        #     print(e)
-        #     scripts_log['nispottikritto_nothi'] = str(e)
-
-        # try:
-        #     reports.upokarvogi.generate_report(request, *args, **kwargs)
-        #     scripts_log['upokarvogi'] = 'success'
-        # except Exception as e:
-        #     print(e)
-        #     scripts_log['upokarvogi'] = str(e)
-
-        # try:
-        #     reports.potrojari.generate_report(request, *args, **kwargs)
-        #     scripts_log['potrojari'] = 'success'
-        # except Exception as e:
-        #     print(e)
-        #     scripts_log['potrojari'] = str(e)
-
-        # try:
-        #     reports.note_nisponno.generate_report(request, *args, **kwargs)
-        #     scripts_log['note_nisponno'] = 'success'
-        # except Exception as e:
-        #     print(e)
-        #     scripts_log['note_nisponno'] = str(e)
-
-        # try:
-        #     reports.total_nothi_users.generate_report(request, *args, **kwargs)
-        #     scripts_log['total_nothi_users'] = 'success'
-        # except Exception as e:
-        #     print(e)
-        #     scripts_log['total_nothi_users'] = str(e)
-
-        # try:
-        #     reports.male_female_nothi_users.generate_report(request, *args, **kwargs)
-        #     scripts_log['male_female_nothi_users'] = 'success'
-        # except Exception as e:
-        #     print(e)
-        #     scripts_log['male_female_nothi_users'] = str(e)
-
-        # try:
-        #     reports.mobile_app_users.generate_report(request, *args, **kwargs)
-        #     scripts_log['mobile_app_users'] = 'success'
-        # except Exception as e:
-        #     print(e)
-        #     scripts_log['mobile_app_users'] = str(e)
-
-        # try:
-        #     reports.android_ios_users.generate_report(request, *args, **kwargs)
-        #     scripts_log['android_ios_users'] = 'success'
-        # except Exception as e:
-        #     print(e)
-        #     scripts_log['android_ios_users'] = str(e)
-
-        # try:
-        #     reports.login_total_users.generate_report(request, *args, **kwargs)
-        #     scripts_log['login_total_users'] = 'success'
-        # except Exception as e:
-        #     print(e)
-        #     scripts_log['login_total_users'] = str(e)
+        try:
+            reports.backup_source_database.update(request, *args, **kwargs)
+            scripts_log['backup_db'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['backup_db'] = str(e)
 
         try:
-            reports.login_total_users_not_distinct.generate_report(request, *args, **kwargs)
+            reports.total_offices.generate_report(request, *args, **kwargs)
+            scripts_log['total_offices'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['total_offices'] = str(e)
+
+        try:
+            reports.nispottikritto_nothi.generate_report(request, *args, **kwargs)
+            scripts_log['nispottikritto_nothi'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['nispottikritto_nothi'] = str(e)
+
+        try:
+            reports.upokarvogi.generate_report(request, *args, **kwargs)
+            scripts_log['upokarvogi'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['upokarvogi'] = str(e)
+
+        try:
+            reports.potrojari.generate_report(request, *args, **kwargs)
+            scripts_log['potrojari'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['potrojari'] = str(e)
+
+        try:
+            reports.note_nisponno.generate_report(request, *args, **kwargs)
+            scripts_log['note_nisponno'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['note_nisponno'] = str(e)
+
+        try:
+            reports.total_nothi_users.generate_report(request, *args, **kwargs)
+            scripts_log['total_nothi_users'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['total_nothi_users'] = str(e)
+
+        try:
+            reports.male_female_nothi_users.generate_report(request, *args, **kwargs)
+            scripts_log['male_female_nothi_users'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['male_female_nothi_users'] = str(e)
+
+        try:
+            reports.mobile_app_users.generate_report(request, *args, **kwargs)
+            scripts_log['mobile_app_users'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['mobile_app_users'] = str(e)
+
+        try:
+            reports.android_ios_users.generate_report(request, *args, **kwargs)
+            scripts_log['android_ios_users'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['android_ios_users'] = str(e)
+
+        try:
+            reports.login_total_users.generate_report(request, *args, **kwargs)
             scripts_log['login_total_users'] = 'success'
         except Exception as e:
             print(e)
             scripts_log['login_total_users'] = str(e)
 
-        # try:
-        #     reports.login_male_female_users.generate_report(request, *args, **kwargs)
-        #     scripts_log['login_male_female_users'] = 'success'
-        # except Exception as e:
-        #     print(e)
-        #     scripts_log['login_male_female_users'] = str(e)
-        # try:
-        #     DashboardUpdateLog.objects.create(
-        #         completion_log='empty,',
-        #         user=self.request.user,
-        #         status=scripts_log,
-        #         update_start_time=datetime.now(),
-        #         update_completion_time=datetime.now(),
-        #     )
-        # except Exception as e:
-        #     print(e)
+        try:
+            reports.login_total_users_not_distinct.generate_report(request, *args, **kwargs)
+            scripts_log['login_total_users_not_distinct'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['login_total_users_not_distinct'] = str(e)
 
-        # try:
-        #     reports.utils.update_backup_db_last_fetch_time(request, *args, **kwargs)
-        # except Exception as e:
-        #     print(e)
+        try:
+            reports.login_male_female_users.generate_report(request, *args, **kwargs)
+            scripts_log['login_male_female_users'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['login_male_female_users'] = str(e)
+        try:
+            DashboardUpdateLog.objects.create(
+                completion_log='empty,',
+                user=self.request.user,
+                status=scripts_log,
+                update_start_time=datetime.now(),
+                update_completion_time=datetime.now(),
+            )
+        except Exception as e:
+            print(e)
+
+        try:
+            reports.utils.update_backup_db_last_fetch_time(request, *args, **kwargs)
+        except Exception as e:
+            print(e)
 
         settings.SYSTEM_UPDATE_RUNNING = False
 
