@@ -15,7 +15,7 @@ class ReportTotalOfficesModel(models.Model):
     count_or_sum = models.PositiveIntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    report_date =  models.DateTimeField(blank=True, null=True)
+    report_date = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         db_table = "report_total_offices"

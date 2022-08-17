@@ -9,7 +9,7 @@ from django.db.models import Sum
 
 from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
                      ReportIOSUsersModel, ReportLoginFemalelUsersModel,
-                     ReportLoginMalelUsersModel, ReportLoginTotalUsers,
+                     ReportLoginMalelUsersModel, ReportLoginTotalUsers, ReportLoginTotalUsersNotDistinct,
                      ReportMaleNothiUsersModel, ReportMobileAppUsersModel,
                      ReportNispottikrittoNothiModel, ReportNoteNisponnoModel,
                      ReportPotrojariModel, ReportTotalOfficesModel,
@@ -385,7 +385,7 @@ def generate_login_users_year_month_day_map(objs):
 
 def get_total_office_count(date_range):
     offices_objs = ReportTotalOfficesModel.objects.filter(
-        report_day__lte=date_range[1])
+        report_date__lte=date_range[1])
     office_count_dict = offices_objs.aggregate(Sum('count_or_sum'))
     office_count = office_count_dict['count_or_sum__sum']
 
@@ -456,6 +456,19 @@ def get_login_total_users(date_range):
         login_total_users = 0
 
     return login_total_users
+
+def get_total_login_count(date_range):
+
+    querysets = ReportLoginTotalUsersNotDistinct.objects.filter(
+        report_date__range=date_range)
+
+    sum_dict = querysets.aggregate(Sum('counts'))
+    counts = sum_dict['counts__sum']
+
+    if not counts:
+        counts = 0
+
+    return counts
 
 
 def get_login_male_users(date_range):

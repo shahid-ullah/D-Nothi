@@ -1,9 +1,11 @@
-{% extends 'dashboard_generate/base.html' %}
+{% extends 'dashboard_ui/base_site.html' %}
 {% load crispy_forms_tags %}
 
 {% block title %}রিপোর্ট{% endblock %}
 
-{% block main_content %}
+{% block content %}
+<div class="right_col">
+
   <div class="row">
     <div class="col-4">
     </div>
@@ -101,6 +103,10 @@
                 <td class="total_nothi_users text-right">{{ data.login_history_employee_records.login_total_users.count }}</td>
               </tr>
               <tr>
+                <th scope="row" class="text-justify">মোট লগইন</th>
+                <td class="total_nothi_users text-right">{{ data.login_history_employee_records.total_login.count }}</td>
+              </tr>
+              <tr>
                 <th scope="row" class="text-justify">মোট নথি ব্যবহারকারী (পুরুষ লগইন)</th>
                 <td class="total_nothi_users_male text-right">{{ data.login_history_employee_records.login_male_users.count }}</td>
               </tr>
@@ -118,4 +124,5 @@
       </div>
     </div>
   </div>
-{% endblock main_content %}
+</div>
+{% endblock content %}

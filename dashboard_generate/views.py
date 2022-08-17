@@ -18,7 +18,7 @@ from . import helper_functions
 from .forms import ReportDateRangeForm
 from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
                      ReportIOSUsersModel, ReportLoginFemalelUsersModel,
-                     ReportLoginMalelUsersModel, ReportLoginTotalUsers,
+                     ReportLoginMalelUsersModel, ReportLoginTotalUsers, ReportLoginTotalUsersNotDistinct,
                      ReportMaleNothiUsersModel, ReportMobileAppUsersModel,
                      ReportNispottikrittoNothiModel, ReportNoteNisponnoModel,
                      ReportPotrojariModel, ReportTotalOfficesModel,
@@ -307,6 +307,8 @@ def process_post_request(request):
 
         # login total users
         login_total_users = helper_functions.get_login_total_users(date_range)
+        # total login counts (not distinct)
+        total_login = helper_functions.get_total_login_count(date_range)
         # login male users
         login_male_users = helper_functions.get_login_male_users(date_range)
         # login female users
@@ -389,6 +391,10 @@ def process_post_request(request):
                 },
                 'login_female_users': {
                     'count': login_female_users,
+                    'date_range': '12/12/20',
+                },
+                'total_login': {
+                    'count': total_login,
                     'date_range': '12/12/20',
                 },
             },
@@ -488,6 +494,16 @@ def custom_report(request):
     if not login_total_users:
         login_total_users = 0
 
+    
+    # total login (not distinct count)
+    total_login_objects = ReportLoginTotalUsersNotDistinct.objects.filter(
+        year=year, month=month)
+    total_login_dict = total_login_objects.aggregate(
+        Sum('counts'))
+    total_login = total_login_dict['counts__sum']
+    if not total_login:
+        total_login = 0
+
     # total nothi users (male login)
     login_male_users_objects = ReportLoginMalelUsersModel.objects.filter(
         year=year, month=month)
@@ -575,6 +591,10 @@ def custom_report(request):
                 'count': login_female_users,
                 'date_range': '12/12/20',
             },
+            'total_login': {
+                'count': total_login,
+                'date_range': '12/12/20',
+            },
         },
         'form': form,
         'start_date': str(year) + '-' + str(month) + '-' + str(day),
@@ -619,6 +639,10 @@ def report_export_csv_view(request, start_date=None, end_date=None):
 
     # login total users
     login_total_users = helper_functions.get_login_total_users(date_range)
+
+    # total login counts (not distinct)
+    total_login = helper_functions.get_total_login_count(date_range)
+    # login male users
     # login male users
     login_male_users = helper_functions.get_login_male_users(date_range)
     # login female users
@@ -637,6 +661,7 @@ def report_export_csv_view(request, start_date=None, end_date=None):
     writer.writerow(['মোট নথি ব্যবহারকারী (পুরুষ)', nothi_users_male])
     writer.writerow(['মোট নথি ব্যবহারকারী (মহিলা)', nothi_users_female])
     writer.writerow(['মোট ব্যবহারকারী (লগইন)', login_total_users])
+    writer.writerow(['মোট লগইন', total_login])
     writer.writerow(['মোট নথি ব্যবহারকারী (পুরুষ লগইন)', login_male_users])
     writer.writerow(['মোট নথি ব্যবহারকারী (মহিলা লগইন)', login_female_users])
     writer.writerow(['মোবাইল অ্যাপ ব্যবহারকারী', mobile_app_users])
