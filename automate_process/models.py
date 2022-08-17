@@ -207,5 +207,8 @@ class TrackSourceDBLastFetchTime(models.Model):
     user_login_history = models.DateTimeField()
     created = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-id',]
+
     def __str__(self):
         return f'{self.created}'

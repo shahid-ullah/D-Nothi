@@ -8,6 +8,8 @@ from automate_process.models import (EmployeeRecords, NisponnoRecords, Offices,
 from backup_source_db.models import (BackupEmployeeRecords,
                                      BackupNisponnoRecords, BackupOffices,
                                      BackupUserLoginHistory, BackupUsers)
+from dashboard_generate.models import (ReportLoginTotalUsers,
+                                       ReportNispottikrittoNothiModel)
 
 last_fetched_date_object = TrackSourceDBLastFetchTime.objects.using('source_db').last()
 
@@ -18,22 +20,35 @@ CURRENT_DATABASE_FETCH_TIME = {}
 # Backup Offices Table
 def backup_office_table():
     print('backup offices table ...')
-    queryset = None
     last_fetch_time = None
 
+    querysets = Offices.objects.using('source_db').all()
+    last_object = BackupOffices.objects.using('backup_source_db').last()
+
+    # check office last fetch time from TrackSourceDBLastFetchTime Model
+    # first time this will be absent.
     try:
         last_fetch_time = last_fetched_date_object.offices
     except AttributeError:
-        last_fetch_time = None
+        pass
 
+    # if last fetch time absent again check from BackupOffices Model
+    # first backup time this will be absent.
+    if not last_fetch_time:
+        try:
+            last_fetch_time = last_object.created
+        except AttributeError:
+            pass
+
+    # first time backup this will be empty.
+    # so we will backup whole table.
     if last_fetch_time:
-        queryset = Offices.objects.using('source_db').filter(created__gt=last_fetch_time)
-        queryset = queryset.exclude(created__isnull=True)
-    else:
-        queryset = Offices.objects.using('source_db').exclude(created__isnull=True)
+        querysets = querysets.filter(created__gt=last_fetch_time)
 
-    if queryset.exists():
-        paginator = Paginator(queryset, 1000)
+    querysets = querysets.exclude(created__isnull=True)
+
+    if querysets.exists():
+        paginator = Paginator(querysets, 1000)
         total_page = paginator.num_pages
 
         for page_number in paginator.page_range:
@@ -49,28 +64,41 @@ def backup_office_table():
             BackupOffices.objects.using('backup_source_db').bulk_create(batch_objects)
 
     print('backup office table complete')
+    print()
     CURRENT_DATABASE_FETCH_TIME['offices'] = last_fetch_time
 
 
 # Backup Users Table
 def backup_users_table():
     print('backup users table ...')
-    queryset = None
-    last_fetch_time = None
 
+    last_fetch_time = None
+    querysets = Users.objects.using('source_db').all()
+    last_object = BackupUsers.objects.using('backup_source_db').last()
+
+    # check users last fetch time from TrackSourceDBLastFetchTime Model
+    # first time this will be absent.
     try:
         last_fetch_time = last_fetched_date_object.users
     except AttributeError:
-        last_fetch_time = None
+        pass
+
+    # if last fetch time absent again check from BackupOffices Model
+    # first backup time this will be absent.
+    # This check is done to avoid redundency
+    if not last_fetch_time:
+        try:
+            last_fetch_time = last_object.created
+        except AttributeError:
+            pass
 
     if last_fetch_time:
-        queryset = Users.objects.using('source_db').filter(created__gt=last_fetch_time)
-        queryset = queryset.exclude(created__isnull=True)
-    else:
-        queryset = Users.objects.using('source_db').exclude(created__isnull=True)
+        querysets = querysets.filter(created__gt=last_fetch_time)
 
-    if queryset.exists():
-        paginator = Paginator(queryset, 1000)
+    querysets = querysets.exclude(created__isnull=True)
+
+    if querysets.exists():
+        paginator = Paginator(querysets, 1000)
         total_page = paginator.num_pages
 
         for page_number in paginator.page_range:
@@ -86,28 +114,41 @@ def backup_users_table():
             BackupUsers.objects.using('backup_source_db').bulk_create(batch_objects)
 
     print('backup users table complete')
+    print()
+
     CURRENT_DATABASE_FETCH_TIME['users'] = last_fetch_time
 
 
 # Backup EmployeeRecords Table
 def backup_employee_records_table():
     print('backup employee_records table ...')
-    queryset = None
+
     last_fetch_time = None
+    querysets = EmployeeRecords.objects.using('source_db').all()
+    last_object = BackupEmployeeRecords.objects.using('backup_source_db').last()
 
     try:
         last_fetch_time = last_fetched_date_object.employee_records
     except AttributeError:
-        last_fetch_time = None
+        pass
 
+    # if last fetch time absent again check from BackupOffices Model
+    # first backup time this will be absent.
+    if not last_fetch_time:
+        try:
+            last_fetch_time = last_object.created
+        except AttributeError:
+            pass
+
+    # first time backup this will be empty.
+    # so we will backup whole table.
     if last_fetch_time:
-        queryset = EmployeeRecords.objects.using('source_db').filter(created__gt=last_fetch_time)
-        queryset = queryset.exclude(created__isnull=True)
-    else:
-        queryset = EmployeeRecords.objects.using('source_db').exclude(created__isnull=True)
+        querysets = querysets.filter(created__gt=last_fetch_time)
 
-    if queryset.exists():
-        paginator = Paginator(queryset, 1000)
+    querysets = querysets.exclude(created__isnull=True)
+
+    if querysets.exists():
+        paginator = Paginator(querysets, 1000)
         total_page = paginator.num_pages
 
         for page_number in paginator.page_range:
@@ -123,28 +164,41 @@ def backup_employee_records_table():
             BackupEmployeeRecords.objects.using('backup_source_db').bulk_create(batch_objects)
 
     print('backup employee_records table complete')
+    print()
     CURRENT_DATABASE_FETCH_TIME['employee_records'] = last_fetch_time
 
 # Backup NisponnoRecords Table
 def backup_nisponno_records_table():
     print('backup nisponno_records table ...')
     last_fetch_time = None
-    queryset = None
+    querysets = NisponnoRecords.objects.using('source_db').all()
+    backup_last_object = BackupNisponnoRecords.objects.using('backup_source_db').last()
 
     try:
         last_fetch_time = last_fetched_date_object.nisponno_records
-        queryset = NisponnoRecords.objects.using('source_db').all()
-        queryset = queryset.filter(created__gt=last_fetch_time)
-        queryset = queryset.exclude(created__isnull=True)
     except AttributeError:
-        queryset = NisponnoRecords.objects.using('source_db').all()
-        queryset = queryset.exclude(created__isnull=True)
-        if queryset.exists():
-            last_fetch_time = queryset.last().created - timedelta(days=7)
-            queryset = queryset.filter(created__gt=last_fetch_time)
+        pass
 
-    if queryset.exists():
-        paginator = Paginator(queryset, 1000)
+    if not last_fetch_time:
+        try:
+            last_fetch_time = backup_last_object.created
+        except AttributeError:
+            pass
+
+    if not last_fetch_time:
+        try:
+            last_fetch_time = ReportNispottikrittoNothiModel.objects.last().report_day
+            last_fetch_time = last_fetch_time + timedelta(days=1)
+        except AttributeError:
+            pass
+
+    if last_fetch_time:
+        querysets = querysets.filter(created__gt=last_fetch_time)
+
+    querysets = querysets.exclude(created__isnull=True)
+
+    if querysets.exists():
+        paginator = Paginator(querysets, 1000)
         total_page = paginator.num_pages
 
         for page_number in paginator.page_range:
@@ -160,6 +214,7 @@ def backup_nisponno_records_table():
             BackupNisponnoRecords.objects.using('backup_source_db').bulk_create(batch_objects)
 
     print('backup nisponno_records table complete')
+    print()
     CURRENT_DATABASE_FETCH_TIME['nisponno_records'] = last_fetch_time
 
 
@@ -167,22 +222,32 @@ def backup_nisponno_records_table():
 def backup_user_login_history_table():
     print('backup user_login_history table ...')
     last_fetch_time = None
-    queryset = None
+    querysets = UserLoginHistory.objects.using('source_db').all()
+    last_object = BackupUserLoginHistory.objects.using('backup_source_db').last()
 
     try:
         last_fetch_time = last_fetched_date_object.user_login_history
-        queryset = UserLoginHistory.objects.using('source_db').all()
-        queryset = queryset.filter(created__gt=last_fetch_time)
-        queryset = queryset.exclude(created__isnull=True)
     except AttributeError:
-        queryset = UserLoginHistory.objects.using('source_db').all()
-        queryset = queryset.exclude(created__isnull=True)
-        if queryset.exists():
-            last_fetch_time = queryset.last().created - timedelta(days=7)
-            queryset = queryset.filter(created__gt=last_fetch_time)
+        pass
 
-    if queryset.exists():
-        paginator = Paginator(queryset, 1000)
+    if not last_fetch_time:
+        try:
+            last_fetch_time = last_object.created
+        except AttributeError:
+            pass
+
+    if not last_fetch_time:
+        try:
+            last_fetch_time = ReportLoginTotalUsers.objects.last().report_day
+            last_fetch_time = last_fetch_time + timedelta(days=1)
+        except AttributeError:
+            pass
+
+    if last_fetch_time:
+        querysets = querysets.filter(created__gt=last_fetch_time)
+
+    if querysets.exists():
+        paginator = Paginator(querysets, 1000)
         total_page = paginator.num_pages
 
         for page_number in paginator.page_range:
@@ -198,28 +263,20 @@ def backup_user_login_history_table():
             BackupUserLoginHistory.objects.using('backup_source_db').bulk_create(batch_objects)
 
     print('backup user_login_history table complete')
+    print()
     CURRENT_DATABASE_FETCH_TIME['user_login_history'] = last_fetch_time
 
-def backup_source_tables():
+
+def update(request, *args, **kwargs):
+    print()
+    print('updating backup db ...')
+    print()
     backup_office_table()
     backup_users_table()
     backup_employee_records_table()
     backup_nisponno_records_table()
     backup_user_login_history_table()
     TrackSourceDBLastFetchTime.objects.using('source_db').create(**CURRENT_DATABASE_FETCH_TIME)
-
-    return None
-
-try:
-    backup_source_tables()
-except Exception as e:
-    print('Error occured while backup source tables')
-
-
-
-# CURRENT_DATABASE_FETCH_TIME['offices'] = CURRENT_DATABASE_FETCH_TIME['offices']
-# CURRENT_DATABASE_FETCH_TIME['users'] = CURRENT_DATABASE_FETCH_TIME['offices']
-# CURRENT_DATABASE_FETCH_TIME['employee_records'] = CURRENT_DATABASE_FETCH_TIME['offices']
-# CURRENT_DATABASE_FETCH_TIME['nisponno_records'] = CURRENT_DATABASE_FETCH_TIME['offices']
-# CURRENT_DATABASE_FETCH_TIME['user_login_history'] = CURRENT_DATABASE_FETCH_TIME['offices']
-
+    print()
+    print('End backup db update')
+    print()

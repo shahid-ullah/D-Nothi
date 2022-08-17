@@ -1,103 +1,73 @@
 # scripts/reports/total_nothi_users.py
 # SELECT count(id) FROM users WHERE date(created) <= '2020-09-30';
-from datetime import datetime
+from datetime import datetime, timedelta
+import pandas as pd
+from automate_process.models import Users
+from . import utils
 
 from dashboard_generate.models import ReportTotalUsersModel
 
 
-def get_zero_padding_single_digits_maps():
-    map = {}
-    for i in range(0, 10):
-        value = f"0{i}"
-        map.setdefault(i, value)
+def generate_model_object_dict(request, report_date, count_or_sum, *args, **kwargs):
+    object_dic = {}
+    object_dic['year'] = report_date.year
+    object_dic['month'] = report_date.month
+    object_dic['day'] = report_date.day
+    object_dic['year_month_day'] = str(report_date).replace('-', '')
+    object_dic['report_date'] = str(report_date)
+    object_dic['report_day'] = datetime(report_date.year, report_date.month, report_date.day)
+    object_dic['count_or_sum'] = int(count_or_sum)
 
-    return map
+    return object_dic
 
+def format_and_load_to_mysql_db(request, *args, **kwargs):
+    dataframe = kwargs['dataframe']
 
-SINGLE_DIGIT_KEY_MAPS = get_zero_padding_single_digits_maps()
+    # groupby report_date
+    grouped_report_date = dataframe.groupby(['report_date'], sort=False, as_index=False)['id'].size()
+    batch_objects = []
 
+    for report_date, nispottikritto_nothi_count in zip(grouped_report_date['report_date'].values, grouped_report_date['size'].values):
+        object_dict = generate_model_object_dict(request, report_date, nispottikritto_nothi_count, *args, **kwargs)
+        batch_objects.append(ReportTotalUsersModel(**object_dict))
 
-def generate_year_month_day_key_and_report_date(year, month, day):
-    if month < 10:
-        month = SINGLE_DIGIT_KEY_MAPS[month]
+        if len(batch_objects) >= 100:
+            ReportTotalUsersModel.objects.bulk_create(batch_objects)
+            batch_objects = []
 
-    if day < 10:
-        day = SINGLE_DIGIT_KEY_MAPS[day]
-    year_month_day = f"{year}{month}{day}"
-    report_date = f"{year}-{month}-{day}"
+    ReportTotalUsersModel.objects.bulk_create(batch_objects)
 
-    return year_month_day, report_date
+    return None
 
+def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
+    querysets = kwargs['querysets']
 
-def generate_model_object_dictionary(request, year, month, day, count):
-    year_month_day, report_date = generate_year_month_day_key_and_report_date(
-        year, month, day
-    )
+    querysets_values = querysets.values('id', 'created',)
+    dataframe = pd.DataFrame(querysets_values)
 
-    model_object_dict = {
-        'year': year,
-        'month': month,
-        'day': day,
-        'count_or_sum': count,
-        'year_month_day': year_month_day,
-        'report_date': report_date,
-        'report_day': datetime(year, month, day),
-    }
-    try:
-        if request.user.is_authenticated:
-            model_object_dict['creator'] = request.user
-    except Exception as e:
-        pass
+    # convert created object to datetime
+    dataframe['created'] = pd.to_datetime(dataframe.created, errors='coerce')
+    dataframe = dataframe.loc[~dataframe.created.isnull(), :]
 
-    return model_object_dict
+    # generate date column
+    dataframe['report_date'] = dataframe['created'].dt.date
 
+    if not dataframe.empty:
+        kwargs['dataframe'] = dataframe
+        format_and_load_to_mysql_db(request, *args, **kwargs)
 
-def format_and_load_to_mysql_db(request, groupby_date):
-    last_report_date = ''
-
-    for date, frame in groupby_date:
-        last_report_date = date
-
-        count = int(frame['id'].count())
-
-        dict_ = generate_model_object_dictionary(
-            request, date.year, date.month, date.day, count
-        )
-        defaults = {'count_or_sum': count}
-
-        try:
-            object = ReportTotalUsersModel.objects.get(
-                year_month_day=dict_['year_month_day']
-            )
-            if defaults['count_or_sum'] != int(object.count_or_sum):
-                for key, value in defaults.items():
-                    setattr(object, key, value)
-                object.save()
-        except ReportTotalUsersModel.DoesNotExist:
-            object = ReportTotalUsersModel(**dict_)
-            object.save()
-
-    return last_report_date
+    return None
 
 
-def update(dataframe, request=None, *args, **kwags):
-    status = {}
-    try:
-        print()
-        print('start processing total_nothi_users report')
-        # dataframe = dataframe.loc[dataframe.created.notnull()]
-        dataframe = dataframe.copy(deep=True)
-        dataframe['created'] = dataframe.created.fillna(method='bfill')
+def generate_report(request=None, *args, **kwargs):
+    print()
+    print('start processing total_nothi_users report')
+    querysets = utils.get_users_querysets(*args, **kwargs)
+    querysets = querysets.exclude(created__isnull=True)
 
-        groupby_date = dataframe.groupby(dataframe.created.dt.date)
+    if querysets.exists():
+        kwargs['querysets'] = querysets
+        querysets_to_dataframe_and_refine(request, *args, **kwargs)
 
-        last_report_date = format_and_load_to_mysql_db(request, groupby_date)
-        print('End processing total_nothi_users report')
-        print()
-        status['last_report_date'] = str(last_report_date)
-        status['status'] = 'success'
-    except Exception as e:
-        status['status'] = str(e)
-        status['last_report_date'] = []
-
-    return status
+    print('End processing total_nothi_users report')
+    print()

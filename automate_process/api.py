@@ -1,18 +1,18 @@
 # automate_process/api.py
-import time
 from datetime import datetime
 
-import pandas as pd
-from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.conf import settings
 from rest_framework import authentication, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from dashboard_generate.models import DashboardUpdateLog
+from rest_framework import mixins
+from rest_framework import generics
+from .serializers import DatabaseBackupLogSerializer
 
-from .models import (EmployeeRecords, NisponnoRecords, Offices,
-                     UserLoginHistory, Users)
+from .models import TrackSourceDBLastFetchTime
 from .scripts import reports
 
 User = get_user_model()
@@ -47,170 +47,124 @@ class updateDashboard(APIView):
 
     permission_classes = [permissions.IsAdminUser]
 
-    def update_log(self, request, object, process_running, total_process, status={}):
-        if process_running:
-            completion_log = f"process running {process_running} of {total_process}"
-            print(completion_log)
-        else:
-            completion_log = f"process completed {total_process} of {total_process}"
-            print(completion_log)
-        try:
-            if not object:
-                object = DashboardUpdateLog.objects.create(
-                    user=self.request.user,
-                    completion_log=completion_log,
-                    status=status,
-                    update_start_time=datetime.now(),
-                )
-            else:
-                object.completion_log = completion_log,
-                object.status = status
-                object.update_completion_time = datetime.now()
-                object.save()
 
-            return object
-        except Exception as e:
-            print(e)
-
-    def get(self, request, format=None):
+    def get(self, request, format=None, *args, **kwargs):
         """ """
+        scripts_log = {}
 
-        status = {}
-        total_process = 13
-        object = None
         if settings.SYSTEM_UPDATE_RUNNING:
             print('system update running. please request later')
             return Response({'status': 'system update running. Please request later'})
-
-        start_processing_time = time.perf_counter()
         settings.SYSTEM_UPDATE_RUNNING = True
 
-        object = self.update_log(request, object=object, process_running=1, total_process=total_process)
+        try:
+            reports.backup_source_database.update(request, *args, **kwargs)
+            scripts_log['backup_db'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['backup_db'] = str(e)
 
-        # Table 1: OFFICES
+        try:
+            reports.total_offices.generate_report(request, *args, **kwargs)
+            scripts_log['total_offices'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['total_offices'] = str(e)
 
-        status['offices'] = {}
-        offices_objects = Offices.objects.using('source_db').all()
-        offices_values = offices_objects.values('id', 'active_status', 'created')
-        offices_dataframe = pd.DataFrame(offices_values)
-        total_offices_status = reports.total_offices.update(offices_dataframe, request)
-        status['offices']['total_offices'] = total_offices_status
-        offices_objects = None
-        offices_values = None
-        offices_dataframe = None
-        object = self.update_log(request, object=object, process_running=2, total_process=total_process)
+        try:
+            reports.nispottikritto_nothi.generate_report(request, *args, **kwargs)
+            scripts_log['nispottikritto_nothi'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['nispottikritto_nothi'] = str(e)
 
-        # Table 2: NISPONNO_RECORDS
-        status['nisponno_records'] = {}
-        nisponno_records_objects = NisponnoRecords.objects.using('source_db').all()
-        nisponno_records_values = nisponno_records_objects.values(
-            'id', 'type', 'upokarvogi', 'operation_date'
-        )
-        nisponno_records_dataframe = pd.DataFrame(nisponno_records_values)
-        # nispottikritto_nothi
-        status_ = reports.nispottikritto_nothi.update(
-            nisponno_records_dataframe, request
-        )
-        status['nisponno_records']['nispottikritto_nothi'] = status_
-        object = self.update_log(request, object=object, process_running=3, total_process=total_process)
+        try:
+            reports.upokarvogi.generate_report(request, *args, **kwargs)
+            scripts_log['upokarvogi'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['upokarvogi'] = str(e)
 
-        # upokarvogi
-        status_ = reports.upokarvogi.update(nisponno_records_dataframe, request)
-        status['nisponno_records']['upokarvogi'] = status_
-        object = self.update_log(request, object=object, process_running=4, total_process=total_process)
-        # potrojari
-        status_ = reports.potrojari.update(nisponno_records_dataframe, request)
-        status['nisponno_records']['potrojari'] = status_
-        object = self.update_log(request, object=object, process_running=5, total_process=total_process)
-        # note nisponno
-        status_ = reports.note_nisponno.update(nisponno_records_dataframe, request)
-        status['nisponno_records']['note_nisponno'] = status_
-        object = self.update_log(request, object=object, process_running=6, total_process=total_process)
-        nisponno_records_objects = None
-        nisponno_records_values = None
-        nisponno_records_dataframe = None
+        try:
+            reports.potrojari.generate_report(request, *args, **kwargs)
+            scripts_log['potrojari'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['potrojari'] = str(e)
 
-        # Table 3: USERS
-        status['users'] = {}
-        users_objects = Users.objects.using('source_db').all()
-        users_values = users_objects.values(
-            'id',
-            'username',
-            'user_role_id',
-            'is_admin',
-            'active',
-            'user_status',
-            'created',
-            'modified',
-            'employee_record_id',
-        )
-        users_dataframe = pd.DataFrame(users_values)
-        status_ = reports.total_nothi_users.update(users_dataframe, request)
-        status['users']['total_nothi_users'] = status_
-        object = self.update_log(request, object=object, process_running=7, total_process=total_process)
+        try:
+            reports.note_nisponno.generate_report(request, *args, **kwargs)
+            scripts_log['note_nisponno'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['note_nisponno'] = str(e)
 
-        # Table 4: USERS_EMPLOYEE_RECORDS
-        status['users_employee_records'] = {}
-        employee_records_objects = EmployeeRecords.objects.using('source_db').all()
-        employee_records_values = employee_records_objects.values(
-            'id', 'name_eng', 'gender', 'created', 'modified'
-        )
-        employee_records_dataframe = pd.DataFrame(employee_records_values)
-        # male_female_users
-        status_ = reports.male_female_nothi_users.update(
-            request, users_dataframe, employee_records_dataframe
-        )
-        status['users_employee_records'] = status_
-        object = self.update_log(request, object=object, process_running=8, total_process=total_process)
+        try:
+            reports.total_nothi_users.generate_report(request, *args, **kwargs)
+            scripts_log['total_nothi_users'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['total_nothi_users'] = str(e)
 
-        users_objects = None
-        users_values = None
-        users_dataframe = None
+        try:
+            reports.male_female_nothi_users.generate_report(request, *args, **kwargs)
+            scripts_log['male_female_nothi_users'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['male_female_nothi_users'] = str(e)
 
-        # Table 5: USER_LOGIN_HISTORY
+        try:
+            reports.mobile_app_users.generate_report(request, *args, **kwargs)
+            scripts_log['mobile_app_users'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['mobile_app_users'] = str(e)
 
-        status['user_login_history'] = {}
-        login_history_objects = UserLoginHistory.objects.using('source_db').all()
-        login_history_values = login_history_objects.values(
-            'id', 'is_mobile', 'created', 'employee_record_id', 'device_type'
-        )
-        login_history_dataframe = pd.DataFrame(login_history_values)
-        # mobile_app_users
-        status_ = reports.mobile_app_users.update(login_history_dataframe, request)
-        status['user_login_history']['mobile_app_users'] = status_
-        object = self.update_log(request, object=object, process_running=9, total_process=total_process)
-        # Android-IOS users
-        status_ = reports.android_ios_users.update(login_history_dataframe, request)
-        status['user_login_history']['android_ios_users'] = status_
-        object = self.update_log(request, object=object, process_running=10, total_process=total_process)
-        # Login Total users
-        status_ = reports.login_total_users.update(login_history_dataframe, request)
-        status['user_login_history']['login_total_users'] = status_
-        object = self.update_log(request, object=object, process_running=11, total_process=total_process)
+        try:
+            reports.android_ios_users.generate_report(request, *args, **kwargs)
+            scripts_log['android_ios_users'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['android_ios_users'] = str(e)
 
-        # Table 6: USER_LOGIN_HISTORY_EMPLOYEE_RECORDS
-        # login_male_female_nothi_users
-        status['user_login_history_employee_records'] = {}
-        male_status, female_status = reports.login_male_female_users.update(
-            request, login_history_dataframe, employee_records_dataframe
-        )
-        status['user_login_history_employee_records']['login_male_users'] = male_status
-        object = self.update_log(request, object=object, process_running=12, total_process=total_process)
-        status['user_login_history_employee_records'][
-            'login_female_users'
-        ] = female_status
-        object = self.update_log(request, object=object, process_running=13, total_process=total_process)
-        employee_records_objects = None
-        employee_records_values = None
-        employee_records_dataframe = None
-        login_history_objects = None
-        login_history_values = None
-        login_history_dataframe = None
+        try:
+            reports.login_total_users.generate_report(request, *args, **kwargs)
+            scripts_log['login_total_users'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['login_total_users'] = str(e)
+
+        try:
+            reports.login_male_female_users.generate_report(request, *args, **kwargs)
+            scripts_log['login_male_female_users'] = 'success'
+        except Exception as e:
+            print(e)
+            scripts_log['login_male_female_users'] = str(e)
+        try:
+            DashboardUpdateLog.objects.create(
+                completion_log='empty,',
+                user=self.request.user,
+                status=scripts_log,
+                update_start_time=datetime.now(),
+                update_completion_time=datetime.now(),
+            )
+        except Exception as e:
+            print(e)
+
+        try:
+            reports.utils.update_backup_db_last_fetch_time(request, *args, **kwargs)
+        except Exception as e:
+            print(e)
 
         settings.SYSTEM_UPDATE_RUNNING = False
-        end_processing_time = time.perf_counter()
-        status['computation_time'] = end_processing_time - start_processing_time
 
-        object = self.update_log(request, object=object, process_running=None, total_process=total_process, status=status)
+        return Response(scripts_log)
 
-        return Response(status)
+
+class DatabaseBackupLog(mixins.ListModelMixin,
+                        generics.GenericAPIView):
+    queryset = TrackSourceDBLastFetchTime.objects.using('source_db').all()
+    serializer_class = DatabaseBackupLogSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)

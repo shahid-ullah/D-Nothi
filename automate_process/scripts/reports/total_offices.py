@@ -1,11 +1,10 @@
 # SELECT count(id) FROM offices WHERE date(created) <= '2020-09-30' AND active_status =1;
 # Caution: Datafame is not processed according to this query
 # This is not cumulative count
-from datetime import datetime
 
 import pandas as pd
+from . import utils
 
-from backup_source_db.models import BackupOffices
 from dashboard_generate.models import ReportTotalOfficesModel
 
 
@@ -20,55 +19,58 @@ def generate_object_map(report_date, number_of_offices, *args, **kwargs):
     return object_dic
 
 
-def update(dataframe, request=None, *args, **kwargs):
-    status = {}
-    try:
-        print()
-        print('start processing total_offices report')
-        groupby_date = dataframe.groupby(dataframe.created.dt.date)['id'].size()
+def format_and_load_to_mysql_db(request=None, *args, **kwargs):
+    dataframe = kwargs['dataframe']
 
-        batch_objects = []
-        for report_date, number_of_offices in zip(groupby_date.index, groupby_date.values):
-            object_dic = generate_object_map(report_date, number_of_offices)
-            batch_objects.append(ReportTotalOfficesModel(**object_dic))
+    # groupby report_date
+    grouped_report_date = dataframe.groupby(['report_date'], sort=False, as_index=False)['id'].size()
+    batch_objects = []
 
-            if len(batch_objects) >= 100:
-                ReportTotalOfficesModel.objects.bulk_create(batch_objects)
-                batch_objects = []
+    batch_objects = []
+    for report_date, office_count in zip(grouped_report_date['report_date'].values, grouped_report_date['size'].values):
+        object_dic = generate_object_map(report_date, office_count)
+        batch_objects.append(ReportTotalOfficesModel(**object_dic))
 
-        ReportTotalOfficesModel.objects.bulk_create(batch_objects)
+        if len(batch_objects) >= 100:
+            ReportTotalOfficesModel.objects.bulk_create(batch_objects)
+            batch_objects = []
 
-    except Exception as e:
-        status['status'] = str(e)
+    ReportTotalOfficesModel.objects.bulk_create(batch_objects)
 
-    return status
+    return None
 
-def generate_report_total_offices(request=None, **kwargs):
-    last_fetch_time_object = kwargs['last_fetch_time_object']
-    current_fetch_time_map = kwargs['current_fetch_time_map']
 
-    queryset = None
-    last_fetch_time = None
-    status = 'No new update'
+def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
+    querysets = kwargs.pop('querysets')
+    queryset_values = querysets.values('id', 'active_status', 'created')
+    dataframe = pd.DataFrame(queryset_values)
 
-    try:
-        last_fetch_time = last_fetch_time_object.offices
-        queryset = BackupOffices.objects.using('backup_source_db').filter(created__gt=last_fetch_time)
-        queryset = queryset.exclude(created__isnull=True)
+    # convert operation_date object to datetime
+    dataframe['created'] = pd.to_datetime(dataframe['created'], errors='coerce')
+    dataframe = dataframe.loc[~dataframe['created'].isnull(), :]
+    dataframe = dataframe.astype({'active_status': int})
+    dataframe = dataframe.loc[dataframe['active_status'] == 1, :]
 
-    except AttributeError:
-        ReportTotalOfficesModel.objects.all().delete()
-        queryset = BackupOffices.objects.using('backup_source_db').exclude(created__isnull=True)
+    # generate date column
+    dataframe['report_date'] = dataframe['created'].dt.date
 
-    if queryset.exists():
-        # update last_fetch_time
-        last_fetch_time = queryset.last().created
-        queryset_values = queryset.values('id', 'active_status', 'created')
-        dataframe = pd.DataFrame(queryset_values)
-        dataframe = dataframe.loc[dataframe.active_status == 1]
-        if not dataframe.empty:
-            status = update(dataframe, request, **kwargs)
+    if not dataframe.empty:
+        kwargs['dataframe'] = dataframe
+        format_and_load_to_mysql_db(request, *args, **kwargs)
 
-    current_fetch_time_map['offices'] = last_fetch_time
+    return None
 
-    return current_fetch_time_map, status
+def generate_report(request=None, *args, **kwargs):
+    print()
+    print('start processing total_offices report')
+
+    querysets = utils.get_offices_querysets(*args, **kwargs)
+
+    if querysets.exists():
+        kwargs['querysets'] = querysets
+        querysets_to_dataframe_and_refine(request, *args, **kwargs)
+
+    print()
+    print('End processing total_offices report')
+
+    return None

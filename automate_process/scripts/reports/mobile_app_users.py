@@ -3,113 +3,92 @@
 # `projapoti_db`.`user_login_history` where date(created) <= '2022-02-02'  and
 # date(created) >= '2022-02-02' and is_mobile = 1;
 
-from datetime import datetime
+from datetime import datetime, timedelta
+from itertools import count
 
+import pandas as pd
+
+from backup_source_db.models import TrackBackupDBLastFetchTime
 from dashboard_generate.models import ReportMobileAppUsersModel
 
-
-def get_zero_padding_single_digits_maps():
-    map = {}
-    for i in range(0, 10):
-        value = f"0{i}"
-        map.setdefault(i, value)
-
-    return map
+from ...models import UserLoginHistory
+from . import utils
 
 
-SINGLE_DIGIT_KEY_MAPS = get_zero_padding_single_digits_maps()
+def generate_model_object_dict(request, report_date, count_or_sum, *args, **kwargs):
+    object_dic = {}
+    object_dic['year'] = report_date.year
+    object_dic['month'] = report_date.month
+    object_dic['day'] = report_date.day
+    object_dic['year_month_day'] = str(report_date).replace('-', '')
+    object_dic['report_date'] = str(report_date)
+    object_dic['report_day'] = datetime(report_date.year, report_date.month, report_date.day)
+    object_dic['count_or_sum'] = int(count_or_sum)
 
+    return object_dic
 
-def generate_year_month_day_key_and_report_date(year, month, day):
-    if month < 10:
-        month = SINGLE_DIGIT_KEY_MAPS[month]
+def format_and_load_to_mysql_db(request, *args, **kwargs):
 
-    if day < 10:
-        day = SINGLE_DIGIT_KEY_MAPS[day]
-    year_month_day = f"{year}{month}{day}"
-    report_date = f"{year}-{month}-{day}"
+    dataframe = kwargs['dataframe']
+    grouped_report_date = dataframe.groupby(['report_date'], sort=False, as_index=False)
 
-    return year_month_day, report_date
+    batch_objects = []
 
+    for report_date, frame in grouped_report_date:
 
-def generate_model_object_dictionary(request, year, month, day, count):
-    year_month_day, report_date = generate_year_month_day_key_and_report_date(
-        year, month, day
-    )
-    model_object_dict = {
-        'year': year,
-        'month': month,
-        'day': day,
-        'count_or_sum': count,
-        'year_month_day': year_month_day,
-        'report_date': report_date,
-        'report_day': datetime(year, month, day),
-    }
+        count_or_sum = int(frame['employee_record_id'].nunique())
+        object_dict = generate_model_object_dict(request, report_date, count_or_sum, *args, **kwargs)
+
+        employee_ids = {}
+
+        for employee_id in frame.employee_record_id.values:
+            employee_ids.setdefault(f'{employee_id}', 1)
+
+        object_dict['employee_record_ids'] = employee_ids
+        batch_objects.append(ReportMobileAppUsersModel(**object_dict))
+
+        if len(batch_objects) >= 100:
+            ReportMobileAppUsersModel.objects.bulk_create(batch_objects)
+            batch_objects = []
+
     try:
-        if request.user.is_authenticated:
-            model_object_dict['creator'] = request.user
+        if batch_objects:
+            ReportMobileAppUsersModel.objects.bulk_create(batch_objects)
     except Exception as e:
         pass
 
-    return model_object_dict
+    return None
 
 
-def format_and_load_to_mysql_db(request, groupby_date):
-    last_report_date = ''
+def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
+    querysets = kwargs.get('querysets')
+    querysets_values = querysets.values('employee_record_id', 'is_mobile', 'created')
+    dataframe = pd.DataFrame(querysets_values)
 
-    for date, frame in groupby_date:
-        last_report_date = date
+    # convert created object to datetime
+    dataframe['created'] = pd.to_datetime(dataframe['created'], errors='coerce')
+    dataframe = dataframe.loc[~dataframe['created'].isnull(), :]
 
-        count = int(frame['employee_record_id'].nunique())
-        employee_ids = {}
+    # generate date column
+    dataframe['report_date'] = dataframe['created'].dt.date
 
-        for id in frame.employee_record_id.values:
-            employee_ids.setdefault(int(id), 1)
-
-        dict_ = generate_model_object_dictionary(
-            request, date.year, date.month, date.day, count
-        )
-        dict_['employee_record_ids'] = employee_ids
-
-        defaults = {'count_or_sum': count, 'employee_record_ids': employee_ids}
-
-        try:
-            object = ReportMobileAppUsersModel.objects.get(
-                year_month_day=dict_['year_month_day']
-            )
-            if defaults['count_or_sum'] != int(object.count_or_sum):
-                for key, value in defaults.items():
-                    setattr(object, key, value)
-                object.save()
-        except ReportMobileAppUsersModel.DoesNotExist:
-            object = ReportMobileAppUsersModel(**dict_)
-            object.save()
-
-    return last_report_date
+    if not dataframe.empty:
+        kwargs['dataframe'] = dataframe
+        format_and_load_to_mysql_db(request, *args, **kwargs)
 
 
-def update(dataframe, request=None, *args, **kwargs):
-    status = {}
-    try:
-        print()
-        print('start processing mobile_app_users report')
+def generate_report(request=None, *args, **kwargs):
+    print()
+    print('start processing mobile_app_users report')
 
-        dataframe = dataframe.copy(deep=True)
-        dataframe = dataframe.loc[dataframe.is_mobile == 1]
-        # remove null values
-        # dataframe = dataframe.loc[dataframe.created.notnull()]
-        dataframe['created'] = dataframe.created.fillna(method='bfill')
-        # add new column: cretead_new as datetime field from operation_date column
-        dataframe = dataframe.loc[dataframe.created.notnull()]
-        groupby_date = dataframe.groupby(dataframe.created.dt.date)
+    querysets = utils.get_user_login_history_querysets(request, *args, **kwargs)
+    querysets = querysets.exclude(created__isnull=True)
 
-        last_report_date = format_and_load_to_mysql_db(request, groupby_date)
-        print('End processing mobile_app_users report')
-        print()
-        status['last_report_date'] = str(last_report_date)
-        status['status'] = 'success'
-    except Exception as e:
-        status['status'] = str(e)
-        status['last_report_date'] = []
+    if querysets.exists():
+        kwargs['querysets'] = querysets
+        querysets_to_dataframe_and_refine(request, *args, **kwargs)
 
-    return status
+    print('End processing mobile_app_users report')
+    print()
+
+    return None

@@ -1,104 +1,80 @@
 # automate_process/scripts/nispottikritto_nothi.py
 # SELECT count(id) FROM nisponno_records where Date(operation_date) >= '2020-09-01' and Date(operation_date) <= '2020-09-30';
-from datetime import datetime
+from datetime import datetime, timedelta
 
+import pandas as pd
+from . import utils
+
+from automate_process.models import NisponnoRecords
 from dashboard_generate.models import ReportNispottikrittoNothiModel
 
 
-def get_zero_padding_single_digits_maps():
-    map = {}
-    for i in range(0, 10):
-        value = f"0{i}"
-        map.setdefault(i, value)
+def generate_model_object_dict(request, report_date, count_or_sum, *args, **kwargs):
+    object_dic = {}
+    object_dic['year'] = report_date.year
+    object_dic['month'] = report_date.month
+    object_dic['day'] = report_date.day
+    object_dic['year_month_day'] = str(report_date).replace('-', '')
+    object_dic['report_date'] = str(report_date)
+    object_dic['report_day'] = datetime(report_date.year, report_date.month, report_date.day)
+    object_dic['count_or_sum'] = int(count_or_sum)
 
-    return map
+    return object_dic
+
+def format_and_load_to_mysql_db(request=None, *args, **kwargs):
+    dataframe = kwargs['dataframe']
+
+    # groupby report_date
+    grouped_report_date = dataframe.groupby(['report_date'], sort=False, as_index=False)['id'].size()
+    batch_objects = []
+
+    for report_date, nispottikritto_nothi_count in zip(grouped_report_date['report_date'].values, grouped_report_date['size'].values):
+        object_dict = generate_model_object_dict(request, report_date, nispottikritto_nothi_count, *args, **kwargs)
+        batch_objects.append(ReportNispottikrittoNothiModel(**object_dict))
+
+        if len(batch_objects) >= 100:
+            ReportNispottikrittoNothiModel.objects.bulk_create(batch_objects)
+            batch_objects = []
+
+    ReportNispottikrittoNothiModel.objects.bulk_create(batch_objects)
+
+    return None
 
 
-SINGLE_DIGIT_KEY_MAPS = get_zero_padding_single_digits_maps()
+def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
+    querysets = kwargs['querysets']
 
-
-def generate_year_month_day_key_and_report_date(year, month, day):
-    if month < 10:
-        month = SINGLE_DIGIT_KEY_MAPS[month]
-
-    if day < 10:
-        day = SINGLE_DIGIT_KEY_MAPS[day]
-    year_month_day = f"{year}{month}{day}"
-    report_date = f"{year}-{month}-{day}"
-
-    return year_month_day, report_date
-
-
-def generate_model_object_dictionary(request, year, month, day, count):
-    year_month_day, report_date = generate_year_month_day_key_and_report_date(
-        year, month, day
+    querysets_values = querysets.values(
+        'id', 'type', 'upokarvogi', 'operation_date'
     )
+    dataframe = pd.DataFrame(querysets_values)
 
-    model_object_dict = {
-        'year': year,
-        'month': month,
-        'day': day,
-        'count_or_sum': count,
-        'year_month_day': year_month_day,
-        'report_date': report_date,
-        'report_day': datetime(year, month, day),
-    }
+    # convert operation_date object to datetime
+    dataframe['operation_date'] = pd.to_datetime(dataframe['operation_date'], errors='coerce')
+    dataframe = dataframe.loc[~dataframe['operation_date'].isnull(), :]
 
-    try:
-        if request.user.is_authenticated:
-            model_object_dict['creator'] = request.user
-    except Exception as e:
-        pass
+    # generate date column
+    dataframe['report_date'] = dataframe['operation_date'].dt.date
 
-    return model_object_dict
+    if not dataframe.empty:
+        kwargs['dataframe'] = dataframe
+        format_and_load_to_mysql_db(request, *args, **kwargs)
+
+    return None
 
 
-def format_and_load_to_mysql_db(request, groupby_date):
-    last_report_date = ''
+def generate_report(request=None, *args, **kwargs):
+    print()
+    print('start processing nispottikritto_nothi report')
 
-    for date, frame in groupby_date:
-        last_report_date = date
+    querysets = utils.get_nisponno_records_querysets()
+    querysets = querysets.exclude(created__isnull=True)
 
-        count = int(frame['id'].count())
+    if querysets.exists():
+        kwargs['querysets'] = querysets
+        querysets_to_dataframe_and_refine(request, *args, **kwargs)
 
-        dict_ = generate_model_object_dictionary(
-            request, date.year, date.month, date.day, count
-        )
-        defaults = {'count_or_sum': count}
+    print('End processing nispottikritto_nothi report')
+    print()
 
-        try:
-            object = ReportNispottikrittoNothiModel.objects.get(
-                year_month_day=dict_['year_month_day']
-            )
-            if defaults['count_or_sum'] != int(object.count_or_sum):
-                for key, value in defaults.items():
-                    setattr(object, key, value)
-                object.save()
-        except ReportNispottikrittoNothiModel.DoesNotExist:
-            object = ReportNispottikrittoNothiModel(**dict_)
-            object.save()
-
-    return last_report_date
-
-
-def update(dataframe, request=None, *args, **kwargs):
-    status = {}
-    try:
-        print()
-        print('start processing nispottikritto_nothi report')
-        dataframe = dataframe.copy(deep=True)
-
-        # dataframe = dataframe.loc[dataframe.operation_date.notnull()]
-        dataframe['operation_date'] = dataframe.operation_date.fillna(method='bfill')
-        groupby_date = dataframe.groupby(dataframe.operation_date.dt.date)
-
-        last_report_date = format_and_load_to_mysql_db(request, groupby_date)
-        print('End processing total_offices report')
-        print()
-        status['last_report_date'] = str(last_report_date)
-        status['status'] = 'success'
-    except Exception as e:
-        status['status'] = str(e)
-        status['last_report_date'] = []
-
-    return status
+    return None

@@ -21,7 +21,7 @@ environ.Env.read_env(env_file)
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'automate_process.apps.AutomateProcessConfig',
     'dashboard_generate.apps.DashboardGenerateConfig',
     'dashboard_ui.apps.DashboardUIConfig',
+    'backup_source_db.apps.BackupSourceDbConfig',
 ]
 
 MIDDLEWARE = [
@@ -100,6 +101,15 @@ DATABASES = {
         'PASSWORD': env('SOURCE_DB_PASSWORD'),
         'HOST': env('SOURCE_DB_HOST'),
         'PORT': env('SOURCE_DB_PORT'),
+        'OPTIONS': {'charset': 'utf8mb4'},
+    },
+    'backup_source_db': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': env('BACKUP_SOURCE_DB_NAME'),
+        'USER': env('BACKUP_SOURCE_DB_USER'),
+        'PASSWORD': env('BACKUP_SOURCE_DB_PASSWORD'),
+        'HOST': env('BACKUP_SOURCE_DB_HOST'),
+        'PORT': env('BACKUP_SOURCE_DB_PORT'),
         'OPTIONS': {'charset': 'utf8mb4'},
     },
 }

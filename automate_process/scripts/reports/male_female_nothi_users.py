@@ -3,142 +3,126 @@
 # users.employee_record_id = employee_records.id WHERE date(users.created) <=
 # '2020-09-31' and employee_records.gender = 2;
 
-from datetime import datetime
+from datetime import datetime, timedelta
+from urllib import request
 
 import pandas as pd
 
+from automate_process.models import EmployeeRecords, Users
+from backup_source_db.models import TrackBackupDBLastFetchTime
 from dashboard_generate.models import (ReportFemaleNothiUsersModel,
                                        ReportMaleNothiUsersModel)
 
-
-def get_zero_padding_single_digits_maps():
-    map = {}
-    for i in range(0, 10):
-        value = f"0{i}"
-        map.setdefault(i, value)
-
-    return map
+from . import utils
 
 
-SINGLE_DIGIT_KEY_MAPS = get_zero_padding_single_digits_maps()
+def generate_model_object_dict(request, report_date, count_or_sum, *args, **kwargs):
+    object_dic = {}
+    object_dic['year'] = report_date.year
+    object_dic['month'] = report_date.month
+    object_dic['day'] = report_date.day
+    object_dic['year_month_day'] = str(report_date).replace('-', '')
+    object_dic['report_date'] = str(report_date)
+    object_dic['report_day'] = datetime(report_date.year, report_date.month, report_date.day)
+    object_dic['count_or_sum'] = int(count_or_sum)
 
+    return object_dic
 
-def generate_year_month_day_key_and_report_date(year, month, day):
-    if month < 10:
-        month = SINGLE_DIGIT_KEY_MAPS[month]
+def format_and_load_to_mysql_db(request=None, *args, **kwargs):
+    dataframe = kwargs.get('dataframe')
 
-    if day < 10:
-        day = SINGLE_DIGIT_KEY_MAPS[day]
-    year_month_day = f"{year}{month}{day}"
-    report_date = f"{year}-{month}-{day}"
+    male_users_dataframe = dataframe.loc[dataframe['gender'] == '1', :]
+    female_users_dataframe = dataframe.loc[dataframe['gender'] == '2', :]
 
-    return year_month_day, report_date
+    # groupby report_date
+    male_grouped_report_date = male_users_dataframe.groupby(['report_date'], sort=False, as_index=False)['id'].size()
+    female_grouped_report_date = female_users_dataframe.groupby(['report_date'], sort=False, as_index=False)['id'].size()
 
+    batch_objects = []
+    for report_date, male_count in zip(male_grouped_report_date['report_date'].values, male_grouped_report_date['size'].values):
+        object_dict = generate_model_object_dict(request, report_date, male_count, *args, **kwargs)
+        batch_objects.append(ReportMaleNothiUsersModel(**object_dict))
 
-def generate_model_object_dictionary(request, year, month, day, count):
-    year_month_day, report_date = generate_year_month_day_key_and_report_date(
-        year, month, day
-    )
+        if len(batch_objects) >= 100:
+            ReportMaleNothiUsersModel.objects.bulk_create(batch_objects)
+            batch_objects = []
 
-    model_object_dict = {
-        'year': year,
-        'month': month,
-        'day': day,
-        'count_or_sum': count,
-        'year_month_day': year_month_day,
-        'report_date': report_date,
-        'report_day': datetime(year, month, day),
-    }
     try:
-        if request.user.is_authenticated:
-            model_object_dict['creator'] = request.user
+        ReportMaleNothiUsersModel.objects.bulk_create(batch_objects)
     except Exception as e:
         pass
 
-    return model_object_dict
+    batch_objects = []
+    for report_date, female_count in zip(female_grouped_report_date['report_date'].values, female_grouped_report_date['size'].values):
+        object_dict = generate_model_object_dict(request, report_date, female_count, *args, **kwargs)
+        batch_objects.append(ReportFemaleNothiUsersModel(**object_dict))
 
+        if len(batch_objects) >= 100:
+            ReportFemaleNothiUsersModel.objects.bulk_create(batch_objects)
+            batch_objects = []
 
-def format_and_load_to_mysql_db(request, groupby_date, model):
-    last_report_date = ''
-
-    for date, frame in groupby_date:
-        last_report_date = date
-
-        count = int(frame['id_users'].count())
-
-        dict_ = generate_model_object_dictionary(
-            request, date.year, date.month, date.day, count
-        )
-        defaults = {'count_or_sum': count}
-
-        try:
-            object = model.objects.get(year_month_day=dict_['year_month_day'])
-            if defaults['count_or_sum'] != int(object.count_or_sum):
-                for key, value in defaults.items():
-                    setattr(object, key, value)
-                object.save()
-        except model.DoesNotExist:
-            object = model(**dict_)
-            object.save()
-
-    return last_report_date
-
-
-def update(request, users_dataframe, employee_records_dataframe, *args, **kwargs):
-    status = {}
-    status['male_nothi_users'] = {}
-    status['female_nothi_users'] = {}
     try:
-        users_dataframe = users_dataframe.copy(deep=True)
-        employee_records_dataframe = employee_records_dataframe.copy(deep=True)
-        print()
-        print('start processing male & female nothi users report')
-
-        users_dataframe = users_dataframe[~users_dataframe.employee_record_id.isnull()]
-        users_dataframe = users_dataframe.astype({'employee_record_id': int})
-
-        employee_records_dataframe = employee_records_dataframe[
-            ~employee_records_dataframe.id.isnull()
-        ]
-        employee_records_dataframe = employee_records_dataframe.astype({'id': int})
-
-        users_gender_df = pd.merge(
-            users_dataframe,
-            employee_records_dataframe,
-            left_on=['employee_record_id'],
-            right_on=['id'],
-            suffixes=('_users', '_employee'),
-        )
-        users_gender_df['created_users'] = users_gender_df.created_users.fillna(
-            method='bfill'
-        )
-
-        users_gender_df = users_gender_df.astype({'gender': str})
-
-        male_nothi_users_df = users_gender_df[users_gender_df.gender == '1']
-        female_nothi_users_df = users_gender_df[users_gender_df.gender == '2']
-
-        male_groupby_date = male_nothi_users_df.groupby(
-            male_nothi_users_df.created_users.dt.date
-        )
-        male_last_report_date = format_and_load_to_mysql_db(
-            request, male_groupby_date, ReportMaleNothiUsersModel
-        )
-
-        female_groupby_date = female_nothi_users_df.groupby(
-            female_nothi_users_df.created_users.dt.date
-        )
-        female_last_report_date = format_and_load_to_mysql_db(
-            request, female_groupby_date, ReportFemaleNothiUsersModel
-        )
-
-        print('End processing male & female nothi users report')
-        print()
-
-        status['male_nothi_users']['last_report_date'] = str(male_last_report_date)
-        status['female_nothi_users']['last_report_date'] = str(female_last_report_date)
-        status['status'] = 'success'
+        ReportFemaleNothiUsersModel.objects.bulk_create(batch_objects)
     except Exception as e:
-        status['status'] = str(e)
+        pass
 
-    return status
+    return None
+
+def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
+    users_querysets = kwargs['users_querysets']
+    employee_querysets = kwargs['employee_querysets']
+
+    users_querysets_values = users_querysets.values('created', 'employee_record_id')
+    users_dataframe = pd.DataFrame(users_querysets_values)
+
+    employee_querysets_values = employee_querysets.values('id', 'gender')
+    employee_dataframe = pd.DataFrame(employee_querysets_values)
+
+    users_dataframe = users_dataframe.loc[~users_dataframe.employee_record_id.isnull(), :]
+    users_dataframe = users_dataframe.astype({'employee_record_id': int})
+
+    employee_dataframe = employee_dataframe.loc[~employee_dataframe.id.isnull(), :]
+    employee_dataframe = employee_dataframe.astype({'id': int})
+
+    dataframe = pd.merge(
+        users_dataframe,
+        employee_dataframe,
+        left_on=['employee_record_id'],
+        right_on=['id'],
+        suffixes=('_users', '_employee'),
+    )
+    dataframe = dataframe.astype({'gender': str})
+    dataframe = dataframe.loc[~dataframe['created'].isnull(), :]
+    dataframe['created'] = pd.to_datetime(dataframe.created, errors='coerce')
+    dataframe = dataframe.loc[~dataframe.created.isnull(), :]
+
+    # generate date column
+    dataframe['report_date'] = dataframe['created'].dt.date
+
+    if not dataframe.empty:
+        kwargs['dataframe'] = dataframe
+        format_and_load_to_mysql_db(request, *args, **kwargs)
+
+    return None
+
+
+def generate_report(request=None, *args, **kwargs):
+    print()
+    print('start processing male & female nothi users report')
+
+    users_querysets = utils.get_users_querysets(*args, **kwargs)
+    employee_querysets = utils.get_employee_records_querysets(*args, **kwargs)
+
+    users_querysets = users_querysets.exclude(created__isnull=True)
+    employee_querysets = employee_querysets.exclude(created__isnull=True)
+
+    if users_querysets.exists() & employee_querysets.exists():
+        kwargs['users_querysets'] = users_querysets
+        kwargs['employee_querysets'] = employee_querysets
+        querysets_to_dataframe_and_refine(request, *args, **kwargs)
+
+
+    print('End processing male & female nothi users report')
+    print()
+
+    return None
