@@ -10,9 +10,9 @@ from dashboard_generate.models import (ReportLoginTotalUsers,
                                        ReportTotalOfficesModel,
                                        ReportTotalUsersModel)
 
-last_fetch_time_object = TrackBackupDBLastFetchTime.objects.using('backup_source_db').last()
 
 def get_offices_querysets(*args, **kwargs):
+    last_fetch_time_object = TrackBackupDBLastFetchTime.objects.using('backup_source_db').last()
     querysets = Offices.objects.using('source_db').all()
     try:
         last_fetch_time = last_fetch_time_object.offices
@@ -25,6 +25,7 @@ def get_offices_querysets(*args, **kwargs):
     return querysets
 
 def get_user_login_history_querysets(*args, **kwargs):
+    last_fetch_time_object = TrackBackupDBLastFetchTime.objects.using('backup_source_db').last()
     querysets = UserLoginHistory.objects.using('source_db').all()
     try:
         last_fetch_time = last_fetch_time_object.user_login_history
@@ -37,6 +38,7 @@ def get_user_login_history_querysets(*args, **kwargs):
     return querysets
 
 def get_nisponno_records_querysets(*args, **kwargs):
+    last_fetch_time_object = TrackBackupDBLastFetchTime.objects.using('backup_source_db').last()
     querysets = NisponnoRecords.objects.using('source_db').all()
     try:
         last_fetch_time = last_fetch_time_object.nisponno_records
@@ -49,6 +51,7 @@ def get_nisponno_records_querysets(*args, **kwargs):
     return querysets
 
 def get_users_querysets(*args, **kwargs):
+    last_fetch_time_object = TrackBackupDBLastFetchTime.objects.using('backup_source_db').last()
     querysets = Users.objects.using('source_db').all()
     try:
         last_fetch_time = last_fetch_time_object.users
