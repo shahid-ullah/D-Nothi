@@ -32,8 +32,8 @@ def generate_model_object_dict(request, report_date, count_or_sum, *args, **kwar
 def format_and_load_to_mysql_db(request=None, *args, **kwargs):
     dataframe = kwargs.get('dataframe')
 
-    login_male_users_df = dataframe.loc[dataframe['gender'] == 1, :]
-    login_female_users_df = dataframe.loc[dataframe['gender'] == 2, :]
+    login_male_users_df = dataframe.loc[dataframe['gender'] == '1', :]
+    login_female_users_df = dataframe.loc[dataframe['gender'] == '2', :]
 
     # groupby report_date
     # male_grouped_report_date = login_male_users_df.groupby(['report_date'], sort=False, as_index=False).size()
@@ -109,9 +109,9 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
     # refine employee_dataframe
     employee_dataframe = employee_dataframe.loc[~employee_dataframe['id'].isnull(), :]
     employee_dataframe = employee_dataframe.loc[~employee_dataframe['gender'].isnull(), :]
-    employee_dataframe['gender'] = employee_dataframe['gender'].replace(r'^\s*$', np.nan, regex=True)
+    employee_dataframe = employee_dataframe.astype({'gender': str})
+    employee_dataframe['gender'] = employee_dataframe['gender'].str.strip()
     employee_dataframe = employee_dataframe.loc[~employee_dataframe['gender'].isnull(), :]
-    employee_dataframe = employee_dataframe.astype({'gender': int})
     employee_dataframe = employee_dataframe.astype({'id': int})
 
     dataframe = pd.merge(
@@ -123,7 +123,7 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
         suffixes=('_login_history', '_employee_records'),
     )
     dataframe = dataframe.loc[~dataframe['gender'].isnull(), :]
-    dataframe = dataframe.astype({'gender': int})
+    dataframe = dataframe.astype({'gender': str})
     dataframe = dataframe.loc[~dataframe['created'].isnull(), :]
     dataframe['created'] = pd.to_datetime(dataframe['created'], errors='coerce')
     dataframe = dataframe.loc[~dataframe['created'].isnull(), :]
