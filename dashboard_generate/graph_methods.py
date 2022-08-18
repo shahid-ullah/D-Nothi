@@ -68,7 +68,6 @@ def day_traffic():
         k: v
         for k, v in sorted(hour_map.items(), key=lambda item: item[0])
     }
-    # breakpoint()
 
     return hour_map
 

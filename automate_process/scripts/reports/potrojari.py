@@ -4,9 +4,9 @@
 from datetime import datetime, timedelta
 
 import pandas as pd
-from . import utils
 
 from automate_process.models import NisponnoRecords
+from backup_source_db.models import TrackBackupDBLastFetchTime
 from dashboard_generate.models import ReportPotrojariModel
 
 
@@ -65,11 +65,24 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
 
     return None
 
+def get_nisponno_records_querysets(*args, **kwargs):
+    last_fetch_time_object = TrackBackupDBLastFetchTime.objects.using('backup_source_db').last()
+    querysets = NisponnoRecords.objects.using('source_db').all()
+    try:
+        last_fetch_time = last_fetch_time_object.nisponno_records
+        querysets = querysets.filter(created__gt=last_fetch_time)
+    except AttributeError:
+        last_fetch_time = ReportPotrojariModel.objects.last().report_day
+        last_fetch_time = last_fetch_time + timedelta(days=1)
+        querysets = querysets.filter(created__gte=last_fetch_time)
+
+    return querysets
+
 def generate_report(request=None, *args, **kwargs):
     print()
     print('start processing potrojari report')
 
-    querysets = utils.get_nisponno_records_querysets(*args, **kwargs)
+    querysets = get_nisponno_records_querysets(*args, **kwargs)
     querysets = querysets.exclude(created__isnull=True)
 
     if querysets.exists():

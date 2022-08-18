@@ -2,9 +2,12 @@
 # Caution: Datafame is not processed according to this query
 # This is not cumulative count
 
-import pandas as pd
-from . import utils
+from datetime import timedelta
 
+import pandas as pd
+
+from automate_process.models import Offices
+from backup_source_db.models import TrackBackupDBLastFetchTime
 from dashboard_generate.models import ReportTotalOfficesModel
 
 
@@ -60,11 +63,24 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
 
     return None
 
+def get_offices_querysets(*args, **kwargs):
+    last_fetch_time_object = TrackBackupDBLastFetchTime.objects.using('backup_source_db').last()
+    querysets = Offices.objects.using('source_db').all()
+    try:
+        last_fetch_time = last_fetch_time_object.offices
+        querysets = querysets.filter(created__gt=last_fetch_time)
+    except AttributeError:
+        last_fetch_time = ReportTotalOfficesModel.objects.last().report_date
+        last_fetch_time = last_fetch_time + timedelta(days=1)
+        querysets = querysets.filter(created__gte=last_fetch_time)
+
+    return querysets
+
 def generate_report(request=None, *args, **kwargs):
     print()
     print('start processing total_offices report')
 
-    querysets = utils.get_offices_querysets(*args, **kwargs)
+    querysets = get_offices_querysets(*args, **kwargs)
 
     if querysets.exists():
         kwargs['querysets'] = querysets

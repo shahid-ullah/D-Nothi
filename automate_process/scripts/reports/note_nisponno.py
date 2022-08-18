@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 
 from automate_process.models import NisponnoRecords
+from backup_source_db.models import TrackBackupDBLastFetchTime
 from dashboard_generate.models import ReportNoteNisponnoModel
 
 from . import utils
@@ -87,11 +88,24 @@ def get_last_report_generate_date(request=None, *args, **kwargs):
 
     return last_report_generate_date
 
+def get_nisponno_records_querysets(*args, **kwargs):
+    last_fetch_time_object = TrackBackupDBLastFetchTime.objects.using('backup_source_db').last()
+    querysets = NisponnoRecords.objects.using('source_db').all()
+    try:
+        last_fetch_time = last_fetch_time_object.nisponno_records
+        querysets = querysets.filter(created__gt=last_fetch_time)
+    except AttributeError:
+        last_fetch_time = ReportNoteNisponnoModel.objects.last().report_day
+        last_fetch_time = last_fetch_time + timedelta(days=1)
+        querysets = querysets.filter(created__gte=last_fetch_time)
+
+    return querysets
+
 def generate_report(request=None, *args, **kwargs):
     print()
     print('start processing note_nisponno report')
 
-    querysets = utils.get_nisponno_records_querysets(*args, **kwargs)
+    querysets = get_nisponno_records_querysets(*args, **kwargs)
     querysets = querysets.exclude(created__isnull=True)
 
     if querysets.exists():

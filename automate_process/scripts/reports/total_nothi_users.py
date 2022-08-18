@@ -1,10 +1,11 @@
 # scripts/reports/total_nothi_users.py
 # SELECT count(id) FROM users WHERE date(created) <= '2020-09-30';
 from datetime import datetime, timedelta
-import pandas as pd
-from automate_process.models import Users
-from . import utils
 
+import pandas as pd
+
+from automate_process.models import Users
+from backup_source_db.models import TrackBackupDBLastFetchTime
 from dashboard_generate.models import ReportTotalUsersModel
 
 
@@ -58,11 +59,23 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
 
     return None
 
+def get_users_querysets(*args, **kwargs):
+    last_fetch_time_object = TrackBackupDBLastFetchTime.objects.using('backup_source_db').last()
+    querysets = Users.objects.using('source_db').all()
+    try:
+        last_fetch_time = last_fetch_time_object.users
+        querysets = querysets.filter(created__gt=last_fetch_time)
+    except AttributeError:
+        last_fetch_time = ReportTotalUsersModel.objects.last().report_day
+        last_fetch_time = last_fetch_time + timedelta(days=1)
+        querysets = querysets.filter(created__gte=last_fetch_time)
+
+    return querysets
 
 def generate_report(request=None, *args, **kwargs):
     print()
     print('start processing total_nothi_users report')
-    querysets = utils.get_users_querysets(*args, **kwargs)
+    querysets = get_users_querysets(*args, **kwargs)
     querysets = querysets.exclude(created__isnull=True)
 
     if querysets.exists():

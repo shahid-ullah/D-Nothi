@@ -18,7 +18,8 @@ from . import helper_functions
 from .forms import ReportDateRangeForm
 from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
                      ReportIOSUsersModel, ReportLoginFemalelUsersModel,
-                     ReportLoginMalelUsersModel, ReportLoginTotalUsers, ReportLoginTotalUsersNotDistinct,
+                     ReportLoginMalelUsersModel, ReportLoginTotalUsers,
+                     ReportLoginTotalUsersNotDistinct,
                      ReportMaleNothiUsersModel, ReportMobileAppUsersModel,
                      ReportNispottikrittoNothiModel, ReportNoteNisponnoModel,
                      ReportPotrojariModel, ReportTotalOfficesModel,
@@ -494,7 +495,7 @@ def custom_report(request):
     if not login_total_users:
         login_total_users = 0
 
-    
+
     # total login (not distinct count)
     total_login_objects = ReportLoginTotalUsersNotDistinct.objects.filter(
         year=year, month=month)

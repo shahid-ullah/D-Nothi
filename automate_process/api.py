@@ -145,6 +145,7 @@ class updateDashboard(APIView):
         except Exception as e:
             print(e)
             scripts_log['login_male_female_users'] = str(e)
+
         try:
             DashboardUpdateLog.objects.create(
                 completion_log='empty,',
@@ -153,13 +154,17 @@ class updateDashboard(APIView):
                 update_start_time=datetime.now(),
                 update_completion_time=datetime.now(),
             )
+            scripts_log['dashboard_update_log'] = 'success'
         except Exception as e:
+            scripts_log['dashboard_update_log'] = str(e)
             print(e)
 
         try:
             reports.utils.update_backup_db_last_fetch_time(request, *args, **kwargs)
+            scripts_log['backup_db_log'] = 'success'
         except Exception as e:
             print(e)
+            scripts_log['backup_db_log'] = str(e)
 
         settings.SYSTEM_UPDATE_RUNNING = False
 

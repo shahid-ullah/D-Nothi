@@ -9,7 +9,8 @@ from django.db.models import Sum
 
 from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
                      ReportIOSUsersModel, ReportLoginFemalelUsersModel,
-                     ReportLoginMalelUsersModel, ReportLoginTotalUsers, ReportLoginTotalUsersNotDistinct,
+                     ReportLoginMalelUsersModel, ReportLoginTotalUsers,
+                     ReportLoginTotalUsersNotDistinct,
                      ReportMaleNothiUsersModel, ReportMobileAppUsersModel,
                      ReportNispottikrittoNothiModel, ReportNoteNisponnoModel,
                      ReportPotrojariModel, ReportTotalOfficesModel,
