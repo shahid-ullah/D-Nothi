@@ -17,7 +17,7 @@ CURRENT_DATABASE_FETCH_TIME = {}
 
 # Backup Offices Table
 def backup_office_table():
-    last_fetched_date_object = TrackSourceDBLastFetchTime.objects.using('source_db').last()
+    last_fetched_date_object = TrackSourceDBLastFetchTime.objects.using('source_db').first()
     print('backup offices table ...')
     last_fetch_time = None
 
@@ -69,7 +69,7 @@ def backup_office_table():
 
 # Backup Users Table
 def backup_users_table():
-    last_fetched_date_object = TrackSourceDBLastFetchTime.objects.using('source_db').last()
+    last_fetched_date_object = TrackSourceDBLastFetchTime.objects.using('source_db').first()
     print('backup users table ...')
 
     last_fetch_time = None
@@ -121,7 +121,7 @@ def backup_users_table():
 
 # Backup EmployeeRecords Table
 def backup_employee_records_table():
-    last_fetched_date_object = TrackSourceDBLastFetchTime.objects.using('source_db').last()
+    last_fetched_date_object = TrackSourceDBLastFetchTime.objects.using('source_db').first()
     print('backup employee_records table ...')
 
     last_fetch_time = None
@@ -170,7 +170,7 @@ def backup_employee_records_table():
 
 # Backup NisponnoRecords Table
 def backup_nisponno_records_table():
-    last_fetched_date_object = TrackSourceDBLastFetchTime.objects.using('source_db').last()
+    last_fetched_date_object = TrackSourceDBLastFetchTime.objects.using('source_db').first()
     print('backup nisponno_records table ...')
     last_fetch_time = None
     querysets = NisponnoRecords.objects.using('source_db').all()
@@ -222,7 +222,7 @@ def backup_nisponno_records_table():
 
 # Backup UserLoginHistory Table
 def backup_user_login_history_table():
-    last_fetched_date_object = TrackSourceDBLastFetchTime.objects.using('source_db').last()
+    last_fetched_date_object = TrackSourceDBLastFetchTime.objects.using('source_db').first()
     print('backup user_login_history table ...')
     last_fetch_time = None
     querysets = UserLoginHistory.objects.using('source_db').all()
