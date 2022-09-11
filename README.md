@@ -1,24 +1,37 @@
 ### Server installation Instructions
 
 - **clone the project**
-  - `$ git clone git@github.com:shahid-ullah/D-Nothi.git`
+  ```bash
+   $ git clone git@github.com:shahid-ullah/D-Nothi.git
+   ```
 - **change to project directory**
-  - `$ cd D-Nothi`
+  ```bash
+  $ cd D-Nothi
+  ```
 - **create virtual environment and active virtual environment**
-  - `$ virtualenv venv`
-  - `$ source venv/bin/activate`
+  ```bash
+    $ virtualenv venv
+    $ source venv/bin/activate
+  ```
 - **Install project dependencies**
-  - `$ pip install -r requirements.txt`
+  ```bash
+    $ pip install -r requirements.txt
+  ```
 - **Run migration**
-  - `$ python manage.py migrate automate_process --database='source_db'`
-  - `$ python manage.py migrate backup_source_db --database='backup_source_db'`
-  - `$ python manage.py migrate dashboard_generate --database='default'`
-  - `$ python manage.py migrate users --database='default'`
-
+  ```bash
+    $ python manage.py migrate automate_process --database='source_db'
+    $ python manage.py migrate backup_source_db --database='backup_source_db'
+    $ python manage.py migrate dashboard_generate --database='default'
+    $ python manage.py migrate users --database='default'
+  ```
 - **collect static files**
-  - `$ python manage.py collectstatic`
+  ```bash
+    $ python manage.py collectstatic
+  ```
 - **Start development server**
-  - `$ python manager.py runserver`
+  ```bash
+    $ python manager.py runserver
+  ```
 
 ### Additional Instructions
 
