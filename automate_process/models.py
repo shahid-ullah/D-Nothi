@@ -200,12 +200,13 @@ class NisponnoRecords(models.Model):
 
 
 class TrackSourceDBLastFetchTime(models.Model):
-    offices = models.DateTimeField()
-    users = models.DateTimeField()
-    employee_records = models.DateTimeField()
-    nisponno_records = models.DateTimeField()
-    user_login_history = models.DateTimeField()
+    offices = models.DateTimeField(blank=True, null=True)
+    users = models.DateTimeField(blank=True, null=True)
+    employee_records = models.DateTimeField(blank=True, null=True)
+    nisponno_records = models.DateTimeField(blank=True, null=True)
+    user_login_history = models.DateTimeField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['-id',]

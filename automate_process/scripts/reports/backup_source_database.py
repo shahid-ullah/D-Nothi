@@ -13,6 +13,7 @@ from dashboard_generate.models import (ReportLoginTotalUsers,
 
 print('Loading backup_source_db scripts')
 
+
 CURRENT_DATABASE_FETCH_TIME = {}
 
 # Backup Offices Table
@@ -269,8 +270,15 @@ def backup_user_login_history_table():
     print()
     CURRENT_DATABASE_FETCH_TIME['user_login_history'] = last_fetch_time
 
+def save_start_log():
+    try:
+        track_object = TrackSourceDBLastFetchTime.objects.using('source_db').create()
+        return track_object
+    except Exception as e:
+        print(e)
 
 def update(request, *args, **kwargs):
+    track_object = save_start_log()
     print()
     print('updating backup db ...')
     print()
@@ -279,7 +287,13 @@ def update(request, *args, **kwargs):
     backup_employee_records_table()
     backup_nisponno_records_table()
     backup_user_login_history_table()
-    TrackSourceDBLastFetchTime.objects.using('source_db').create(**CURRENT_DATABASE_FETCH_TIME)
+    try:
+        for key, value in CURRENT_DATABASE_FETCH_TIME.items():
+            setattr(track_object, key, value)
+        track_object.save()
+    except Exception as e:
+        print(e)
+
     print()
     print('End backup db update')
     print()
