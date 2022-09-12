@@ -2,6 +2,7 @@ from django.db import models
 
 
 class BackupEmployeeRecords(models.Model):
+    source_id = models.CharField(default='', max_length=100)
     name_eng = models.CharField(max_length=255)
     name_bng = models.CharField(max_length=255)
     father_name_eng = models.CharField(max_length=255, blank=True, null=True)
@@ -61,6 +62,7 @@ class BackupEmployeeRecords(models.Model):
 
 
 class BackupOffices(models.Model):
+    source_id = models.CharField(default='', max_length=100)
     office_ministry_id = models.IntegerField()
     office_layer_id = models.IntegerField()
     custom_layer_id = models.IntegerField(blank=True, null=True)
@@ -98,6 +100,7 @@ class BackupOffices(models.Model):
 
 
 class BackupUserLoginHistory(models.Model):
+    source_id = models.CharField(default='', max_length=100)
     is_mobile = models.IntegerField()
     client_ip = models.CharField(max_length=30)
     device_name = models.CharField(max_length=255)
@@ -134,6 +137,7 @@ class BackupUserLoginHistory(models.Model):
 
 
 class BackupUsers(models.Model):
+    source_id = models.CharField(default='', max_length=100)
     username = models.CharField(unique=True, max_length=255)
     password = models.CharField(max_length=255)
     user_alias = models.CharField(max_length=50)
@@ -166,6 +170,7 @@ class BackupUsers(models.Model):
 
 
 class BackupNisponnoRecords(models.Model):
+    source_id = models.CharField(default='', max_length=100)
     id = models.BigAutoField(primary_key=True)
     nothi_master_id = models.IntegerField()
     nothi_part_no = models.IntegerField()
