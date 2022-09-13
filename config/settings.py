@@ -188,9 +188,7 @@ LOGOUT_REDIRECT_URL = 'dashboard_home'
 SSO_LOGIN_URL = 'https://n-doptor-accounts-stage.nothi.gov.bd/login'
 SSO_LOGOUT_URL = 'https://n-doptor-accounts-stage.nothi.gov.bd/logout'
 
-QUERY_CREATED_DATE = Q(created__gte=datetime(2013, 11, 1, 0, 0, 0)) | Q(
-    created__isnull=True
-)
+QUERY_CREATED_DATE = Q(created__gte=datetime(2013, 11, 1, 0, 0, 0)) | Q(created__isnull=True)
 
 if settings.DEBUG:
     INTERNAL_IPS = [

@@ -8,7 +8,7 @@ from itertools import count
 
 import pandas as pd
 
-from backup_source_db.models import TrackBackupDBLastFetchTime
+from backup_source_db.models import BackupDBLog, TrackBackupDBLastFetchTime
 from dashboard_generate.models import ReportMobileAppUsersModel
 
 from ...models import UserLoginHistory
@@ -77,12 +77,12 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
         format_and_load_to_mysql_db(request, *args, **kwargs)
 
 def get_user_login_history_querysets(*args, **kwargs):
-    last_fetch_time_object = TrackBackupDBLastFetchTime.objects.using('backup_source_db').last()
     querysets = UserLoginHistory.objects.using('source_db').all()
+    backup_log = BackupDBLog.objects.using('backup_source_db').last()
 
     try:
-        last_fetch_time = last_fetch_time_object.user_login_history
-        querysets = querysets.filter(created__gt=last_fetch_time)
+        last_login_history_time = backup_log.last_login_history_time
+        querysets = querysets.filter(created__gt=last_login_history_time)
     except AttributeError:
         last_fetch_time = ReportMobileAppUsersModel.objects.last().report_day
         last_fetch_time = last_fetch_time + timedelta(days=1)

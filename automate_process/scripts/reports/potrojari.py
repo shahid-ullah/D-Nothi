@@ -4,9 +4,8 @@
 from datetime import datetime, timedelta
 
 import pandas as pd
-
 from automate_process.models import NisponnoRecords
-from backup_source_db.models import TrackBackupDBLastFetchTime
+from backup_source_db.models import BackupDBLog, TrackBackupDBLastFetchTime
 from dashboard_generate.models import ReportPotrojariModel
 
 
@@ -29,7 +28,9 @@ def format_and_load_to_mysql_db(request=None, *args, **kwargs):
     grouped_report_date = dataframe.groupby(['report_date'], sort=False, as_index=False)['id'].size()
     batch_objects = []
 
-    for report_date, potrojari_count in zip(grouped_report_date['report_date'].values, grouped_report_date['size'].values):
+    for report_date, potrojari_count in zip(
+        grouped_report_date['report_date'].values, grouped_report_date['size'].values
+    ):
         object_dict = generate_model_object_dict(request, report_date, potrojari_count, *args, **kwargs)
         batch_objects.append(ReportPotrojariModel(**object_dict))
 
@@ -44,9 +45,7 @@ def format_and_load_to_mysql_db(request=None, *args, **kwargs):
 
 def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
     querysets = kwargs['querysets']
-    querysets_values = querysets.values(
-        'id', 'type', 'upokarvogi', 'operation_date'
-    )
+    querysets_values = querysets.values('id', 'type', 'upokarvogi', 'operation_date')
     dataframe = pd.DataFrame(querysets_values)
 
     # filter on potrojari
@@ -65,18 +64,21 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
 
     return None
 
+
 def get_nisponno_records_querysets(*args, **kwargs):
-    last_fetch_time_object = TrackBackupDBLastFetchTime.objects.using('backup_source_db').last()
+    # last_fetch_time_object = TrackBackupDBLastFetchTime.objects.using('backup_source_db').last()
     querysets = NisponnoRecords.objects.using('source_db').all()
+    backup_log = BackupDBLog.objects.using('backup_source_db').last()
     try:
-        last_fetch_time = last_fetch_time_object.nisponno_records
-        querysets = querysets.filter(created__gt=last_fetch_time)
+        last_nisponno_records_time = backup_log.last_nisponno_records_time
+        querysets = querysets.filter(created__gt=last_nisponno_records_time)
     except AttributeError:
         last_fetch_time = ReportPotrojariModel.objects.last().report_day
         last_fetch_time = last_fetch_time + timedelta(days=1)
         querysets = querysets.filter(created__gte=last_fetch_time)
 
     return querysets
+
 
 def generate_report(request=None, *args, **kwargs):
     print()

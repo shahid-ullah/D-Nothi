@@ -2,13 +2,12 @@
 from datetime import datetime, timedelta
 
 import pandas as pd
+from automate_process.models import UserLoginHistory
+from backup_source_db.models import BackupDBLog, TrackBackupDBLastFetchTime
+from dashboard_generate.models import ReportAndroidUsersModel, ReportIOSUsersModel
+
 from . import utils
 
-from dashboard_generate.models import (ReportAndroidUsersModel,
-                                       ReportIOSUsersModel)
-
-from automate_process.models import UserLoginHistory
-from backup_source_db.models import TrackBackupDBLastFetchTime
 
 def generate_model_object_dict(request, report_date, count_or_sum, *args, **kwargs):
     object_dic = {}
@@ -22,6 +21,7 @@ def generate_model_object_dict(request, report_date, count_or_sum, *args, **kwar
 
     return object_dic
 
+
 def format_and_load_to_mysql_db(request, *args, **kwargs):
     dataframe = kwargs['dataframe']
     dataframe_android = dataframe.loc[dataframe['device_type'] == 'android', :]
@@ -32,7 +32,9 @@ def format_and_load_to_mysql_db(request, *args, **kwargs):
     ios_grouped_report_date = dataframe_ios.groupby(['report_date'], sort=False, as_index=False).size()
 
     batch_objects = []
-    for report_date, andorid_count in zip(android_grouped_report_date['report_date'].values, android_grouped_report_date['size'].values):
+    for report_date, andorid_count in zip(
+        android_grouped_report_date['report_date'].values, android_grouped_report_date['size'].values
+    ):
         object_dict = generate_model_object_dict(request, report_date, andorid_count, *args, **kwargs)
         batch_objects.append(ReportAndroidUsersModel(**object_dict))
 
@@ -46,7 +48,9 @@ def format_and_load_to_mysql_db(request, *args, **kwargs):
         pass
 
     batch_objects = []
-    for report_date, ios_count in zip(ios_grouped_report_date['report_date'].values, ios_grouped_report_date['size'].values):
+    for report_date, ios_count in zip(
+        ios_grouped_report_date['report_date'].values, ios_grouped_report_date['size'].values
+    ):
         object_dict = generate_model_object_dict(request, report_date, ios_count, *args, **kwargs)
         batch_objects.append(ReportIOSUsersModel(**object_dict))
 
@@ -85,19 +89,20 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
         kwargs['dataframe'] = dataframe
         format_and_load_to_mysql_db(request, *args, **kwargs)
 
-def get_user_login_history_querysets(*args, **kwargs):
-    last_fetch_time_object = TrackBackupDBLastFetchTime.objects.using('backup_source_db').last()
-    querysets = UserLoginHistory.objects.using('source_db').all()
 
+def get_user_login_history_querysets(*args, **kwargs):
+    querysets = UserLoginHistory.objects.using('source_db').all()
+    backup_log = BackupDBLog.objects.using('backup_source_db').last()
     try:
-        last_fetch_time = last_fetch_time_object.user_login_history
-        querysets = querysets.filter(created__gt=last_fetch_time)
+        last_login_history_time = backup_log.last_login_history_time
+        querysets = querysets.filter(created__gt=last_login_history_time)
     except AttributeError:
         last_fetch_time = ReportAndroidUsersModel.objects.last().report_day
         last_fetch_time = last_fetch_time + timedelta(days=1)
         querysets = querysets.filter(created__gte=last_fetch_time)
 
     return querysets
+
 
 def generate_report(request=None, *args, **kwargs):
     print()
