@@ -28,6 +28,7 @@ def format_and_load_to_mysql_db(request, *args, **kwargs):
 
     batch_objects = []
     for report_date, frame in grouped_report_date:
+        print('login_total_users report: ', str(report_date))
 
         count_or_sum = int(frame['employee_record_id'].nunique())
         object_dict = generate_model_object_dict(request, report_date, count_or_sum, *args, **kwargs)

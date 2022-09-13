@@ -279,7 +279,7 @@ def process_post_request(request):
     if form.is_valid():
         from_date = form.cleaned_data['From']
         to_date = form.cleaned_data['To']
-
+        # breakpoint()
         start_date = datetime(from_date.year, from_date.month, from_date.day)
         end_date = datetime(to_date.year, to_date.month, to_date.day)
         if start_date > end_date:
@@ -308,6 +308,7 @@ def process_post_request(request):
 
         # login total users
         login_total_users = helper_functions.get_login_total_users(date_range)
+        # breakpoint()
         # total login counts (not distinct)
         total_login = helper_functions.get_total_login_count(date_range)
         # login male users
@@ -487,6 +488,7 @@ def custom_report(request):
         mobile_app_users = 0
 
     # total users (login)
+    # login_total_users_distinct
     login_total_users_objects = ReportLoginTotalUsers.objects.filter(
         year=year, month=month)
     login_total_users_dict = login_total_users_objects.aggregate(
@@ -496,6 +498,7 @@ def custom_report(request):
         login_total_users = 0
 
 
+    # login_total_users_not_distinct
     # total login (not distinct count)
     total_login_objects = ReportLoginTotalUsersNotDistinct.objects.filter(
         year=year, month=month)

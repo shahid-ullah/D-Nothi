@@ -64,13 +64,13 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
 def get_user_login_history_querysets(*args, **kwargs):
     last_fetch_time_object = TrackBackupDBLastFetchTime.objects.using('backup_source_db').last()
     querysets = UserLoginHistory.objects.using('source_db').all()
-    try:
-        last_fetch_time = last_fetch_time_object.user_login_history
-        querysets = querysets.filter(created__gt=last_fetch_time)
-    except AttributeError:
-        last_fetch_time = ReportLoginTotalUsers.objects.last().report_day
-        last_fetch_time = last_fetch_time + timedelta(days=1)
-        querysets = querysets.filter(created__gte=last_fetch_time)
+    # try:
+    #     last_fetch_time = last_fetch_time_object.user_login_history
+    #     querysets = querysets.filter(created__gt=last_fetch_time)
+    # except AttributeError:
+    #     last_fetch_time = ReportLoginTotalUsers.objects.last().report_day
+    #     last_fetch_time = last_fetch_time + timedelta(days=1)
+    #     querysets = querysets.filter(created__gte=last_fetch_time)
 
     return querysets
 

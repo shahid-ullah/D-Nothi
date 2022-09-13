@@ -450,6 +450,7 @@ def get_login_total_users(date_range):
     login_total_users_objects = ReportLoginTotalUsers.objects.filter(
         report_day__range=date_range)
     count_dict = {}
+    # breakpoint()
     for obj in login_total_users_objects:
         count_dict.update(obj.employee_record_ids)
     login_total_users = len(count_dict)

@@ -5,7 +5,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-from automate_process.api import updateDashboard, DatabaseBackupLog
+from automate_process.api import BackupDBLogAPI, SourceDBLogAPI, updateDashboard, DatabaseBackupLog
+from backup_source_db.models import BackupDBLog
 from users.views import logout_view, sso_login_handler
 
 urlpatterns = [
@@ -13,6 +14,8 @@ urlpatterns = [
     # path('monthly_report/', include('monthly_report.urls')),
     path('update_dashboard/', updateDashboard.as_view()),
     path('backup_log/', DatabaseBackupLog.as_view()),
+    path('source_db_log/', SourceDBLogAPI.as_view(), name='source_db_log'),
+    path('backup_db_log/', BackupDBLogAPI.as_view(), name='backup_db_log'),
     path('((thele$$!!/', admin.site.urls),
     path('sso_login_handler/', sso_login_handler, name='sso_login_handler'),
     path('logout/', logout_view, name='logout'),

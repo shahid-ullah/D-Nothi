@@ -292,7 +292,7 @@ class ReportLoginTotalUsersNotDistinct(models.Model):
         db_table = "report_login_total_users_not_distinct"
 
     def __str__(self):
-        return f'year: {self.year} month: {self.month}, day: {self.day}, count_or_sum: {self.count_or_sum}'
+        return f'year: {self.year} month: {self.month}, day: {self.day}, count_or_sum: {self.counts}'
 
 class ReportLoginMalelUsersModel(models.Model):
     year_month_day = models.CharField(
