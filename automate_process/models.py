@@ -219,7 +219,7 @@ class SourceDBLog(models.Model):
     last_user_id = models.CharField(max_length=100, blank=True, null=True)
     last_employee_id = models.CharField(max_length=100, blank=True, null=True)
     last_nisponno_records_time = models.DateTimeField(blank=True, null=True)
-    last_login_hisroty_time = models.DateTimeField(blank=True, null=True)
+    last_login_history_time = models.DateTimeField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     class Meta:
