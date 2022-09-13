@@ -205,3 +205,17 @@ class TrackBackupDBLastFetchTime(models.Model):
 
     def __str__(self):
         return f'{self.created}'
+
+class BackupDBLog(models.Model):
+    last_office_id = models.CharField(max_length=100, blank=True, null=True)
+    last_user_id = models.CharField(max_length=100, blank=True, null=True)
+    last_employee_id = models.CharField(max_length=100, blank=True, null=True)
+    last_nisponno_records_time = models.DateTimeField(blank=True, null=True)
+    last_login_history_time = models.DateTimeField(blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    class Meta:
+        ordering = ['id',]
+
+    def __str__(self):
+        return f'{self.created}'
