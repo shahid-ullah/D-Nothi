@@ -5,8 +5,8 @@
 from datetime import timedelta
 
 import pandas as pd
-from automate_process.models import Offices, SourceDBLog
-from backup_source_db.models import BackupDBLog, TrackBackupDBLastFetchTime
+from automate_process.models import Offices
+from backup_source_db.models import BackupDBLog
 from dashboard_generate.models import ReportTotalOfficesModel
 
 

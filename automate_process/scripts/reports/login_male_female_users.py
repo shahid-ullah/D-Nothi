@@ -146,7 +146,12 @@ def get_user_login_history_querysets(*args, **kwargs):
 
     try:
         last_login_history_time = backup_log.last_login_history_time
-        querysets = querysets.filter(created__gt=last_login_history_time)
+        if last_login_history_time:
+            querysets = querysets.filter(created__gt=last_login_history_time)
+        else:
+            last_fetch_time = ReportLoginMalelUsersModel.objects.last().report_day
+            last_fetch_time = last_fetch_time + timedelta(days=1)
+            querysets = querysets.filter(created__gte=last_fetch_time)
     except AttributeError:
         last_fetch_time = ReportLoginMalelUsersModel.objects.last().report_day
         last_fetch_time = last_fetch_time + timedelta(days=1)

@@ -4,11 +4,12 @@
 from datetime import datetime, timedelta
 
 import pandas as pd
-
 from automate_process.models import UserLoginHistory
 from backup_source_db.models import BackupDBLog, TrackBackupDBLastFetchTime
-from dashboard_generate.models import (ReportLoginTotalUsers,
-                                       ReportLoginTotalUsersNotDistinct)
+from dashboard_generate.models import (
+    ReportLoginTotalUsers,
+    ReportLoginTotalUsersNotDistinct,
+)
 
 from . import utils
 
@@ -24,13 +25,16 @@ def generate_model_object_dict(request, office_id, report_date, count_or_sum, *a
 
     return object_dic
 
+
 def format_and_load_to_mysql_db(request, *args, **kwargs):
     dataframe = kwargs['dataframe']
     grouped = dataframe.groupby(['office_id', 'report_date'], as_index=False, sort=False)['id'].size()
 
     batch_objects = []
 
-    for office_id, report_date, counts in zip(grouped['office_id'].values, grouped['report_date'].values, grouped['size'].values):
+    for office_id, report_date, counts in zip(
+        grouped['office_id'].values, grouped['report_date'].values, grouped['size'].values
+    ):
 
         object_dic = generate_model_object_dict(request, office_id, report_date, counts)
         batch_objects.append(ReportLoginTotalUsersNotDistinct(**object_dic))
@@ -61,18 +65,25 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
         kwargs['dataframe'] = dataframe
         format_and_load_to_mysql_db(request, *args, **kwargs)
 
+
 def get_user_login_history_querysets(*args, **kwargs):
     querysets = UserLoginHistory.objects.using('source_db').all()
     backup_log = BackupDBLog.objects.using('backup_source_db').last()
     try:
         last_login_history_time = backup_log.last_login_history_time
-        querysets = querysets.filter(created__gt=last_login_history_time)
+        if last_login_history_time:
+            querysets = querysets.filter(created__gt=last_login_history_time)
+        else:
+            last_fetch_time = ReportLoginTotalUsers.objects.last().report_day
+            last_fetch_time = last_fetch_time + timedelta(days=1)
+            querysets = querysets.filter(created__gte=last_fetch_time)
     except AttributeError:
         last_fetch_time = ReportLoginTotalUsers.objects.last().report_day
         last_fetch_time = last_fetch_time + timedelta(days=1)
         querysets = querysets.filter(created__gte=last_fetch_time)
 
     return querysets
+
 
 def generate_report(request=None, *args, **kwargs):
     print()
