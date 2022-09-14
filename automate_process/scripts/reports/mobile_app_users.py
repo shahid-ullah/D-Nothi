@@ -68,6 +68,7 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
     # convert created object to datetime
     dataframe['created'] = pd.to_datetime(dataframe['created'], errors='coerce')
     dataframe = dataframe.loc[~dataframe['created'].isnull(), :]
+    dataframe = dataframe.loc[dataframe.is_mobile == 1, :]
 
     # generate date column
     dataframe['report_date'] = dataframe['created'].dt.date
