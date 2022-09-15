@@ -82,6 +82,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+DATABASE_ROUTERS = [
+    'automate_process.db_router.AutomateProcessDBRouter',
+    'backup_source_db.db_router.BackupSourceDBRouter',
+]
+
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
