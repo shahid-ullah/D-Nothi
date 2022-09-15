@@ -193,7 +193,7 @@ class SourceDBLogAPI(mixins.ListModelMixin, generics.GenericAPIView):
 
     # permission_classes = [permissions.IsAdminUser]
 
-    def get(self, request, *argl, **kwargs):
+    def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
 
