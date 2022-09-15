@@ -48,6 +48,7 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
     dataframe = pd.DataFrame(queryset_values)
 
     # convert operation_date object to datetime
+    dataframe = dataframe.loc[~dataframe['active_status'].isnull(), :]
     dataframe['created'] = pd.to_datetime(dataframe['created'], errors='coerce')
     dataframe = dataframe.loc[~dataframe['created'].isnull(), :]
     dataframe = dataframe.astype({'active_status': int})
@@ -68,13 +69,14 @@ def get_offices_querysets(*args, **kwargs):
     backup_log = BackupDBLog.objects.using('backup_source_db').last()
     querysets = Offices.objects.using('source_db').all()
 
-    try:
-        last_office_id = int(backup_log.last_office_id)
-        querysets = querysets.filter(id__gt=last_office_id)
-    except AttributeError:
-        last_fetch_time = ReportTotalOfficesModel.objects.last().report_date
-        last_fetch_time = last_fetch_time + timedelta(days=1)
-        querysets = querysets.filter(created__gte=last_fetch_time)
+    if ReportTotalOfficesModel.objects.exists():
+        try:
+            last_office_id = int(backup_log.last_office_id)
+            querysets = querysets.filter(id__gt=last_office_id)
+        except AttributeError:
+            last_fetch_time = ReportTotalOfficesModel.objects.last().report_date
+            last_fetch_time = last_fetch_time + timedelta(days=1)
+            querysets = querysets.filter(created__gte=last_fetch_time)
 
     return querysets
 

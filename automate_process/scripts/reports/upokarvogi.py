@@ -60,18 +60,19 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
 def get_nisponno_records_querysets(*args, **kwargs):
     querysets = NisponnoRecords.objects.using('source_db').all()
     backup_log = BackupDBLog.objects.using('backup_source_db').last()
-    try:
-        last_nisponno_records_time = backup_log.last_nisponno_records_time
-        if last_nisponno_records_time:
-            querysets = querysets.filter(created__gt=last_nisponno_records_time)
-        else:
+    if ReportUpokarvogiModel.objects.exists():
+        try:
+            last_nisponno_records_time = backup_log.last_nisponno_records_time
+            if last_nisponno_records_time:
+                querysets = querysets.filter(created__gt=last_nisponno_records_time)
+            else:
+                last_fetch_time = ReportUpokarvogiModel.objects.last().report_day
+                last_fetch_time = last_fetch_time + timedelta(days=1)
+                querysets = querysets.filter(created__gte=last_fetch_time)
+        except AttributeError:
             last_fetch_time = ReportUpokarvogiModel.objects.last().report_day
             last_fetch_time = last_fetch_time + timedelta(days=1)
             querysets = querysets.filter(created__gte=last_fetch_time)
-    except AttributeError:
-        last_fetch_time = ReportUpokarvogiModel.objects.last().report_day
-        last_fetch_time = last_fetch_time + timedelta(days=1)
-        querysets = querysets.filter(created__gte=last_fetch_time)
 
     return querysets
 

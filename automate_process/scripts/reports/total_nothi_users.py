@@ -3,7 +3,6 @@
 from datetime import datetime, timedelta
 
 import pandas as pd
-
 from automate_process.models import Users
 from backup_source_db.models import BackupDBLog, TrackBackupDBLastFetchTime
 from dashboard_generate.models import ReportTotalUsersModel
@@ -21,6 +20,7 @@ def generate_model_object_dict(request, report_date, count_or_sum, *args, **kwar
 
     return object_dic
 
+
 def format_and_load_to_mysql_db(request, *args, **kwargs):
     dataframe = kwargs['dataframe']
 
@@ -28,7 +28,9 @@ def format_and_load_to_mysql_db(request, *args, **kwargs):
     grouped_report_date = dataframe.groupby(['report_date'], sort=False, as_index=False)['id'].size()
     batch_objects = []
 
-    for report_date, nispottikritto_nothi_count in zip(grouped_report_date['report_date'].values, grouped_report_date['size'].values):
+    for report_date, nispottikritto_nothi_count in zip(
+        grouped_report_date['report_date'].values, grouped_report_date['size'].values
+    ):
         object_dict = generate_model_object_dict(request, report_date, nispottikritto_nothi_count, *args, **kwargs)
         batch_objects.append(ReportTotalUsersModel(**object_dict))
 
@@ -40,10 +42,14 @@ def format_and_load_to_mysql_db(request, *args, **kwargs):
 
     return None
 
+
 def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
     querysets = kwargs['querysets']
 
-    querysets_values = querysets.values('id', 'created',)
+    querysets_values = querysets.values(
+        'id',
+        'created',
+    )
     dataframe = pd.DataFrame(querysets_values)
 
     # convert created object to datetime
@@ -59,18 +65,21 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
 
     return None
 
+
 def get_users_querysets(*args, **kwargs):
     querysets = Users.objects.using('source_db').all()
     backup_log = BackupDBLog.objects.using('backup_source_db').last()
-    try:
-        last_user_id = int(backup_log.last_user_id)
-        querysets = querysets.filter(id__gt=last_user_id)
-    except AttributeError:
-        last_fetch_time = ReportTotalUsersModel.objects.last().report_day
-        last_fetch_time = last_fetch_time + timedelta(days=1)
-        querysets = querysets.filter(created__gte=last_fetch_time)
+    if ReportTotalUsersModel.objects.exists():
+        try:
+            last_user_id = int(backup_log.last_user_id)
+            querysets = querysets.filter(id__gt=last_user_id)
+        except AttributeError:
+            last_fetch_time = ReportTotalUsersModel.objects.last().report_day
+            last_fetch_time = last_fetch_time + timedelta(days=1)
+            querysets = querysets.filter(created__gte=last_fetch_time)
 
     return querysets
+
 
 def generate_report(request=None, *args, **kwargs):
     print()

@@ -6,11 +6,12 @@
 from datetime import datetime, timedelta
 
 import pandas as pd
-
 from automate_process.models import EmployeeRecords, Users
 from backup_source_db.models import BackupDBLog, TrackBackupDBLastFetchTime
-from dashboard_generate.models import (ReportFemaleNothiUsersModel,
-                                       ReportMaleNothiUsersModel)
+from dashboard_generate.models import (
+    ReportFemaleNothiUsersModel,
+    ReportMaleNothiUsersModel,
+)
 
 from . import utils
 
@@ -27,6 +28,7 @@ def generate_model_object_dict(request, report_date, count_or_sum, *args, **kwar
 
     return object_dic
 
+
 def format_and_load_to_mysql_db(request=None, *args, **kwargs):
     dataframe = kwargs.get('dataframe')
 
@@ -35,10 +37,14 @@ def format_and_load_to_mysql_db(request=None, *args, **kwargs):
 
     # groupby report_date
     male_grouped_report_date = male_users_dataframe.groupby(['report_date'], sort=False, as_index=False)['id'].size()
-    female_grouped_report_date = female_users_dataframe.groupby(['report_date'], sort=False, as_index=False)['id'].size()
+    female_grouped_report_date = female_users_dataframe.groupby(['report_date'], sort=False, as_index=False)[
+        'id'
+    ].size()
 
     batch_objects = []
-    for report_date, male_count in zip(male_grouped_report_date['report_date'].values, male_grouped_report_date['size'].values):
+    for report_date, male_count in zip(
+        male_grouped_report_date['report_date'].values, male_grouped_report_date['size'].values
+    ):
         object_dict = generate_model_object_dict(request, report_date, male_count, *args, **kwargs)
         batch_objects.append(ReportMaleNothiUsersModel(**object_dict))
 
@@ -52,7 +58,9 @@ def format_and_load_to_mysql_db(request=None, *args, **kwargs):
         pass
 
     batch_objects = []
-    for report_date, female_count in zip(female_grouped_report_date['report_date'].values, female_grouped_report_date['size'].values):
+    for report_date, female_count in zip(
+        female_grouped_report_date['report_date'].values, female_grouped_report_date['size'].values
+    ):
         object_dict = generate_model_object_dict(request, report_date, female_count, *args, **kwargs)
         batch_objects.append(ReportFemaleNothiUsersModel(**object_dict))
 
@@ -66,6 +74,7 @@ def format_and_load_to_mysql_db(request=None, *args, **kwargs):
         pass
 
     return None
+
 
 def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
     users_querysets = kwargs['users_querysets']
@@ -104,19 +113,21 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
 
     return None
 
+
 def get_users_querysets(*args, **kwargs):
-    # last_fetch_time_object = TrackBackupDBLastFetchTime.objects.using('backup_source_db').last()
     backup_log = BackupDBLog.objects.using('backup_source_db').last()
     querysets = Users.objects.using('source_db').all()
-    try:
-        last_user_id = int(backup_log.last_user_id)
-        querysets = querysets.filter(id__gt=last_user_id)
-    except AttributeError:
-        last_fetch_time = ReportMaleNothiUsersModel.objects.last().report_day
-        last_fetch_time = last_fetch_time + timedelta(days=1)
-        querysets = querysets.filter(created__gte=last_fetch_time)
+    if ReportMaleNothiUsersModel.objects.exists():
+        try:
+            last_user_id = int(backup_log.last_user_id)
+            querysets = querysets.filter(id__gt=last_user_id)
+        except AttributeError:
+            last_fetch_time = ReportMaleNothiUsersModel.objects.last().report_day
+            last_fetch_time = last_fetch_time + timedelta(days=1)
+            querysets = querysets.filter(created__gte=last_fetch_time)
 
     return querysets
+
 
 def generate_report(request=None, *args, **kwargs):
     print()
@@ -132,7 +143,6 @@ def generate_report(request=None, *args, **kwargs):
         kwargs['users_querysets'] = users_querysets
         kwargs['employee_querysets'] = employee_querysets
         querysets_to_dataframe_and_refine(request, *args, **kwargs)
-
 
     print('End processing male & female nothi users report')
     print()

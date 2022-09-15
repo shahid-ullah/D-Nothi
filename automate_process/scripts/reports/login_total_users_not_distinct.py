@@ -69,18 +69,20 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
 def get_user_login_history_querysets(*args, **kwargs):
     querysets = UserLoginHistory.objects.using('source_db').all()
     backup_log = BackupDBLog.objects.using('backup_source_db').last()
-    try:
-        last_login_history_time = backup_log.last_login_history_time
-        if last_login_history_time:
-            querysets = querysets.filter(created__gt=last_login_history_time)
-        else:
-            last_fetch_time = ReportLoginTotalUsers.objects.last().report_day
+
+    if ReportLoginTotalUsersNotDistinct.objects.exists():
+        try:
+            last_login_history_time = backup_log.last_login_history_time
+            if last_login_history_time:
+                querysets = querysets.filter(created__gt=last_login_history_time)
+            else:
+                last_fetch_time = ReportLoginTotalUsersNotDistinct.objects.last().report_date
+                last_fetch_time = last_fetch_time + timedelta(days=1)
+                querysets = querysets.filter(created__gte=last_fetch_time)
+        except AttributeError:
+            last_fetch_time = ReportLoginTotalUsersNotDistinct.objects.last().report_date
             last_fetch_time = last_fetch_time + timedelta(days=1)
             querysets = querysets.filter(created__gte=last_fetch_time)
-    except AttributeError:
-        last_fetch_time = ReportLoginTotalUsers.objects.last().report_day
-        last_fetch_time = last_fetch_time + timedelta(days=1)
-        querysets = querysets.filter(created__gte=last_fetch_time)
 
     return querysets
 

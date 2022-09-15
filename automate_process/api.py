@@ -191,9 +191,9 @@ class SourceDBLogAPI(mixins.ListModelMixin, generics.GenericAPIView):
     serializer_class = SourceDBLogSerializer
     authentication_classes = [authentication.SessionAuthentication]
 
-    permission_classes = [permissions.IsAdminUser]
+    # permission_classes = [permissions.IsAdminUser]
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *argl, **kwargs):
         return self.list(request, *args, **kwargs)
 
 
@@ -202,7 +202,7 @@ class BackupDBLogAPI(mixins.ListModelMixin, generics.GenericAPIView):
     serializer_class = BackupDBLogSerializer
     authentication_classes = [authentication.SessionAuthentication]
 
-    permission_classes = [permissions.IsAdminUser]
+    # permission_classes = [permissions.IsAdminUser]
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
