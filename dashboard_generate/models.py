@@ -281,6 +281,7 @@ class ReportLoginFemalelUsersModel(models.Model):
     month = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     day = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     count_or_sum = models.PositiveIntegerField(default=0)
+    office_id = models.PositiveIntegerField(blank=False, null=False, db_index=True)
     employee_record_ids = models.JSONField(default=EMPTY_DICTIONARY)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
