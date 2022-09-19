@@ -72,7 +72,6 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
 
 
 def get_nisponno_records_querysets(*args, **kwargs):
-    # last_fetch_time_object = TrackBackupDBLastFetchTime.objects.using('backup_source_db').last()
     querysets = NisponnoRecords.objects.using('source_db').all()
     backup_log = BackupDBLog.objects.using('backup_source_db').last()
     try:
