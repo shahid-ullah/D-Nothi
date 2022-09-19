@@ -4,17 +4,16 @@
 # date(created) >= '2022-02-02' and is_mobile = 1;
 
 from datetime import datetime, timedelta
-from itertools import count
 
 import pandas as pd
-from backup_source_db.models import BackupDBLog, TrackBackupDBLastFetchTime
+
+from backup_source_db.models import BackupDBLog
 from dashboard_generate.models import ReportMobileAppUsersModel
 
 from ...models import UserLoginHistory
-from . import utils
 
 
-def generate_model_object_dict(request, report_date, count_or_sum, *args, **kwargs):
+def generate_model_object_dict(request, report_date, count_or_sum, office_id, *args, **kwargs):
     object_dic = {}
     object_dic['year'] = report_date.year
     object_dic['month'] = report_date.month
@@ -23,6 +22,7 @@ def generate_model_object_dict(request, report_date, count_or_sum, *args, **kwar
     object_dic['report_date'] = str(report_date)
     object_dic['report_day'] = datetime(report_date.year, report_date.month, report_date.day)
     object_dic['count_or_sum'] = int(count_or_sum)
+    object_dic['office_id'] = int(office_id)
 
     return object_dic
 
@@ -30,45 +30,41 @@ def generate_model_object_dict(request, report_date, count_or_sum, *args, **kwar
 def format_and_load_to_mysql_db(request, *args, **kwargs):
 
     dataframe = kwargs['dataframe']
-    grouped_report_date = dataframe.groupby(['report_date'], sort=False, as_index=False)
+    grouped_report_date = dataframe.groupby(['office_id', 'report_date'], sort=False, as_index=True)[
+        'employee_record_id'
+    ].apply(set)
+    grouped_report_date = grouped_report_date.reset_index(name='employee_ids')
 
     batch_objects = []
-
-    for report_date, frame in grouped_report_date:
-
-        count_or_sum = int(frame['employee_record_id'].nunique())
-        object_dict = generate_model_object_dict(request, report_date, count_or_sum, *args, **kwargs)
-
-        employee_ids = {}
-
-        for employee_id in frame.employee_record_id.values:
-            employee_ids.setdefault(f'{employee_id}', 1)
-
+    for office_id, report_date, employee_ids in zip(
+        grouped_report_date['office_id'].values,
+        grouped_report_date['report_date'].values,
+        grouped_report_date['employee_ids'].values,
+    ):
+        employee_ids = {f"{id_}": 1 for id_ in employee_ids}
+        object_dict = generate_model_object_dict(request, report_date, len(employee_ids), office_id, *args, **kwargs)
         object_dict['employee_record_ids'] = employee_ids
         batch_objects.append(ReportMobileAppUsersModel(**object_dict))
-
         if len(batch_objects) >= 100:
             ReportMobileAppUsersModel.objects.bulk_create(batch_objects)
             batch_objects = []
 
-    try:
-        if batch_objects:
-            ReportMobileAppUsersModel.objects.bulk_create(batch_objects)
-    except Exception as e:
-        pass
+    if batch_objects:
+        ReportMobileAppUsersModel.objects.bulk_create(batch_objects)
 
     return None
 
 
 def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
     querysets = kwargs.get('querysets')
-    querysets_values = querysets.values('employee_record_id', 'is_mobile', 'created')
+    querysets_values = querysets.values('office_id', 'employee_record_id', 'is_mobile', 'created')
     dataframe = pd.DataFrame(querysets_values)
 
     # convert created object to datetime
     dataframe['created'] = pd.to_datetime(dataframe['created'], errors='coerce')
     dataframe = dataframe.loc[~dataframe['created'].isnull(), :]
     dataframe = dataframe.loc[dataframe.is_mobile == 1, :]
+    dataframe = dataframe.loc[~dataframe['office_id'].isnull(), :]
 
     # generate date column
     dataframe['report_date'] = dataframe['created'].dt.date
