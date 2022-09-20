@@ -2,6 +2,10 @@ html,
 body {
   height: 100%;
 }
+@font-face {
+  font-family: SutonnyMJ;
+  src: url(../fonts/SutonnyMJ\ Regular.ttf);
+}
 
 .full-width {
   width: 100%;
@@ -792,7 +796,8 @@ a:focus {
 .nav.side-menu > li.active > a {
   text-shadow: rgba(0, 0, 0, 0.25) 0 -1px 0;
   background: linear-gradient(#334556, #2c4257), #2a3f54;
-  box-shadow: rgba(0, 0, 0, 0.25) 0 1px 0, inset rgba(255, 255, 255, 0.16) 0 1px 0;
+  box-shadow: rgba(0, 0, 0, 0.25) 0 1px 0,
+    inset rgba(255, 255, 255, 0.16) 0 1px 0;
 }
 .navbar-brand,
 .navbar-nav > li > a {
@@ -1682,6 +1687,7 @@ span.right {
 .tile_count {
   margin-bottom: 20px;
   margin-top: 20px;
+  font-family: SutonnyMJ;
 }
 .tile_count .tile_stats_count {
   border-bottom: 1px solid #d9dee4;
@@ -2429,7 +2435,8 @@ textarea:focus {
   border: 1px solid #cccccc;
   border-bottom-color: #b3b3b3;
   border-radius: 4px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.05);
 }
 .bs-glyphicons {
   margin: 0 -10px 20px;
@@ -3594,7 +3601,8 @@ form:after {
   margin-left: 38px;
 }
 .button a {
-  background: url(http://cssdeck.com/uploads/media/items/8/8bcLQqF.png) 0 -112px no-repeat;
+  background: url(http://cssdeck.com/uploads/media/items/8/8bcLQqF.png) 0 -112px
+    no-repeat;
   color: #7e7e7e;
   font-size: 17px;
   padding: 2px 0 2px 40px;
@@ -3661,24 +3669,35 @@ div[data-role="editor-toolbar"] {
   border-radius: 0;
   min-height: 38px;
 }
-.select2-container--default .select2-selection--single .select2-selection__rendered {
+.select2-container--default
+  .select2-selection--single
+  .select2-selection__rendered {
   color: #73879c;
   padding-top: 5px;
 }
-.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+.select2-container--default
+  .select2-selection--multiple
+  .select2-selection__rendered {
   padding-top: 3px;
 }
-.select2-container--default .select2-selection--single .select2-selection__arrow {
+.select2-container--default
+  .select2-selection--single
+  .select2-selection__arrow {
   height: 36px;
 }
-.select2-container--default .select2-selection--multiple .select2-selection__choice,
-.select2-container--default .select2-selection--multiple .select2-selection__clear {
+.select2-container--default
+  .select2-selection--multiple
+  .select2-selection__choice,
+.select2-container--default
+  .select2-selection--multiple
+  .select2-selection__clear {
   margin-top: 2px;
   border: none;
   border-radius: 0;
   padding: 3px 5px;
 }
-.select2-container--default.select2-container--focus .select2-selection--multiple {
+.select2-container--default.select2-container--focus
+  .select2-selection--multiple {
   border: 1px solid #ccc;
 }
 .switchery {
@@ -4248,4 +4267,8 @@ table thead .checkbox.radio { margin-top:-7px;margin-top:-21px; }
   font-size: 20px;
   color: maroon;
   margin-top: 16px;
+}
+
+.bangla_summary {
+  font-family: SutonnyMJ
 }
