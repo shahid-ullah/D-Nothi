@@ -3,6 +3,7 @@
 from datetime import datetime, timedelta
 
 import pandas as pd
+
 from automate_process.models import Users
 from backup_source_db.models import BackupDBLog, TrackBackupDBLastFetchTime
 from dashboard_generate.models import ReportTotalUsersModel
@@ -28,17 +29,16 @@ def format_and_load_to_mysql_db(request, *args, **kwargs):
     grouped_report_date = dataframe.groupby(['report_date'], sort=False, as_index=False)['id'].size()
     batch_objects = []
 
-    for report_date, nispottikritto_nothi_count in zip(
-        grouped_report_date['report_date'].values, grouped_report_date['size'].values
-    ):
-        object_dict = generate_model_object_dict(request, report_date, nispottikritto_nothi_count, *args, **kwargs)
+    for report_date, counts in zip(grouped_report_date['report_date'].values, grouped_report_date['size'].values):
+        object_dict = generate_model_object_dict(request, report_date, counts, *args, **kwargs)
         batch_objects.append(ReportTotalUsersModel(**object_dict))
 
         if len(batch_objects) >= 100:
             ReportTotalUsersModel.objects.bulk_create(batch_objects)
             batch_objects = []
 
-    ReportTotalUsersModel.objects.bulk_create(batch_objects)
+    if batch_objects:
+        ReportTotalUsersModel.objects.bulk_create(batch_objects)
 
     return None
 

@@ -4,14 +4,10 @@
 from datetime import datetime, timedelta
 
 import pandas as pd
-from automate_process.models import UserLoginHistory
-from backup_source_db.models import BackupDBLog, TrackBackupDBLastFetchTime
-from dashboard_generate.models import (
-    ReportLoginTotalUsers,
-    ReportLoginTotalUsersNotDistinct,
-)
 
-from . import utils
+from automate_process.models import UserLoginHistory
+from backup_source_db.models import BackupDBLog
+from dashboard_generate.models import ReportLoginTotalUsersNotDistinct
 
 
 def generate_model_object_dict(request, office_id, report_date, count_or_sum, *args, **kwargs):
@@ -43,7 +39,8 @@ def format_and_load_to_mysql_db(request, *args, **kwargs):
             ReportLoginTotalUsersNotDistinct.objects.bulk_create(batch_objects)
             batch_objects = []
 
-    ReportLoginTotalUsersNotDistinct.objects.bulk_create(batch_objects)
+    if batch_objects:
+        ReportLoginTotalUsersNotDistinct.objects.bulk_create(batch_objects)
 
     return None
 

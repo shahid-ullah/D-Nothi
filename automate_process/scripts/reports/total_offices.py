@@ -5,6 +5,7 @@
 from datetime import timedelta
 
 import pandas as pd
+
 from automate_process.models import Offices
 from backup_source_db.models import BackupDBLog
 from dashboard_generate.models import ReportTotalOfficesModel
@@ -37,7 +38,8 @@ def format_and_load_to_mysql_db(request=None, *args, **kwargs):
             ReportTotalOfficesModel.objects.bulk_create(batch_objects)
             batch_objects = []
 
-    ReportTotalOfficesModel.objects.bulk_create(batch_objects)
+    if batch_objects:
+        ReportTotalOfficesModel.objects.bulk_create(batch_objects)
 
     return None
 

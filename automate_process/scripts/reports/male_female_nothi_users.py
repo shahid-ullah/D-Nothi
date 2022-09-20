@@ -6,12 +6,11 @@
 from datetime import datetime, timedelta
 
 import pandas as pd
+
 from automate_process.models import EmployeeRecords, Users
 from backup_source_db.models import BackupDBLog, TrackBackupDBLastFetchTime
-from dashboard_generate.models import (
-    ReportFemaleNothiUsersModel,
-    ReportMaleNothiUsersModel,
-)
+from dashboard_generate.models import (ReportFemaleNothiUsersModel,
+                                       ReportMaleNothiUsersModel)
 
 from . import utils
 
@@ -52,10 +51,8 @@ def format_and_load_to_mysql_db(request=None, *args, **kwargs):
             ReportMaleNothiUsersModel.objects.bulk_create(batch_objects)
             batch_objects = []
 
-    try:
+    if batch_objects:
         ReportMaleNothiUsersModel.objects.bulk_create(batch_objects)
-    except Exception as e:
-        pass
 
     batch_objects = []
     for report_date, female_count in zip(
@@ -68,10 +65,8 @@ def format_and_load_to_mysql_db(request=None, *args, **kwargs):
             ReportFemaleNothiUsersModel.objects.bulk_create(batch_objects)
             batch_objects = []
 
-    try:
+    if batch_objects:
         ReportFemaleNothiUsersModel.objects.bulk_create(batch_objects)
-    except Exception as e:
-        pass
 
     return None
 

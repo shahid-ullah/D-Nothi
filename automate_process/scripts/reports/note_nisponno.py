@@ -42,7 +42,8 @@ def format_and_load_to_mysql_db(request, *args, **kwargs):
             ReportNoteNisponnoModel.objects.bulk_create(batch_objects)
             batch_objects = []
 
-    ReportNoteNisponnoModel.objects.bulk_create(batch_objects)
+    if batch_objects:
+        ReportNoteNisponnoModel.objects.bulk_create(batch_objects)
 
     return None
 

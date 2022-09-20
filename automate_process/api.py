@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from backup_source_db.models import BackupDBLog
 from dashboard_generate.models import DashboardUpdateLog
 
-from .models import SourceDBLog, TrackSourceDBLastFetchTime
+from .models import SourceDBLog
 from .scripts import reports
 from .serializers import (BackupDBLogSerializer, DatabaseBackupLogSerializer,
                           SourceDBLogSerializer)
@@ -173,7 +173,6 @@ class updateDashboard(APIView):
 
 
 class DatabaseBackupLog(mixins.ListModelMixin, generics.GenericAPIView):
-    # queryset = TrackSourceDBLastFetchTime.objects.using('source_db').all()
     queryset = SourceDBLog.objects.using('source_db').all().order_by('-id')
     serializer_class = DatabaseBackupLogSerializer
     authentication_classes = [authentication.SessionAuthentication]
