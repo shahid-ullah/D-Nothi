@@ -1,21 +1,19 @@
 # automate_process/api.py
 from datetime import datetime
 
-from backup_source_db.models import BackupDBLog
-from dashboard_generate.models import DashboardUpdateLog
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework import authentication, generics, mixins, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from backup_source_db.models import BackupDBLog
+from dashboard_generate.models import DashboardUpdateLog
+
 from .models import SourceDBLog, TrackSourceDBLastFetchTime
 from .scripts import reports
-from .serializers import (
-    BackupDBLogSerializer,
-    DatabaseBackupLogSerializer,
-    SourceDBLogSerializer,
-)
+from .serializers import (BackupDBLogSerializer, DatabaseBackupLogSerializer,
+                          SourceDBLogSerializer)
 
 User = get_user_model()
 

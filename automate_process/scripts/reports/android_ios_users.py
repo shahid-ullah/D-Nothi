@@ -3,13 +3,11 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 from automate_process.models import UserLoginHistory
-from backup_source_db.models import BackupDBLog, TrackBackupDBLastFetchTime
+from backup_source_db.models import BackupDBLog
 from dashboard_generate.models import ReportAndroidUsersModel, ReportIOSUsersModel
 
-from . import utils
 
-
-def generate_model_object_dict(request, report_date, count_or_sum, *args, **kwargs):
+def generate_model_object_dict(request, report_date, count_or_sum, office_id, *args, **kwargs):
     object_dic = {}
     object_dic['year'] = report_date.year
     object_dic['month'] = report_date.month
@@ -18,6 +16,7 @@ def generate_model_object_dict(request, report_date, count_or_sum, *args, **kwar
     object_dic['report_date'] = str(report_date)
     object_dic['report_day'] = datetime(report_date.year, report_date.month, report_date.day)
     object_dic['count_or_sum'] = int(count_or_sum)
+    object_dic['office_id'] = int(office_id)
 
     return object_dic
 
@@ -28,49 +27,55 @@ def format_and_load_to_mysql_db(request, *args, **kwargs):
     dataframe_ios = dataframe.loc[dataframe['device_type'] == 'ios', :]
 
     # groupby report_date
-    android_grouped_report_date = dataframe_android.groupby(['report_date'], sort=False, as_index=False).size()
-    ios_grouped_report_date = dataframe_ios.groupby(['report_date'], sort=False, as_index=False).size()
+    android_grouped_report_date = dataframe_android.groupby(['office_id', 'report_date'], as_index=False, sort=False)[
+        'id'
+    ].size()
+    ios_grouped_report_date = dataframe_ios.groupby(['office_id', 'report_date'], sort=False, as_index=False)[
+        'id'
+    ].size()
 
     batch_objects = []
-    for report_date, andorid_count in zip(
-        android_grouped_report_date['report_date'].values, android_grouped_report_date['size'].values
+    for office_id, report_date, counts in zip(
+        android_grouped_report_date['office_id'].values,
+        android_grouped_report_date['report_date'].values,
+        android_grouped_report_date['size'].values,
     ):
-        object_dict = generate_model_object_dict(request, report_date, andorid_count, *args, **kwargs)
+        object_dict = generate_model_object_dict(request, report_date, counts, office_id, *args, **kwargs)
         batch_objects.append(ReportAndroidUsersModel(**object_dict))
 
         if len(batch_objects) >= 100:
             ReportAndroidUsersModel.objects.bulk_create(batch_objects)
             batch_objects = []
 
-    try:
+    if batch_objects:
         ReportAndroidUsersModel.objects.bulk_create(batch_objects)
-    except Exception as e:
-        pass
 
     batch_objects = []
-    for report_date, ios_count in zip(
-        ios_grouped_report_date['report_date'].values, ios_grouped_report_date['size'].values
+    for office_id, report_date, counts in zip(
+        ios_grouped_report_date['office_id'].values,
+        ios_grouped_report_date['report_date'].values,
+        ios_grouped_report_date['size'].values,
     ):
-        object_dict = generate_model_object_dict(request, report_date, ios_count, *args, **kwargs)
+        object_dict = generate_model_object_dict(request, report_date, counts, office_id, *args, **kwargs)
         batch_objects.append(ReportIOSUsersModel(**object_dict))
 
         if len(batch_objects) >= 100:
             ReportIOSUsersModel.objects.bulk_create(batch_objects)
             batch_objects = []
 
-    try:
+    if batch_objects:
         ReportIOSUsersModel.objects.bulk_create(batch_objects)
-    except Exception as e:
-        pass
 
     return None
 
 
 def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
     querysets = kwargs.get('querysets')
-    querysets_values = querysets.values('device_type', 'is_mobile', 'created')
+    querysets_values = querysets.values('id', 'device_type', 'is_mobile', 'created', 'office_id')
     dataframe = pd.DataFrame(querysets_values)
 
+    dataframe = dataframe.loc[~dataframe['is_mobile'].isnull(), :]
+    dataframe = dataframe.loc[~dataframe['device_type'].isnull(), :]
     dataframe = dataframe.astype({'is_mobile': int})
     dataframe = dataframe.astype({'device_type': str})
     dataframe['device_type'] = dataframe['device_type'].str.lower()
@@ -80,10 +85,10 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
     # convert created object to datetime
     dataframe['created'] = pd.to_datetime(dataframe['created'], errors='coerce')
     dataframe = dataframe.loc[~dataframe['created'].isnull(), :]
+    dataframe = dataframe.loc[~dataframe['office_id'].isnull(), :]
 
     # generate date column
     dataframe['report_date'] = dataframe['created'].dt.date
-    # breakpoint()
 
     if not dataframe.empty:
         kwargs['dataframe'] = dataframe
