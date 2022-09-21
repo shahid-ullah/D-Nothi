@@ -5,10 +5,9 @@
 from datetime import timedelta
 
 import pandas as pd
-
 from automate_process.models import Offices
 from backup_source_db.models import BackupDBLog
-from dashboard_generate.models import ReportTotalOfficesModel
+from dashboard_generate.models import ReportGenerationLog, ReportTotalOfficesModel
 
 
 def generate_object_map(report_date, number_of_offices, *args, **kwargs):
@@ -67,18 +66,16 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
 
 
 def get_offices_querysets(*args, **kwargs):
+    querysets = kwargs['querysets']
 
-    backup_log = BackupDBLog.objects.using('backup_source_db').last()
+    if querysets is not None:
+        return querysets
+
     querysets = Offices.objects.using('source_db').all()
-
     if ReportTotalOfficesModel.objects.exists():
-        try:
-            last_office_id = int(backup_log.last_office_id)
-            querysets = querysets.filter(id__gt=last_office_id)
-        except AttributeError:
-            last_fetch_time = ReportTotalOfficesModel.objects.last().report_date
-            last_fetch_time = last_fetch_time + timedelta(days=1)
-            querysets = querysets.filter(created__gte=last_fetch_time)
+        last_fetch_time = ReportTotalOfficesModel.objects.last().report_date
+        last_fetch_time = last_fetch_time + timedelta(days=1)
+        querysets = querysets.filter(created__gte=last_fetch_time)
 
     return querysets
 
