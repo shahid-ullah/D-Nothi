@@ -3,10 +3,9 @@
 from datetime import datetime, timedelta
 
 import pandas as pd
-
 from automate_process.models import NisponnoRecords
 from backup_source_db.models import BackupDBLog
-from dashboard_generate.models import ReportUpokarvogiModel
+from dashboard_generate.models import ReportGenerationLog, ReportUpokarvogiModel
 
 
 def generate_model_object_dict(request, report_date, upokarvogi_sum, office_id, *args, **kwargs):
@@ -66,21 +65,17 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
 
 
 def get_nisponno_records_querysets(*args, **kwargs):
+    querysets = kwargs['querysets']
+
+    if querysets is not None:
+        return querysets
+
     querysets = NisponnoRecords.objects.using('source_db').all()
-    backup_log = BackupDBLog.objects.using('backup_source_db').last()
+
     if ReportUpokarvogiModel.objects.exists():
-        try:
-            last_nisponno_records_time = backup_log.last_nisponno_records_time
-            if last_nisponno_records_time:
-                querysets = querysets.filter(created__gt=last_nisponno_records_time)
-            else:
-                last_fetch_time = ReportUpokarvogiModel.objects.last().report_day
-                last_fetch_time = last_fetch_time + timedelta(days=1)
-                querysets = querysets.filter(created__gte=last_fetch_time)
-        except AttributeError:
-            last_fetch_time = ReportUpokarvogiModel.objects.last().report_day
-            last_fetch_time = last_fetch_time + timedelta(days=1)
-            querysets = querysets.filter(created__gte=last_fetch_time)
+        last_fetch_time = ReportUpokarvogiModel.objects.last().report_day
+        last_fetch_time = last_fetch_time + timedelta(days=1)
+        querysets = querysets.filter(created__gte=last_fetch_time)
 
     return querysets
 
