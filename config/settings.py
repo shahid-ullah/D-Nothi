@@ -187,6 +187,7 @@ REST_FRAMEWORK = {
     #     'rest_framework.permissions.IsAuthenticated',
     # ],
     'PAGE_SIZE': 10,
+    'DEFAULT_THROTTLE_RATES': {'anon': '1/day', 'user': '1/day'},
 }
 
 LOGOUT_REDIRECT_URL = 'dashboard_home'
