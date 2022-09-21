@@ -6,6 +6,7 @@ from .models import (
     LoginHistoryGraphsDataModel,
     ReportAndroidUsersModel,
     ReportFemaleNothiUsersModel,
+    ReportGenerationLog,
     ReportIOSUsersModel,
     ReportLoginFemalelUsersModel,
     ReportLoginMalelUsersModel,
@@ -25,6 +26,11 @@ from .models import (
 @admin.register(ReportTotalOfficesModel)
 class ReportTotalOfficeModelAdmin(admin.ModelAdmin):
     list_display = [field.name for field in ReportTotalOfficesModel._meta.get_fields()]
+
+
+@admin.register(ReportGenerationLog)
+class ReportGenerationLogAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in ReportGenerationLog._meta.get_fields()]
 
 
 @admin.register(ReportNispottikrittoNothiModel)
