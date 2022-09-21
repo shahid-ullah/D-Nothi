@@ -6,11 +6,13 @@
 from datetime import datetime, timedelta
 
 import pandas as pd
-
 from automate_process.models import EmployeeRecords, Users
 from backup_source_db.models import BackupDBLog, TrackBackupDBLastFetchTime
-from dashboard_generate.models import (ReportFemaleNothiUsersModel,
-                                       ReportMaleNothiUsersModel)
+from dashboard_generate.models import (
+    ReportFemaleNothiUsersModel,
+    ReportGenerationLog,
+    ReportMaleNothiUsersModel,
+)
 
 from . import utils
 
@@ -110,16 +112,17 @@ def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
 
 
 def get_users_querysets(*args, **kwargs):
-    backup_log = BackupDBLog.objects.using('backup_source_db').last()
+    querysets = kwargs['querysets']
+
+    if querysets is not None:
+        return querysets
+
     querysets = Users.objects.using('source_db').all()
+
     if ReportMaleNothiUsersModel.objects.exists():
-        try:
-            last_user_id = int(backup_log.last_user_id)
-            querysets = querysets.filter(id__gt=last_user_id)
-        except AttributeError:
-            last_fetch_time = ReportMaleNothiUsersModel.objects.last().report_day
-            last_fetch_time = last_fetch_time + timedelta(days=1)
-            querysets = querysets.filter(created__gte=last_fetch_time)
+        last_fetch_time = ReportMaleNothiUsersModel.objects.last().report_day
+        last_fetch_time = last_fetch_time + timedelta(days=1)
+        querysets = querysets.filter(created__gte=last_fetch_time)
 
     return querysets
 
