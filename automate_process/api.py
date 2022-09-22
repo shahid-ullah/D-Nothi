@@ -1,14 +1,6 @@
 # automate_process/api.py
-import queue
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from backup_source_db.models import BackupDBLog
-from dashboard_generate.models import (
-    DashboardUpdateLog,
-    ReportGenerationLog,
-    ReportTotalOfficesModel,
-    ReportTotalUsersModel,
-)
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework import authentication, generics, mixins, permissions
@@ -16,13 +8,9 @@ from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle
 from rest_framework.views import APIView
 
-from automate_process.models import (
-    EmployeeRecords,
-    NisponnoRecords,
-    Offices,
-    UserLoginHistory,
-    Users,
-)
+from automate_process.models import EmployeeRecords, NisponnoRecords, Offices, UserLoginHistory, Users
+from backup_source_db.models import BackupDBLog
+from dashboard_generate.models import DashboardUpdateLog, ReportGenerationLog
 
 from .models import SourceDBLog
 from .scripts import reports
@@ -73,7 +61,6 @@ class updateDashboard(APIView):
         settings.SYSTEM_UPDATE_RUNNING = True
 
         self.generate_report(request, *args, **kwargs)
-        print(self.scripts_log)
         """ """
         # try:
         #     DashboardUpdateLog.objects.create(
@@ -87,7 +74,14 @@ class updateDashboard(APIView):
         # except Exception as e:
         #     scripts_log['dashboard_update_log'] = str(e)
         #     print(e)
+        self._backup_source_db(request, *args, **kwargs)
+        print(self.scripts_log)
 
+        settings.SYSTEM_UPDATE_RUNNING = False
+
+        return Response(self.scripts_log)
+
+    def _backup_source_db(self, request, *args, **kwargs):
         try:
             reports.backup_source_database.update(request, *args, **kwargs)
             self.scripts_log['backup_db'] = 'success'
@@ -102,10 +96,6 @@ class updateDashboard(APIView):
             print(e)
             self.scripts_log['backup_db_log'] = str(e)
 
-        settings.SYSTEM_UPDATE_RUNNING = False
-
-        return Response(self.scripts_log)
-
     def get_currrent_report_generation_log(self, request, *args, **kwargs):
         self.queryset_user_login_history = UserLoginHistory.objects.using('source_db').filter(created__isnull=False)
         self.queryset_users = Users.objects.using('source_db').filter(created__isnull=False)
@@ -115,7 +105,7 @@ class updateDashboard(APIView):
 
         self.currrent_report_generation_log['last_user_id'] = self.queryset_users.last().id
         self.currrent_report_generation_log['last_office_id'] = self.queryset_offices.last().id
-        self.currrent_report_generation_log['last_employee_record_id'] = self.queryset_employee_records.last().id
+        self.currrent_report_generation_log['last_employee_id'] = self.queryset_employee_records.last().id
         self.currrent_report_generation_log['last_login_history_time'] = self.queryset_user_login_history.last().created
         self.currrent_report_generation_log[
             'last_nisponno_records_time'
@@ -127,7 +117,7 @@ class updateDashboard(APIView):
         object_dict = {}
         object_dict['last_office_id'] = self.currrent_report_generation_log['last_office_id']
         object_dict['last_user_id'] = self.currrent_report_generation_log['last_user_id']
-        object_dict['last_employee_id'] = self.currrent_report_generation_log['last_employee_record_id']
+        object_dict['last_employee_id'] = self.currrent_report_generation_log['last_employee_id']
         object_dict['last_login_history_time'] = self.currrent_report_generation_log['last_login_history_time']
         object_dict['last_nisponno_records_time'] = self.currrent_report_generation_log['last_nisponno_records_time']
         object_dict['status'] = str(self.scripts_log)
@@ -331,7 +321,7 @@ class ReportGenerationLogAPI(mixins.ListModelMixin, generics.GenericAPIView):
     serializer_class = ReportGenerationLogSerializer
     authentication_classes = [authentication.SessionAuthentication]
 
-    permission_classes = [permissions.IsAdminUser]
+    # permission_classes = [permissions.IsAdminUser]
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -342,7 +332,7 @@ class DatabaseBackupLog(mixins.ListModelMixin, generics.GenericAPIView):
     serializer_class = DatabaseBackupLogSerializer
     authentication_classes = [authentication.SessionAuthentication]
 
-    permission_classes = [permissions.IsAdminUser]
+    # permission_classes = [permissions.IsAdminUser]
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)

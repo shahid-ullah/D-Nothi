@@ -1,5 +1,7 @@
 from datetime import timedelta
 
+from django.core.paginator import Paginator
+
 from automate_process.models import (
     EmployeeRecords,
     NisponnoRecords,
@@ -17,11 +19,7 @@ from backup_source_db.models import (
     BackupUserLoginHistory,
     BackupUsers,
 )
-from dashboard_generate.models import (
-    ReportLoginTotalUsers,
-    ReportNispottikrittoNothiModel,
-)
-from django.core.paginator import Paginator
+from dashboard_generate.models import ReportLoginTotalUsers, ReportNispottikrittoNothiModel
 
 print('Loading backup_source_db scripts')
 

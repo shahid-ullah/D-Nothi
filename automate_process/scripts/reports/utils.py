@@ -1,14 +1,22 @@
 # automate_process/scripts/reports/utils.py
 from datetime import timedelta
 
-from automate_process.models import (EmployeeRecords, NisponnoRecords, Offices, SourceDBLog,
-                                     TrackSourceDBLastFetchTime,
-                                     UserLoginHistory, Users)
+from automate_process.models import (
+    EmployeeRecords,
+    NisponnoRecords,
+    Offices,
+    SourceDBLog,
+    TrackSourceDBLastFetchTime,
+    UserLoginHistory,
+    Users,
+)
 from backup_source_db.models import BackupDBLog, TrackBackupDBLastFetchTime
-from dashboard_generate.models import (ReportLoginTotalUsers,
-                                       ReportNispottikrittoNothiModel,
-                                       ReportTotalOfficesModel,
-                                       ReportTotalUsersModel)
+from dashboard_generate.models import (
+    ReportLoginTotalUsers,
+    ReportNispottikrittoNothiModel,
+    ReportTotalOfficesModel,
+    ReportTotalUsersModel,
+)
 
 
 def get_offices_querysets(*args, **kwargs):
@@ -23,6 +31,7 @@ def get_offices_querysets(*args, **kwargs):
         querysets = querysets.filter(created__gt=last_fetch_time)
 
     return querysets
+
 
 def get_user_login_history_querysets(*args, **kwargs):
     last_fetch_time_object = TrackBackupDBLastFetchTime.objects.using('backup_source_db').last()
@@ -39,7 +48,6 @@ def get_user_login_history_querysets(*args, **kwargs):
     return querysets
 
 
-
 def get_nisponno_records_querysets(*args, **kwargs):
     last_fetch_time_object = TrackBackupDBLastFetchTime.objects.using('backup_source_db').last()
     querysets = NisponnoRecords.objects.using('source_db').all()
@@ -52,6 +60,7 @@ def get_nisponno_records_querysets(*args, **kwargs):
         querysets = querysets.filter(created__gt=last_fetch_time)
 
     return querysets
+
 
 def get_users_querysets(*args, **kwargs):
     last_fetch_time_object = TrackBackupDBLastFetchTime.objects.using('backup_source_db').last()
@@ -66,6 +75,7 @@ def get_users_querysets(*args, **kwargs):
 
     return querysets
 
+
 def get_employee_records_querysets(*args, **kwargs):
     # we always need full employee records
     querysets = EmployeeRecords.objects.using('source_db').all()
@@ -77,6 +87,7 @@ def get_employee_records_querysets(*args, **kwargs):
     #     querysets = querysets.filter(created__gt=last_fetch_time)
 
     return querysets
+
 
 def update_backup_db_last_fetch_time(request, *args, **kwargs):
     print()
@@ -92,6 +103,7 @@ def update_backup_db_last_fetch_time(request, *args, **kwargs):
     print()
 
     return None
+
 
 def update_backup_db_log(request, *args, **kwargs):
     print()
