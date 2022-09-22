@@ -7,14 +7,23 @@ import numpy as np
 import pandas as pd
 from django.db.models import Sum
 
-from .models import (ReportAndroidUsersModel, ReportFemaleNothiUsersModel,
-                     ReportIOSUsersModel, ReportLoginFemalelUsersModel,
-                     ReportLoginMalelUsersModel, ReportLoginTotalUsers,
-                     ReportLoginTotalUsersNotDistinct,
-                     ReportMaleNothiUsersModel, ReportMobileAppUsersModel,
-                     ReportNispottikrittoNothiModel, ReportNoteNisponnoModel,
-                     ReportPotrojariModel, ReportTotalOfficesModel,
-                     ReportTotalUsersModel, ReportUpokarvogiModel)
+from .models import (
+    ReportAndroidUsersModel,
+    ReportFemaleNothiUsersModel,
+    ReportIOSUsersModel,
+    ReportLoginFemalelUsersModel,
+    ReportLoginMalelUsersModel,
+    ReportLoginTotalUsers,
+    ReportLoginTotalUsersNotDistinct,
+    ReportMaleNothiUsersModel,
+    ReportMobileAppUsersModel,
+    ReportNispottikrittoNothiModel,
+    ReportNoteNisponnoModel,
+    ReportPotrojariModel,
+    ReportTotalOfficesModel,
+    ReportTotalUsersModel,
+    ReportUpokarvogiModel,
+)
 
 CACHED_DICTIONARY = {'last_cached': time.time()}
 
@@ -43,6 +52,21 @@ MONTH_MAP = {
     10: 'October',
     11: 'November',
     12: 'December',
+}
+
+MONTH_MAP2 = {
+    1: 'জানুয়ারি',
+    2: 'ফেব্রুয়ারী',
+    3: 'মার্চ',
+    4: 'এপ্রিল',
+    5: 'মে',
+    6: 'জুন',
+    7: 'জুলাই',
+    8: 'আগস্ট',
+    9: 'সেপ্টেম্বর',
+    10: 'অক্টোবর',
+    11: 'নভেম্বর',
+    12: 'ডিসেম্বর',
 }
 
 
@@ -76,8 +100,7 @@ def get_report_summary_count():
 
     # male users total calculate
     try:
-        nothi_users_male_dict = ReportMaleNothiUsersModel.objects.aggregate(
-            Sum('count_or_sum'))
+        nothi_users_male_dict = ReportMaleNothiUsersModel.objects.aggregate(Sum('count_or_sum'))
         male_users_total = int(nothi_users_male_dict['count_or_sum__sum'])
 
         if not male_users_total:
@@ -87,8 +110,7 @@ def get_report_summary_count():
 
     # female users total calculate
     try:
-        nothi_users_female_dict = ReportFemaleNothiUsersModel.objects.aggregate(
-            Sum('count_or_sum'))
+        nothi_users_female_dict = ReportFemaleNothiUsersModel.objects.aggregate(Sum('count_or_sum'))
         female_users_total = int(nothi_users_female_dict['count_or_sum__sum'])
 
         if not female_users_total:
@@ -98,10 +120,8 @@ def get_report_summary_count():
 
     # login users total calculate for current month
     try:
-        login_total_users_objects = ReportLoginTotalUsers.objects.filter(
-            year=year, month=month)
-        login_total_users_dict = login_total_users_objects.aggregate(
-            Sum('count_or_sum'))
+        login_total_users_objects = ReportLoginTotalUsers.objects.filter(year=year, month=month)
+        login_total_users_dict = login_total_users_objects.aggregate(Sum('count_or_sum'))
         login_users_total = int(login_total_users_dict['count_or_sum__sum'])
         if not login_users_total:
             login_users_total = 0
@@ -110,10 +130,8 @@ def get_report_summary_count():
 
     # login male users total calculate for current month
     try:
-        login_male_users_objects = ReportLoginMalelUsersModel.objects.filter(
-            year=year, month=month)
-        login_male_users_dict = login_male_users_objects.aggregate(
-            Sum('count_or_sum'))
+        login_male_users_objects = ReportLoginMalelUsersModel.objects.filter(year=year, month=month)
+        login_male_users_dict = login_male_users_objects.aggregate(Sum('count_or_sum'))
         login_male_users_total = int(login_male_users_dict['count_or_sum__sum'])
         if not login_male_users_total:
             login_male_users_total = 0
@@ -122,10 +140,8 @@ def get_report_summary_count():
 
     # login female users total calculate for current month
     try:
-        login_female_users_objects = ReportLoginFemalelUsersModel.objects.filter(
-            year=year, month=month)
-        login_female_users_dict = login_female_users_objects.aggregate(
-            Sum('count_or_sum'))
+        login_female_users_objects = ReportLoginFemalelUsersModel.objects.filter(year=year, month=month)
+        login_female_users_dict = login_female_users_objects.aggregate(Sum('count_or_sum'))
         female_login_users_total = int(login_female_users_dict['count_or_sum__sum'])
         if not female_login_users_total:
             female_login_users_total = 0
@@ -134,10 +150,8 @@ def get_report_summary_count():
 
     # nispottikritto_nothi total calculate for current month
     try:
-        nispottikritto_nothi_objects = ReportNispottikrittoNothiModel.objects.filter(
-            year=year, month=month)
-        nispottikritto_nothi_dict = nispottikritto_nothi_objects.aggregate(
-            Sum('count_or_sum'))
+        nispottikritto_nothi_objects = ReportNispottikrittoNothiModel.objects.filter(year=year, month=month)
+        nispottikritto_nothi_dict = nispottikritto_nothi_objects.aggregate(Sum('count_or_sum'))
         nispottikritto_nothi_count = int(nispottikritto_nothi_dict['count_or_sum__sum'])
         if not nispottikritto_nothi_count:
             nispottikritto_nothi_count = 0
@@ -146,8 +160,7 @@ def get_report_summary_count():
 
     # upokarvogi total calculate for current month
     try:
-        upokarvogi_objects = ReportUpokarvogiModel.objects.filter(year=year,
-                                                                  month=month)
+        upokarvogi_objects = ReportUpokarvogiModel.objects.filter(year=year, month=month)
         upokarvogi_dict = upokarvogi_objects.aggregate(Sum('count_or_sum'))
         upokarvogi = int(upokarvogi_dict['count_or_sum__sum'])
         if not upokarvogi:
@@ -157,8 +170,7 @@ def get_report_summary_count():
 
     # potrojari total calculate for current month
     try:
-        potrojari_objects = ReportPotrojariModel.objects.filter(year=year,
-                                                                month=month)
+        potrojari_objects = ReportPotrojariModel.objects.filter(year=year, month=month)
         potrojari_dict = potrojari_objects.aggregate(Sum('count_or_sum'))
         potrojari = int(potrojari_dict['count_or_sum__sum'])
         if not potrojari:
@@ -168,8 +180,7 @@ def get_report_summary_count():
 
     # note nisponno total calculate for current month
     try:
-        note_nisponno_objects = ReportNoteNisponnoModel.objects.filter(year=year,
-                                                                       month=month)
+        note_nisponno_objects = ReportNoteNisponnoModel.objects.filter(year=year, month=month)
         note_nisponno_dict = note_nisponno_objects.aggregate(Sum('count_or_sum'))
         note_nisponno = int(note_nisponno_dict['count_or_sum__sum'])
         if not note_nisponno:
@@ -179,10 +190,8 @@ def get_report_summary_count():
 
     # mobile app users total calculate for current month
     try:
-        mobile_app_users_objects = ReportMobileAppUsersModel.objects.filter(
-            year=year, month=month)
-        mobile_app_users_dict = mobile_app_users_objects.aggregate(
-            Sum('count_or_sum'))
+        mobile_app_users_objects = ReportMobileAppUsersModel.objects.filter(year=year, month=month)
+        mobile_app_users_dict = mobile_app_users_objects.aggregate(Sum('count_or_sum'))
         mobile_app_users = int(mobile_app_users_dict['count_or_sum__sum'])
         if not mobile_app_users:
             mobile_app_users = 0
@@ -204,6 +213,7 @@ def get_report_summary_count():
 
     return report_summary_count
 
+
 def generate_login_stack_bar_chart_data():
 
     try:
@@ -218,8 +228,12 @@ def generate_login_stack_bar_chart_data():
         login_male_df = login_male_df.sort_values(by='report_day', ascending=False)
         login_female_df = login_female_df.sort_values(by='report_day', ascending=False)
 
-        login_male_groups = login_male_df.groupby([login_male_df.report_day.dt.year, login_male_df.report_day.dt.month], sort=False)
-        login_female_groups = login_female_df.groupby([login_female_df.report_day.dt.year, login_female_df.report_day.dt.month], sort=False)
+        login_male_groups = login_male_df.groupby(
+            [login_male_df.report_day.dt.year, login_male_df.report_day.dt.month], sort=False
+        )
+        login_female_groups = login_female_df.groupby(
+            [login_female_df.report_day.dt.year, login_female_df.report_day.dt.month], sort=False
+        )
 
         male_list = []
         female_list = []
@@ -268,12 +282,17 @@ def generate_nispottikritto_nothi_plot_data():
         values_nispottikritto_nothi = objs_nispottikritto_nothi.values('count_or_sum', 'report_day')
 
         df_nispottikritto_nothi = pd.DataFrame(values_nispottikritto_nothi)
-        df_nispottikritto_nothi= df_nispottikritto_nothi.sort_values(by='report_day', ascending=False)
-        year_group_sum_nispottikritto_nothi= df_nispottikritto_nothi.groupby(df_nispottikritto_nothi.report_day.dt.year, sort=False)['count_or_sum'].sum()
+        df_nispottikritto_nothi = df_nispottikritto_nothi.sort_values(by='report_day', ascending=False)
+        year_group_sum_nispottikritto_nothi = df_nispottikritto_nothi.groupby(
+            df_nispottikritto_nothi.report_day.dt.year, sort=False
+        )['count_or_sum'].sum()
         years = [int(year) for year in year_group_sum_nispottikritto_nothi.index][:5]
         values = [int(value) for value in year_group_sum_nispottikritto_nothi.values][:5]
-        percentages = [round(value*100/sum(values)) for value in values][:5]
-        nispottikritto_nothi_plot_data = [{'year': year, 'value': value, 'percentage': percentage} for year, value, percentage in zip(years, values, percentages)]
+        percentages = [round(value * 100 / sum(values)) for value in values][:5]
+        nispottikritto_nothi_plot_data = [
+            {'year': year, 'value': value, 'percentage': percentage}
+            for year, value, percentage in zip(years, values, percentages)
+        ]
     except Exception as _:
         nispottikritto_nothi_plot_data = [{}]
 
@@ -346,8 +365,7 @@ def generate_year_month_and_day_map(objs):
 
 
 def generate_login_users_year_month_day_map(objs):
-    values = objs.values('year', 'month', 'day', 'count_or_sum',
-                         'employee_record_ids')
+    values = objs.values('year', 'month', 'day', 'count_or_sum', 'employee_record_ids')
     dataframe = pd.DataFrame(values)
     year_map = {}
     month_map = {}
@@ -385,8 +403,7 @@ def generate_login_users_year_month_day_map(objs):
 
 
 def get_total_office_count(date_range):
-    offices_objs = ReportTotalOfficesModel.objects.filter(
-        report_date__lte=date_range[1])
+    offices_objs = ReportTotalOfficesModel.objects.filter(report_date__lte=date_range[1])
     office_count_dict = offices_objs.aggregate(Sum('count_or_sum'))
     office_count = office_count_dict['count_or_sum__sum']
 
@@ -397,10 +414,8 @@ def get_total_office_count(date_range):
 
 
 def get_nispottikritto_nothi_count(date_range):
-    nispottikritto_nothi_objects = ReportNispottikrittoNothiModel.objects.filter(
-        report_day__range=date_range)
-    nispottikritto_nothi_dict = nispottikritto_nothi_objects.aggregate(
-        Sum('count_or_sum'))
+    nispottikritto_nothi_objects = ReportNispottikrittoNothiModel.objects.filter(report_day__range=date_range)
+    nispottikritto_nothi_dict = nispottikritto_nothi_objects.aggregate(Sum('count_or_sum'))
     nispottikritto_nothi_count = nispottikritto_nothi_dict['count_or_sum__sum']
 
     if not nispottikritto_nothi_count:
@@ -410,8 +425,7 @@ def get_nispottikritto_nothi_count(date_range):
 
 
 def get_upokarvogi_count(date_range):
-    upokarvogi_objects = ReportUpokarvogiModel.objects.filter(
-        report_day__range=date_range)
+    upokarvogi_objects = ReportUpokarvogiModel.objects.filter(report_day__range=date_range)
     upokarvogi_dict = upokarvogi_objects.aggregate(Sum('count_or_sum'))
     upokarvogi = upokarvogi_dict['count_or_sum__sum']
 
@@ -422,8 +436,7 @@ def get_upokarvogi_count(date_range):
 
 
 def get_potrojari_count(date_range):
-    potrojari_objects = ReportPotrojariModel.objects.filter(
-        report_day__range=date_range)
+    potrojari_objects = ReportPotrojariModel.objects.filter(report_day__range=date_range)
     potrojari_dict = potrojari_objects.aggregate(Sum('count_or_sum'))
     potrojari = potrojari_dict['count_or_sum__sum']
 
@@ -434,8 +447,7 @@ def get_potrojari_count(date_range):
 
 
 def get_note_nisponno_count(date_range):
-    note_nisponno_objects = ReportNoteNisponnoModel.objects.filter(
-        report_day__range=date_range)
+    note_nisponno_objects = ReportNoteNisponnoModel.objects.filter(report_day__range=date_range)
     note_nisponno_dict = note_nisponno_objects.aggregate(Sum('count_or_sum'))
     note_nisponno = note_nisponno_dict['count_or_sum__sum']
 
@@ -447,8 +459,7 @@ def get_note_nisponno_count(date_range):
 
 def get_login_total_users(date_range):
 
-    login_total_users_objects = ReportLoginTotalUsers.objects.filter(
-        report_day__range=date_range)
+    login_total_users_objects = ReportLoginTotalUsers.objects.filter(report_day__range=date_range)
     count_dict = {}
     # breakpoint()
     for obj in login_total_users_objects:
@@ -459,10 +470,10 @@ def get_login_total_users(date_range):
 
     return login_total_users
 
+
 def get_total_login_count(date_range):
 
-    querysets = ReportLoginTotalUsersNotDistinct.objects.filter(
-        report_date__range=date_range)
+    querysets = ReportLoginTotalUsersNotDistinct.objects.filter(report_date__range=date_range)
 
     sum_dict = querysets.aggregate(Sum('counts'))
     counts = sum_dict['counts__sum']
@@ -474,8 +485,7 @@ def get_total_login_count(date_range):
 
 
 def get_login_male_users(date_range):
-    login_male_users_objects = ReportLoginMalelUsersModel.objects.filter(
-        report_day__range=date_range)
+    login_male_users_objects = ReportLoginMalelUsersModel.objects.filter(report_day__range=date_range)
     count_dict = {}
     for obj in login_male_users_objects:
         count_dict.update(obj.employee_record_ids)
@@ -487,8 +497,7 @@ def get_login_male_users(date_range):
 
 
 def get_login_female_users(date_range):
-    login_female_users_objects = ReportLoginFemalelUsersModel.objects.filter(
-        report_day__range=date_range)
+    login_female_users_objects = ReportLoginFemalelUsersModel.objects.filter(report_day__range=date_range)
     count_dict = {}
     for obj in login_female_users_objects:
         count_dict.update(obj.employee_record_ids)
@@ -500,8 +509,7 @@ def get_login_female_users(date_range):
 
 
 def get_mobile_app_users(date_range):
-    mobile_app_users_objects = ReportMobileAppUsersModel.objects.filter(
-        report_day__range=date_range)
+    mobile_app_users_objects = ReportMobileAppUsersModel.objects.filter(report_day__range=date_range)
 
     count_dict = {}
     for obj in mobile_app_users_objects:
@@ -515,8 +523,7 @@ def get_mobile_app_users(date_range):
 
 
 def get_total_users(date_range):
-    total_users_objs = ReportTotalUsersModel.objects.filter(
-        report_day__lte=date_range[1])
+    total_users_objs = ReportTotalUsersModel.objects.filter(report_day__lte=date_range[1])
     total_users_dict = total_users_objs.aggregate(Sum('count_or_sum'))
     total_users = total_users_dict['count_or_sum__sum']
 
@@ -527,10 +534,8 @@ def get_total_users(date_range):
 
 
 def get_nothi_users_male(date_range):
-    nothi_users_male_objs = ReportMaleNothiUsersModel.objects.filter(
-        report_day__lte=date_range[1])
-    nothi_users_male_dict = nothi_users_male_objs.aggregate(
-        Sum('count_or_sum'))
+    nothi_users_male_objs = ReportMaleNothiUsersModel.objects.filter(report_day__lte=date_range[1])
+    nothi_users_male_dict = nothi_users_male_objs.aggregate(Sum('count_or_sum'))
     nothi_users_male = nothi_users_male_dict['count_or_sum__sum']
 
     if not nothi_users_male:
@@ -540,10 +545,8 @@ def get_nothi_users_male(date_range):
 
 
 def get_nothi_users_female(date_range):
-    nothi_users_female_objs = ReportFemaleNothiUsersModel.objects.filter(
-        report_day__lte=date_range[1])
-    nothi_users_female_dict = nothi_users_female_objs.aggregate(
-        Sum('count_or_sum'))
+    nothi_users_female_objs = ReportFemaleNothiUsersModel.objects.filter(report_day__lte=date_range[1])
+    nothi_users_female_dict = nothi_users_female_objs.aggregate(Sum('count_or_sum'))
     nothi_users_female = nothi_users_female_dict['count_or_sum__sum']
 
     if not nothi_users_female:

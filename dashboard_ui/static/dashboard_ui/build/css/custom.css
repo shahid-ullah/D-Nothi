@@ -4270,5 +4270,14 @@ table thead .checkbox.radio { margin-top:-7px;margin-top:-21px; }
 }
 
 .bangla_summary {
-  font-family: SutonnyMJ
+  font-family: SutonnyMJ;
+}
+
+.operator_title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  font-size: 12px;
+  font-weight: bold;
 }

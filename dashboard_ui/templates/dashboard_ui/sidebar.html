@@ -20,6 +20,7 @@
             <li><a href="{% url 'nothi_users_total' %}">মোট ব্যবহারকারী</a></li>
             <li><a href="{% url 'nothi_users_male' %}">মোট ব্যবহারকারী (পুরুষ)</a></li>
             <li><a href="{% url 'nothi_users_female' %}">মোট ব্যবহারকারী (মহিলা)</a></li>
+            <li><a href="{% url 'mobile_app_users' %}">মোবাইল অ্যাপ ব্যবহারকারী</a></li>
           </ul>
         </li>
         <li><a><i class="fa-solid fa-chart-line"> </i>  লগইন পরিসংখ্যান<span class="fa fa-chevron-down"></span></a>
@@ -33,16 +34,16 @@
           <ul class="nav child_menu">
             <li><a href="{% url 'nispottikritto_nothi' %}">নিষ্পত্তিকৃত নথি</a></li>
             <li><a href="{% url 'note_nisponno' %}">নোট নিষ্পন্ন</a></li>
-          </ul>
-        </li>
-        <li><a><i class="fa-solid fa-chart-line"></i> পত্রজারি<span class="fa fa-chevron-down"></span></a>
-          <ul class="nav child_menu">
             <li><a href="{% url 'potrojari' %}">মোট পত্রজারি</a></li>
           </ul>
         </li>
+        {% comment %} <li><a><i class="fa-solid fa-chart-line"></i> পত্রজারি<span class="fa fa-chevron-down"></span></a>
+          <ul class="nav child_menu">
+            <li><a href="{% url 'potrojari' %}">মোট পত্রজারি</a></li>
+          </ul>
+        </li> {% endcomment %}
         <li><a><i class="fa-solid fa-chart-line"></i> অন্যান্য<span class="fa fa-chevron-down"></span></a>
           <ul class="nav child_menu">
-            <li><a href="{% url 'mobile_app_users' %}">মোবাইল অ্যাপ ব্যবহারকারী</a></li>
             <li><a href="{% url 'total_upokarvogi' %}">মোট উপকারভোগী</a></li>
             <li><a href="{% url 'total_offices' %}">অফিস</a></li>
           </ul>
