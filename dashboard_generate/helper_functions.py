@@ -39,6 +39,19 @@ class NpEncoder(json.JSONEncoder):
         return super(NpEncoder, self).default(obj)
 
 
+ENGLISH_TO_BENGALI_DIGIT_MAP = {
+    0: '০',
+    1: '১',
+    2: '২',
+    3: '৩',
+    4: '৪',
+    5: '৫',
+    6: '৬',
+    7: '৭',
+    8: '৮',
+    9: '৯',
+}
+
 MONTH_MAP = {
     1: 'January',
     2: 'February',
@@ -70,6 +83,16 @@ MONTH_MAP2 = {
 }
 
 
+def get_english_digits_to_bengli(english_digits):
+    bengali_digits = ''
+
+    for digit in english_digits:
+        bn_digit = ENGLISH_TO_BENGALI_DIGIT_MAP[int(digit)]
+        bengali_digits = bengali_digits + bn_digit
+
+    return bengali_digits
+
+
 def get_report_summary_count():
 
     today = date.today()
@@ -88,6 +111,8 @@ def get_report_summary_count():
     except Exception as _:
         office_total = 0
 
+    office_start_year = ReportTotalOfficesModel.objects.first().year
+    office_end_year = ReportTotalOfficesModel.objects.last().year
     # users total calculate
     try:
         users_total_dict = ReportTotalUsersModel.objects.aggregate(Sum('count_or_sum'))
@@ -97,6 +122,9 @@ def get_report_summary_count():
             users_total = 0
     except Exception as _:
         users_total = 0
+
+    user_start_year = ReportTotalUsersModel.objects.first().year
+    user_end_year = ReportTotalUsersModel.objects.last().year
 
     # male users total calculate
     try:
@@ -210,6 +238,10 @@ def get_report_summary_count():
     report_summary_count['potrojari'] = potrojari
     report_summary_count['upokarvogi'] = upokarvogi
     report_summary_count['mobile_app_users'] = mobile_app_users
+    report_summary_count['office_start_year'] = office_start_year
+    report_summary_count['office_end_year'] = office_end_year
+    report_summary_count['user_start_year'] = user_start_year
+    report_summary_count['user_end_year'] = user_end_year
 
     return report_summary_count
 
@@ -247,8 +279,10 @@ def generate_login_stack_bar_chart_data():
             if count > max_months_result:
                 break
 
-            month = MONTH_MAP[int(gr[1])]
-            x = f'{gr[0]} {month}'
+            month = MONTH_MAP2[int(gr[1])]
+            year_bengali = get_english_digits_to_bengli(str(gr[0]))
+            # x = f'{gr[0]} {month}'
+            x = f'{year_bengali} {month}'
 
             temporary_dic = {}
             for value in frame.employee_record_ids.values:

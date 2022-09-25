@@ -1,5 +1,6 @@
 $(document).ready(function () {
-  login_map_json = document.getElementById("stack_bar_chart").textContent;
+  // login_map_json = document.getElementById("stack_bar_chart").textContent;
+  login_map_json = $("#stack_bar_chart").text();
   login_map = JSON.parse(login_map_json);
   male_list = login_map["male_list"];
   female_list = login_map["female_list"];

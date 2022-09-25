@@ -1,5 +1,7 @@
 <!DOCTYPE html>
+
 {% load static %}
+
 <html lang="en">
   <head>
     {% block head %}
@@ -11,7 +13,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
       {% endblock meta %}
 
-      <title>নথি {% block title %}{% endblock %}</title>
+      <title>নথি
+        {% block title %}{% endblock %}
+      </title>
 
       {% block stylesheets %}
         <!-- Bootstrap -->
@@ -52,13 +56,17 @@
 
           {% block sidebar %}
             <div class="col-md-3 left_col {% block sidebar_class %} {% endblock sidebar_class %}">
-              {% include "dashboard_ui/sidebar.html" %}
+
+{% include "dashboard_ui/sidebar.html" %}
+
             </div>
           {% endblock sidebar %}
 
           {% block top_navigation %}
             <div class="top_nav">
-              {% include "dashboard_ui/top_navigation.html" %}
+
+{% include "dashboard_ui/top_navigation.html" %}
+
             </div>
           {% endblock top_navigation %}
 
@@ -68,7 +76,9 @@
 
           {% block footer %}
             <footer>
-              {% include "dashboard_ui/footer.html" %}
+
+{% include "dashboard_ui/footer.html" %}
+
             </footer>
           {% endblock footer %}
         </div>
