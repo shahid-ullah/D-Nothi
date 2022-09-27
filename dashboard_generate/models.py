@@ -251,6 +251,7 @@ class ReportLoginTotalUsersNotDistinct(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     office_id = models.PositiveBigIntegerField(blank=True, null=True, db_index=True)
+    ministry_id = models.PositiveIntegerField(default=0)
     report_date = models.DateTimeField(blank=True, null=True, db_index=True)
 
     class Meta:
@@ -328,6 +329,7 @@ class LoginHistoryGraphsDataModel(models.Model):
         db_table = "login_history_graphs_data"
         ordering = ['-id']
 
+
 class ReportGenerationLog(models.Model):
     last_office_id = models.CharField(max_length=100, blank=True, null=True)
     last_user_id = models.CharField(max_length=100, blank=True, null=True)
@@ -337,8 +339,11 @@ class ReportGenerationLog(models.Model):
     status = models.JSONField(default=EMPTY_DICTIONARY)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
     class Meta:
-        ordering = ['id',]
+        ordering = [
+            'id',
+        ]
 
     def __str__(self):
         return f'{self.created}'
