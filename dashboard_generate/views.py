@@ -110,6 +110,30 @@ def total_offices_view(request):
     return render(request, 'dashboard_generate/total_offices.html', context)
 
 
+def ministry_wise_total_login_view(request):
+    objs = ReportLoginTotalUsersNotDistinct.objects.all()
+    ministry_map = {}
+    context = {}
+
+    if objs.exists():
+        report_start_date = objs.first().report_date
+        report_end_date = objs.last().report_date
+        values = objs.values()
+        df = pd.DataFrame(values)
+        grouped = df.groupby(['ministry_id'], sort=False, as_index=False)['counts'].sum()
+        grouped = df.astype({'ministry_id': str})
+
+        ministry_map = dict(zip(grouped['ministry_id'].values, grouped['counts'].values))
+
+        context = {
+            'ministry_map': json.dumps(ministry_map, cls=helper_functions.NpEncoder),
+            'report_start_date': report_start_date,
+            'report_end_date': report_end_date,
+        }
+
+    return render(request, 'dashboard_generate/ministry_wise_total_login.html', context)
+
+
 # @login_required(login_url='/sso_login_handler/')
 def nispottikritto_nothi_view(request):
     year_map, month_map, day_map = helper_functions.get_cache_or_calculate(

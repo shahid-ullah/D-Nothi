@@ -1,0 +1,100 @@
+
+{% extends 'dashboard_ui/base_site.html' %}
+
+{% load static %}
+
+{% block title %}মন্ত্রনালয় মোট লগইন{% endblock %}
+
+{% block content %}
+  <script src="{% static 'js/utils.js' %}"></script>
+  <script charset="utf-8">var ministry_map = {{ ministry_map | safe }};</script>
+
+  <div class="right_col">
+    <div class="row">
+      <div id="report_last_update">
+        <span>{{ report_start_date |date:'d-m-Y ' }}</span>-
+        <span>{{ report_end_date |date:'d-m-Y ' }}</span>
+      </div>
+      <div class="col-sm-12 col-md-12">
+        <div>
+          <figure class="highcharts-figure">
+            <div id="container2"></div>
+            <p class="highcharts-description"></p>
+          </figure>
+
+        </div>
+
+        <div>
+          <script>
+// Data retrieved from https://gs.statcounter.com/browser-market-share#monthly-202201-202201-bar
+
+
+
+// Create the chart
+Highcharts.chart('container2', {
+    chart: {
+        type: 'pie',
+        inverted: true,
+        height: 500,
+
+
+    },
+    title: {
+        align: 'left',
+        text: 'মন্ত্রনালয় ভিত্তিক লগইনের হার'
+    },
+    subtitle: {
+        align: 'left',
+        text: ''
+    },
+    accessibility: {
+        announceNewData: {
+            enabled: true
+        }
+    },
+    xAxis: {
+        type: 'category'
+    },
+    yAxis: {
+        title: {
+            text: 'লগইন সংখ্যা'
+        }
+
+    },
+        credits: {
+            enabled: false
+        },
+    legend: {
+        enabled: false
+    },
+        plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.1f}% লগইন : {point.y} '
+            }
+        }
+    },
+
+    tooltip: {
+        headerFormat: '<span style="font-size:11px"></span>',
+        pointFormat: '<span style="color:{point.color}"><b>{point.y}</b><br/>'
+    },
+
+    series: [
+        {
+            name: "Ministry Login",
+            colorByPoint: true,
+            data: ministry_general_series(ministry_map),
+        }
+    ],
+});
+
+          </script>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

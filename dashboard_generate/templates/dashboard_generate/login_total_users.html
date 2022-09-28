@@ -1,34 +1,33 @@
 {% extends 'dashboard_ui/base_site.html' %}
+
 {% load static %}
 
 {% block title %}মোট ব্যবহারকারী (লগইন){% endblock %}
 
 {% block content %}
-<div class="right_col">
-  <div>
-    <script src="{% static 'js/utils.js' %}"></script>
-    <script charset="utf-8">
+  <div class="right_col">
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <div>
+          <script src="{% static 'js/utils.js' %}"></script>
+          <script charset="utf-8">
       var year_map = {{ year_map | safe }};
       var month_map = {{ month_map | safe }};
       var day_map = {{ day_map | safe }};
-    </script>
-  </div>
-  <div class="row">
-    <div class="col-sm-12 col-md-12">
-      <div class="card">
-        <div class="card-header card-header-custom2">
-          মোট ব্যবহারকারী (লগইন)
+          </script>
         </div>
-        <div class="card-body">
-          <div id="chart_top_illness">
+        <div class="card">
+          <div class="card-header card-header-custom2">মোট ব্যবহারকারী (লগইন)</div>
+          <div class="card-body">
+            <div id="chart_top_illness">
 
-            <figure class="highcharts-figure">
-              <div id="container"></div>
-              <p class="highcharts-description">
-                 <!-- পত্রজারি (বার্ষিক এবং মাসিক) -->
-              </p>
-            </figure>
-            <script>
+              <figure class="highcharts-figure">
+                <div id="container"></div>
+                <p class="highcharts-description">
+                  <!-- পত্রজারি (বার্ষিক এবং মাসিক) -->
+                </p>
+              </figure>
+              <script>
               // Create the chart
               let level = 1;
               let first_level_title = 'বার্ষিক লগইন সংখ্যা'
@@ -103,7 +102,7 @@
                 tooltip: {
                   {# headerFormat: '<span style="font-size:11px">{series.name}</span><br>', #}
                   {# pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>' #}
-                  headerFormat: '<span style="font-size:11px"> </span>',
+                  headerFormat: '<span style="font-size:11px"></span>',
                   pointFormat: '<span style="color:{point.color}"><b>{point.y}</b><br/>'
                 },
 
@@ -112,11 +111,11 @@
                   series: generateDrilldownSeries(year_map, month_map, day_map)
                 }
               });
-            </script>
+              </script>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 {% endblock content %}

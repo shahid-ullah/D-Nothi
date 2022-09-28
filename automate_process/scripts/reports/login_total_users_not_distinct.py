@@ -1,18 +1,15 @@
-# scripts/reports/login_total_users.py
+# scripts/reports/login_total_users_not_distinct.py
 # SELECT count(`employee_record_id`) FROM `user_login_history` WHERE
 # `created` >= '2022-01-01 00:00:00' AND `created` <= '2022-01-31 23:59:59'
 from datetime import datetime, timedelta
 
 import pandas as pd
+
 from automate_process.models import UserLoginHistory
-from backup_source_db.models import BackupDBLog
-from dashboard_generate.models import (
-    ReportGenerationLog,
-    ReportLoginTotalUsersNotDistinct,
-)
+from dashboard_generate.models import ReportLoginTotalUsersNotDistinct
 
 
-def generate_model_object_dict(request, office_id, report_date, count_or_sum, *args, **kwargs):
+def generate_model_object_dict(request, office_id, report_date, count_or_sum, ministry_id, *args, **kwargs):
     object_dic = {}
     object_dic['year'] = report_date.year
     object_dic['month'] = report_date.month
@@ -20,21 +17,25 @@ def generate_model_object_dict(request, office_id, report_date, count_or_sum, *a
     object_dic['report_date'] = datetime(report_date.year, report_date.month, report_date.day)
     object_dic['counts'] = int(count_or_sum)
     object_dic['office_id'] = int(office_id)
+    object_dic['ministry_id'] = int(ministry_id)
 
     return object_dic
 
 
 def format_and_load_to_mysql_db(request, *args, **kwargs):
     dataframe = kwargs['dataframe']
-    grouped = dataframe.groupby(['office_id', 'report_date'], as_index=False, sort=False)['id'].size()
+    grouped = dataframe.groupby(['ministry_id', 'office_id', 'report_date'], as_index=False, sort=False)['id'].size()
 
     batch_objects = []
 
-    for office_id, report_date, counts in zip(
-        grouped['office_id'].values, grouped['report_date'].values, grouped['size'].values
+    for ministry_id, office_id, report_date, counts in zip(
+        grouped['ministry_id'].values,
+        grouped['office_id'].values,
+        grouped['report_date'].values,
+        grouped['size'].values,
     ):
 
-        object_dic = generate_model_object_dict(request, office_id, report_date, counts)
+        object_dic = generate_model_object_dict(request, office_id, report_date, counts, ministry_id)
         batch_objects.append(ReportLoginTotalUsersNotDistinct(**object_dic))
 
         if len(batch_objects) >= 100:
@@ -49,13 +50,14 @@ def format_and_load_to_mysql_db(request, *args, **kwargs):
 
 def querysets_to_dataframe_and_refine(request=None, *args, **kwargs):
     querysets = kwargs.get('querysets')
-    querysets_values = querysets.values('id', 'created', 'office_id')
+    querysets_values = querysets.values('id', 'created', 'office_id', 'ministry_id')
     dataframe = pd.DataFrame(querysets_values)
 
     # convert created object to datetime
     dataframe['created'] = pd.to_datetime(dataframe['created'], errors='coerce')
     dataframe = dataframe.loc[~dataframe['created'].isnull(), :]
     dataframe = dataframe.loc[~dataframe['office_id'].isnull(), :]
+    dataframe = dataframe.loc[~dataframe['ministry_id'].isnull(), :]
 
     # generate date column
     dataframe['report_date'] = dataframe['created'].dt.date

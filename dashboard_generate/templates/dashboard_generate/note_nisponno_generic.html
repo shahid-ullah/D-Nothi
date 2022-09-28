@@ -1,38 +1,37 @@
 
 {% load static %}
-{% block content %}
-  <div>
-    <script src="{% static 'js/utils.js' %}"></script>
-    <script src="{% static 'dashboard_ui/vendors/jquery/dist/jquery.min.js' %}"></script>
-    {{ data.plot_note_nisponno_data|json_script:"plot_note_nisponno_data" }}
 
-    <script></script>
-    <script charset="utf-8">
+{% comment %} {% block content %} {% endcomment %}
+<div>
+  <script src="{% static 'js/utils.js' %}"></script>
+  <script src="{% static 'dashboard_ui/vendors/jquery/dist/jquery.min.js' %}"></script>
+{{ data.plot_note_nisponno_data|json_script:"plot_note_nisponno_data" }}
+
+  <script></script>
+  <script charset="utf-8">
 
         const plot_note_nisponno_data = JSON.parse(document.getElementById('plot_note_nisponno_data').textContent);
         const year_map = plot_note_nisponno_data.year_map;
         const month_map = plot_note_nisponno_data.month_map;
         const day_map = plot_note_nisponno_data.day_map;
 
-    </script>
-  </div>
-  <div class="row">
-    <div class="col-sm-12 col-md-12">
-      <div class="card">
-        <div class="card-header card-header-custom2">
-                নোট নিষ্পন্ন
-        </div>
-        <div class="card-body">
-          <div id="chart_top_illness">
+  </script>
+</div>
+<div class="row">
+  <div class="col-sm-12 col-md-12">
+    <div class="card">
+      <div class="card-header card-header-custom2">নোট নিষ্পন্ন</div>
+      <div class="card-body">
+        <div id="chart_top_illness">
 
-            <figure class="highcharts-figure">
-              <div id="container"></div>
-              <p class="highcharts-description">
-                <!-- নোট নিষ্পন্ন -->
-              </p>
-            </figure>
+          <figure class="highcharts-figure">
+            <div id="container"></div>
+            <p class="highcharts-description">
+              <!-- নোট নিষ্পন্ন -->
+            </p>
+          </figure>
 
-            <script>
+          <script>
                 $(document).ready(function(){
 
               // Create the chart
@@ -107,7 +106,7 @@
                 },
 
                 tooltip: {
-                  headerFormat: '<span style="font-size:11px"> </span>',
+                  headerFormat: '<span style="font-size:11px"></span>',
                   pointFormat: '<span style="color:{point.color}"><b>{point.y}</b><br/>'
                 },
 
@@ -117,10 +116,10 @@
                 }
               });
                 });
-            </script>
-          </div>
+          </script>
         </div>
       </div>
     </div>
   </div>
-{% endblock content %}
+</div>
+{% comment %} {% endblock content %} {% endcomment %}

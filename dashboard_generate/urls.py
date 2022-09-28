@@ -6,6 +6,7 @@ urlpatterns = [
     path('', views.dashboard_home, name="dashboard_home"),
     # path('', views.total_offices_view, name="dashboard_home"),
     path('total_offices/', views.total_offices_view, name="total_offices"),
+    path('ministry_wise_total_login/', views.ministry_wise_total_login_view, name="ministry_wise_total_login"),
     path(
         'nispottikritto_nothi/',
         views.nispottikritto_nothi_view,
