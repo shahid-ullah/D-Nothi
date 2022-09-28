@@ -1,126 +1,54 @@
 {% extends 'dashboard_ui/base_site.html' %}
+
 {% load static %}
 
-{% block title %}মোট নথি ব্যবহারকারী{% endblock %}
+{% block title %}
+মোট নথি ব্যবহারকারী
+{% endblock title %}
 
 {% block content %}
 
-<div class="right_col">
-  <div>
-    <script src="{% static 'js/utils.js' %}"></script>
-    <script charset="utf-8">
+  <div class="right_col">
+    <div class="row">
+      <div>
+        <script charset="utf-8">
       var year_map = {{ year_map | safe }};
       var month_map = {{ month_map | safe }};
       var day_map = {{ day_map | safe }};
-    </script>
-  </div>
-  <div class="row">
-    <div class="col-sm-12 col-md-12">
-      <div class="card">
-        <div class="card-header card-header-custom2">
-            মোট নথি ব্যবহারকারী
-        </div>
-        <div class="card-body">
-          <div id="">
-
-            <figure class="highcharts-figure">
-              <div id="container"></div>
-              <p class="highcharts-description">
-                <!-- বার্ষিক এবং মাসিক নথি ব্যবহারকারী -->
-              </p>
-            </figure>
-
-            <canvas id="bar-chart" width="800" height="400"></canvas>
-
-            <script>
-              // Create the chart
-              let level = 1;
-              let first_level_title = 'নির্দিষ্ট বছরে যুক্ত মোট ব্যবহারকারী'
-              let second_level_title = 'নির্দিষ্ট মাসে যুক্ত মোট ব্যবহারকারী'
-              let third_level_title = 'নির্দিষ্ট দিনে যুক্ত ব্যবহারকারী'
-
-              Highcharts.chart('container', {
-                chart: {
-                  type: 'column',
-                  events: {
-                    drilldown: function (e) {
-                      level = level + 1
-                      if (level == 1){
-                        this.setTitle({ text: first_level_title });
-                      }
-                      if (level == 2){
-                        this.setTitle({ text: second_level_title });
-                      }
-                      if (level == 3){
-                        this.setTitle({ text: third_level_title });
-                      }
-                    },
-                    drillup: function (e) {
-                      level = level - 1;
-                      if (level == 1){
-                        this.setTitle({ text: first_level_title });
-                      }
-                      if (level == 2){
-                        this.setTitle({ text: second_level_title });
-                      }
-                      if (level == 3){
-                        this.setTitle({ text: third_level_title });
-                      }
-                    }
-                  }
-                },
-                title: {
-                    text: 'নির্দিষ্ট বছরে যুক্ত মোট ব্যবহারকারী'
-                },
-                subtitle: {
-                  text: ''
-                },
-                accessibility: {
-                  announceNewData: {
-                    enabled: true
-                  }
-                },
-                xAxis: {
-                  type: 'category'
-                },
-                yAxis: {
-                  title: {
-                      text: 'নথি ব্যবহারকারী সংখ্যা'
-                  }
-
-                },
-                credits: {
-                  enabled: false
-                },
-                legend: {
-                  enabled: false
-                },
-                plotOptions: {
-                  series: {
-                    borderWidth: 0,
-                    dataLabels: {
-                      enabled: true,
-                    }
-                  }
-                },
-
-                tooltip: {
-                  {# headerFormat: '<span style="font-size:11px">{series.name}</span><br>', #}
-                  {# pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>' #}
-                  headerFormat: '<span style="font-size:11px"> </span>',
-                  pointFormat: '<span style="color:{point.color}"><b>{point.y}</b><br/>'
-                },
-
-                series: generateGeneralSeries(year_map, 'year'),
-                drilldown: {
-                  series: generateDrilldownSeries(year_map, month_map, day_map)
-                }
-              });
-            </script>
+        </script>
+      </div>
+      <div class="col-sm-12 col-md-12">
+        <div class="card">
+          <div class="card-header card-header-custom2">মোট নথি ব্যবহারকারী</div>
+          <div class="card-body">
+            <div>
+              <figure class="highcharts-figure">
+                <div id="container"></div>
+                <p class="highcharts-description">
+                  <!-- বার্ষিক এবং মাসিক নথি ব্যবহারকারী -->
+                </p>
+              </figure>
+              {% comment %} <canvas id="bar-chart" width="800" height="400"></canvas> {% endcomment %}
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <div>
+          <figure class="highcharts-figure">
+            <div id="container2"></div>
+            <p class="highcharts-description"></p>
+          </figure>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
 {% endblock content %}
+{% block custom_js_var %}
+  <script src="{% static 'js/utils.js' %}"></script>
+  <script src="{% static 'js/dashboard_generate/nothi_users_total.js' %}"></script>
+{% endblock custom_js_var %}
