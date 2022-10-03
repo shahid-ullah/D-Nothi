@@ -19,14 +19,10 @@ def sso_login_handler(request, *args, **kwargs):
         redirect_path = request.GET.get('next')
         request.session['redirect_path'] = redirect_path
         login_redirect_url = request.build_absolute_uri(request.path)
-        login_redirect_url_b64_byte = base64.b64encode(
-            login_redirect_url.encode('utf-8')
-        )
+        login_redirect_url_b64_byte = base64.b64encode(login_redirect_url.encode('utf-8'))
         login_redirect_url_b64_string = login_redirect_url_b64_byte.decode('utf-8')
 
-        ndoptor_login_url = (
-            settings.SSO_LOGIN_URL + "?" + "referer=" + login_redirect_url_b64_string
-        )
+        ndoptor_login_url = settings.SSO_LOGIN_URL + "?" + "referer=" + login_redirect_url_b64_string
         return redirect(ndoptor_login_url)
 
     sso_status, sso_cookie = unzip_doptor_cookie(request, ndoptor_cookie)
@@ -94,8 +90,6 @@ def logout_view(request):
     home_url = request.build_absolute_uri(reverse('home'))
     home_url_b64_byte = base64.b64encode(home_url.encode('utf-8'))
     home_url_b64_string = home_url_b64_byte.decode('utf-8')
-    logout_redirect_url = (
-        settings.SSO_LOGOUT_URL + "?" + "referer=" + home_url_b64_string
-    )
+    logout_redirect_url = settings.SSO_LOGOUT_URL + "?" + "referer=" + home_url_b64_string
 
     return redirect(logout_redirect_url)

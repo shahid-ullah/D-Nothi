@@ -5,9 +5,9 @@
 from datetime import timedelta
 
 import pandas as pd
+
 from automate_process.models import Offices
-from backup_source_db.models import BackupDBLog
-from dashboard_generate.models import ReportGenerationLog, ReportTotalOfficesModel
+from dashboard_generate.models import ReportTotalOfficesModel
 
 
 def generate_object_map(report_date, number_of_offices, *args, **kwargs):
@@ -90,7 +90,6 @@ def generate_report(request=None, *args, **kwargs):
         kwargs['querysets'] = querysets
         querysets_to_dataframe_and_refine(request, *args, **kwargs)
 
-    print()
     print('End processing total_offices report')
 
     return None

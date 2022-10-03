@@ -128,6 +128,7 @@ class updateDashboard(APIView):
         self.scripts_log = {}
 
     def set_users_querysets(self, request, *args, **kwargs):
+        # At first creation last log will be None
         last_log = ReportGenerationLog.objects.last()
         querysets = self.queryset_users
 
@@ -140,6 +141,7 @@ class updateDashboard(APIView):
         self.users_querysets = querysets
 
     def set_offices_querysets(self, request, *args, **kwargs):
+        # At first creation last log will be None
         last_log = ReportGenerationLog.objects.last()
         querysets = self.queryset_offices
 
@@ -152,6 +154,7 @@ class updateDashboard(APIView):
         self.offices_querysets = querysets
 
     def set_user_login_history_querysets(self, request, *args, **kwargs):
+        # At first creation last log will be None
         last_log = ReportGenerationLog.objects.last()
         querysets = self.queryset_user_login_history
 
@@ -167,6 +170,7 @@ class updateDashboard(APIView):
         self.user_login_history_querysets = querysets
 
     def set_nisponno_records_querysets(self, request, *args, **kwargs):
+        # At first creation last log will be None
         last_log = ReportGenerationLog.objects.last()
         querysets = self.queryset_nisponno_records
 

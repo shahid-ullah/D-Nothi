@@ -2,7 +2,7 @@ from backup_source_db.models import BackupDBLog
 from dashboard_generate.models import ReportGenerationLog
 from rest_framework import serializers
 
-from .models import SourceDBLog, TrackSourceDBLastFetchTime
+from .models import SourceDBLog
 
 
 class DatabaseBackupLogSerializer(serializers.ModelSerializer):
