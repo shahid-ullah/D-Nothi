@@ -55,11 +55,19 @@ MAP_MONTH_BENGLI_NAME = {
 }
 
 
+def is_ajax(request):
+    return request.headers.get('x-requested-with') == 'XMLHttpRequest'
+
+
 def dashboard_home(request):
     today = datetime.now()
 
     month = MAP_MONTH_BENGLI_NAME[str(today.month)]
     year = today.year
+
+    if is_ajax(request=request):
+        stack_bar_chart = helper_functions.generate_login_stack_bar_chart_data()
+        return JsonResponse(stack_bar_chart)
 
     # General report summary count
     report_summary_count = helper_functions.get_report_summary_count()
@@ -80,7 +88,8 @@ def dashboard_home(request):
         plot_note_nisponno_data['day_map'] = {}
 
     # plot login stack bar data
-    stack_bar_chart = helper_functions.generate_login_stack_bar_chart_data()
+    # stack_bar_chart = helper_functions.generate_login_stack_bar_chart_data()
+    stack_bar_chart = [{}]
 
     # plot nispottikritto nothi data
     nispottikritto_nothi_plot = helper_functions.generate_nispottikritto_nothi_plot_data()
@@ -690,10 +699,6 @@ def report_export_csv_view(request, start_date=None, end_date=None):
     response['Content-Disposition'] = content_disposition
 
     return response
-
-
-def is_ajax(request):
-    return request.headers.get('x-requested-with') == 'XMLHttpRequest'
 
 
 def report_summary(request):

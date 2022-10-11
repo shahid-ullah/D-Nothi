@@ -51,7 +51,7 @@ class updateDashboard(APIView):
 
     authentication_classes = [authentication.SessionAuthentication]
     permission_classes = [permissions.IsAdminUser]
-    # throttle_classes = [UserRateThrottle]
+    throttle_classes = [UserRateThrottle]
 
     def get(self, request, format=None, *args, **kwargs):
 

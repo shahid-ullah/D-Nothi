@@ -1748,10 +1748,10 @@ span.right {
 .tile_count .tile_stats_count .count_bottom i {
   width: 12px;
 }
-.dashboard_graph {
+/* .dashboard_graph {
   background: #fff;
   padding: 7px 10px;
-}
+} */
 .dashboard_graph .col-md-9,
 .dashboard_graph .col-md-3 {
   padding: 0;
