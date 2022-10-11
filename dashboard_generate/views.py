@@ -3,13 +3,14 @@ import csv
 import json
 from calendar import month
 from datetime import date, datetime
+from urllib import response
 
 import pandas as pd
 from django.contrib.auth import get_user_model
 
 # from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 
 from automate_process.scripts.reports import nispottikritto_nothi
@@ -34,6 +35,7 @@ from .models import (
     ReportTotalUsersModel,
     ReportUpokarvogiModel,
 )
+from .report_summary import get_report_summary
 
 User = get_user_model()
 
@@ -688,3 +690,18 @@ def report_export_csv_view(request, start_date=None, end_date=None):
     response['Content-Disposition'] = content_disposition
 
     return response
+
+
+def is_ajax(request):
+    return request.headers.get('x-requested-with') == 'XMLHttpRequest'
+
+
+def report_summary(request):
+    if is_ajax(request):
+        office_ids = request.GET['office_ids']
+        from_date = request.GET['from_date']
+        to_date = request.GET['to_date']
+        response = get_report_summary(office_ids_string=office_ids, from_date=from_date, to_date=to_date)
+        return JsonResponse(response)
+
+    return render(request, 'dashboard_generate/report_summary.html', context={})

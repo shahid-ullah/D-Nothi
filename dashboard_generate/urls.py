@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import api, views
+from . import apis, views
 
 urlpatterns = [
     path('', views.dashboard_home, name="dashboard_home"),
@@ -68,18 +68,8 @@ urlpatterns = [
         name="login_female_users",
     ),
     path(
-        'source_db_status/',
-        api.SourceDBStatusAPI.as_view(),
-        name="source_db_status",
-    ),
-    path(
-        'report_db_status/',
-        api.ReportDBStatus.as_view(),
-        name="report_db_status",
-    ),
-    path(
         'dashboard_update_log/',
-        api.DashboardUpdateLogAPI.as_view(),
+        apis.DashboardUpdateLogAPI.as_view(),
         name="dashboard_update_log",
     ),
     path(
@@ -87,4 +77,6 @@ urlpatterns = [
         views.report_export_csv_view,
         name="export_csv",
     ),
+    path('v1/login_users_not_distinct/', apis.LoginUsersNotDistinctAPI.as_view(), name='login_users_not_distinct'),
+    path('report_summary/', views.report_summary, name='report_summary'),
 ]

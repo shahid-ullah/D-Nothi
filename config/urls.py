@@ -1,5 +1,10 @@
 # config/urls.py
 
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib import admin
+from django.urls import include, path
+
 from automate_process.api import (
     BackupDBLogAPI,
     DatabaseBackupLog,
@@ -7,11 +12,8 @@ from automate_process.api import (
     SourceDBLogAPI,
     updateDashboard,
 )
+from backup_source_db.apis import OfficeListAPI
 from backup_source_db.models import BackupDBLog
-from django.conf import settings
-from django.conf.urls.static import static
-from django.contrib import admin
-from django.urls import include, path
 from users.views import logout_view, sso_login_handler
 
 urlpatterns = [
@@ -25,6 +27,7 @@ urlpatterns = [
     path('((thele$$!!/', admin.site.urls),
     path('sso_login_handler/', sso_login_handler, name='sso_login_handler'),
     path('logout/', logout_view, name='logout'),
+    path('v1/offices/', OfficeListAPI.as_view(), name='offices'),
     # path('api-auth/', include('rest_framework.urls')),
 ]
 if settings.DEBUG:

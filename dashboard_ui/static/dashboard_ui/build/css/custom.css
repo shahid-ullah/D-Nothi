@@ -4281,3 +4281,8 @@ table thead .checkbox.radio { margin-top:-7px;margin-top:-21px; }
   font-size: 12px;
   font-weight: bold;
 }
+
+#form_container {
+  width: 519px;
+  margin: auto;
+}

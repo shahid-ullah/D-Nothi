@@ -33,6 +33,7 @@
         <link href="{% static 'dashboard_ui/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css' %}" rel="stylesheet">
         <!-- JQVMap -->
         <link href="{% static 'dashboard_ui/vendors/jqvmap/dist/jqvmap.min.css' %}" rel="stylesheet"/>
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
       {% endblock stylesheets %}
       {% block graph_cdn %}
         <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -87,6 +88,8 @@
       {% block javascripts %}
         <!-- jQuery -->
         <script src="{% static 'dashboard_ui/vendors/jquery/dist/jquery.min.js' %}"></script>
+        {% comment %} <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script> {% endcomment %}
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <!-- Bootstrap -->
         <script src="{% static 'dashboard_ui/vendors/bootstrap/dist/js/bootstrap.min.js' %}"></script>
         <!-- FastClick -->
@@ -109,7 +112,7 @@
         <!-- Switchery -->
         <script src="{% static 'dashboard_ui/vendors/switchery/dist/switchery.min.js' %}"></script>
         <!-- Select2 -->
-        <script src="{% static 'dashboard_ui/vendors/select2/dist/js/select2.full.min.js' %}"></script>
+        {% comment %} <script src="{% static 'dashboard_ui/vendors/select2/dist/js/select2.full.min.js' %}"></script> {% endcomment %}
         <!-- Parsley -->
         <script src="{% static 'dashboard_ui/vendors/parsleyjs/dist/parsley.min.js' %}"></script>
         <!-- Autosize -->

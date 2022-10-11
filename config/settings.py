@@ -186,7 +186,7 @@ REST_FRAMEWORK = {
     # 'DEFAULT_PERMISSION_CLASSES': [
     #     'rest_framework.permissions.IsAuthenticated',
     # ],
-    'PAGE_SIZE': 10,
+    'PAGE_SIZE': 20,
     'DEFAULT_THROTTLE_RATES': {'anon': '1/day', 'user': '1/day'},
 }
 

@@ -1,0 +1,101 @@
+{% extends 'dashboard_ui/base_site.html' %}
+
+{% load static %}
+
+{% block title %}
+    রিপোর্ট তৈরি
+{% endblock title %}
+
+{% block stylesheets %}
+{{ block.super }}
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="right_col">
+    <div class="row">
+      <div id="form_container">
+        <form id="report_summary" action="/report_summary/" method="GET">
+          <div>
+            <label for="office_ids">office ids</label>
+            <textarea id="office_ids" class="form-control" name="office_ids" rows="2" cols="50" placeholder="e.g: 8001, 57, ..."></textarea>
+          </div>
+          <div>
+            <label for="fromdate_datepicker">From Date</label>
+            <input class="form-control" type="text" name="from_date" id="fromdate_datepicker" placeholder="e.g: 09-09-22" min="2022-10-09" required>
+          </div>
+          <div>
+            <label for="todate_datepicker">To Date</label>
+            <input class="form-control" type="text" name="to_date" id="todate_datepicker" placeholder="e.g: 10-10-22">
+          </div>
+
+          <button type="submit" class="btn btn-success">Get Report Summary</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="" style="width: 50%; margin:auto">
+      <div class="row">
+        <div class="col-12">
+          <div class="table-wrapper">
+            <table class="table table-striped table-hover table-bordered caption-top">
+              <thead>
+                <tr>
+                  <th scope="col" class="text-justify" style="font-size: 20px;">সূচক</th>
+                  <th scope="col" class="text-right" style="font-size: 20px;">সংখ্যা</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row" class="text-justify">নিষ্পত্তিকৃত নথি</th>
+                  <td id="nispotti_kritto_nothi"  class="text-right"></td>
+                </tr>
+                <tr>
+                  <th scope="row" class="text-justify">মোট উপকারভোগী</th>
+                  <td id="upokarvogi" class="text-right"></td>
+                </tr>
+                <tr>
+                  <th scope="row" class="text-justify">নোট নিষ্পন্ন</th>
+                  <td id="note_nisponno" class="text-right"></td>
+                </tr>
+                <tr>
+                  <th scope="row" class="text-justify">পত্রজারি</th>
+                  <td id="potrojari" class="text-right"></td>
+                </tr>
+                <tr>
+                  <th scope="row" class="text-justify">মোট ব্যবহারকারী (লগইন)</th>
+                  <td id="total_login_users" class="total_login_users text-right"></td>
+                </tr>
+                {% comment %} <tr>
+                  <th scope="row" class="text-justify">মোট নথি ব্যবহারকারী (পুরুষ লগইন)</th>
+                  <td class="total_nothi_users_male text-right"></td>
+                </tr>
+                <tr>
+                  <th scope="row" class="text-justify">মোট নথি ব্যবহারকারী (মহিলা লগইন)</th>
+                  <td class="total_nothi_users_female text-right"></td>
+                </tr>
+                <tr>
+                  <th scope="row" class="text-justify">মোবাইল অ্যাপ ব্যবহারকারী</th>
+                  <td class="total_mobile_app_users text-right"></td>
+                </tr> {% endcomment %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+{% endblock javascripts %}
+
+{% block custom_js_var %}
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+  <script src="{% static 'js/dashboard_generate/report_summary.js' %}"></script>
+
+{% endblock custom_js_var %}
