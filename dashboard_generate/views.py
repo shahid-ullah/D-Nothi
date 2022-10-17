@@ -6,14 +6,14 @@ from datetime import date, datetime
 from urllib import response
 
 import pandas as pd
+from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 
 # from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
-
-from automate_process.scripts.reports import nispottikritto_nothi
 
 # from . import graph_methods
 from . import helper_functions
@@ -258,11 +258,8 @@ def potrojari_view(request):
 
 # @login_required(login_url='/sso_login_handler/')
 def login_total_users_view(request):
-    year_map, month_map, day_map = helper_functions.get_cache_or_calculate(
-        'login_total_users',
-        helper_functions.generate_login_users_year_month_day_map,
-        ReportLoginTotalUsers,
-    )
+    querysets = ReportLoginTotalUsers.objects.all()
+    year_map, month_map, day_map = helper_functions.generate_login_users_year_month_day_map(querysets)
 
     context = {
         'year_map': json.dumps(year_map, cls=helper_functions.NpEncoder),

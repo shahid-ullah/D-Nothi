@@ -13,3 +13,4 @@ django-crispy-forms
 django-debug-toolbar
 pytest
 pytest-django
+django-redis
