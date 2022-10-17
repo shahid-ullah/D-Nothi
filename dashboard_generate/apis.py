@@ -3,6 +3,7 @@
 from os import wait
 
 from django.db.models import Sum
+from django_redis import get_redis_connection
 from rest_framework import authentication, generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -40,4 +41,26 @@ class LoginUsersNotDistinctAPI(APIView):
         total_users_counts = querysets.aggregate(Sum('counts'))
         total_users = total_users_counts['counts__sum']
         response = {'office_ids': None, 'counts': total_users}
+        return Response(response)
+
+
+class ClearCacheAPI(APIView):
+
+    authentication_classes = [authentication.SessionAuthentication]
+    permission_classes = [permissions.IsAdminUser]
+
+    def get(self, request, format=None):
+        redis_instance = get_redis_connection('default')
+        response = {}
+
+        try:
+            redis_instance.flushdb()
+            response = {'status': 'success'}
+        except Exception as e:
+            print(e)
+            response = {
+                'status': 'failed',
+                'error': str(e),
+            }
+
         return Response(response)

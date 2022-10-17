@@ -1,9 +1,13 @@
+from django.conf import settings
 from django.urls import path
+from django.views.decorators.cache import cache_page
 
 from . import apis, views
 
+CACHE_TTL = getattr(settings, 'CACHE_TTL', 10)
+
 urlpatterns = [
-    path('', views.dashboard_home, name="dashboard_home"),
+    path('', cache_page(CACHE_TTL, key_prefix='dashboard')(views.dashboard_home), name="dashboard_home"),
     # path('', views.total_offices_view, name="dashboard_home"),
     path('total_offices/', views.total_offices_view, name="total_offices"),
     path('ministry_wise_total_login/', views.ministry_wise_total_login_view, name="ministry_wise_total_login"),
@@ -54,7 +58,7 @@ urlpatterns = [
     ),
     path(
         'login_total_users/',
-        views.login_total_users_view,
+        cache_page(CACHE_TTL)(views.login_total_users_view),
         name="login_total_users",
     ),
     path(
@@ -78,5 +82,6 @@ urlpatterns = [
         name="export_csv",
     ),
     path('v1/login_users_not_distinct/', apis.LoginUsersNotDistinctAPI.as_view(), name='login_users_not_distinct'),
+    path('v1/clear_cache/', apis.ClearCacheAPI.as_view(), name='clear_cache'),
     path('report_summary/', views.report_summary, name='report_summary'),
 ]
