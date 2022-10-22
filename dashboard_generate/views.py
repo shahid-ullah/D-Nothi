@@ -36,6 +36,7 @@ from .models import (
     ReportUpokarvogiModel,
 )
 from .report_summary import get_report_summary
+from .utils import total_report_summary_count
 
 User = get_user_model()
 
@@ -71,6 +72,7 @@ def dashboard_home(request):
 
     # General report summary count
     report_summary_count = helper_functions.get_report_summary_count()
+    total_report_summary_count_ = total_report_summary_count.get_report()
 
     # Plot note_nisponno data
     plot_note_nisponno_data = {}
@@ -96,6 +98,7 @@ def dashboard_home(request):
 
     data = {
         'report_summary_count': report_summary_count,
+        'total_report_summary_count': total_report_summary_count_,
         'stack_bar_chart': stack_bar_chart,
         'nispottikritto_nothi_plot': nispottikritto_nothi_plot,
         'plot_note_nisponno_data': plot_note_nisponno_data,
@@ -132,7 +135,7 @@ def ministry_wise_total_login_view(request):
         values = objs.values()
         df = pd.DataFrame(values)
         grouped = df.groupby(['ministry_id'], sort=False, as_index=False)['counts'].sum()
-        grouped = df.astype({'ministry_id': str})
+        grouped = grouped.astype({'ministry_id': str})
 
         ministry_map = dict(zip(grouped['ministry_id'].values, grouped['counts'].values))
 
@@ -529,10 +532,10 @@ def custom_report(request):
     # total users (login)
     # login_total_users_distinct
     login_total_users_objects = ReportLoginTotalUsers.objects.filter(year=year, month=month)
-    login_total_users_dict = login_total_users_objects.aggregate(Sum('count_or_sum'))
-    login_total_users = login_total_users_dict['count_or_sum__sum']
-    if not login_total_users:
-        login_total_users = 0
+    count_dict = {}
+    for obj in login_total_users_objects:
+        count_dict.update(obj.employee_record_ids)
+    login_total_users = len(count_dict)
 
     # login_total_users_not_distinct
     # total login (not distinct count)
@@ -544,17 +547,17 @@ def custom_report(request):
 
     # total nothi users (male login)
     login_male_users_objects = ReportLoginMalelUsersModel.objects.filter(year=year, month=month)
-    login_male_users_dict = login_male_users_objects.aggregate(Sum('count_or_sum'))
-    login_male_users = login_male_users_dict['count_or_sum__sum']
-    if not login_male_users:
-        login_male_users = 0
+    count_dict = {}
+    for obj in login_male_users_objects:
+        count_dict.update(obj.employee_record_ids)
+    login_male_users = len(count_dict)
 
     # total nothi users (female login)
     login_female_users_objects = ReportLoginFemalelUsersModel.objects.filter(year=year, month=month)
-    login_female_users_dict = login_female_users_objects.aggregate(Sum('count_or_sum'))
-    login_female_users = login_female_users_dict['count_or_sum__sum']
-    if not login_female_users:
-        login_female_users = 0
+    count_dict = {}
+    for obj in login_female_users_objects:
+        count_dict.update(obj.employee_record_ids)
+    login_female_users = len(count_dict)
 
     context = {
         'offices': {

@@ -47,7 +47,7 @@ class LoginUsersNotDistinctAPI(APIView):
 class ClearCacheAPI(APIView):
 
     authentication_classes = [authentication.SessionAuthentication]
-    permission_classes = [permissions.IsAdminUser]
+    # permission_classes = [permissions.IsAdminUser]
 
     def get(self, request, format=None):
         redis_instance = get_redis_connection('default')

@@ -35,6 +35,8 @@ def backup_office_table():
     latest_office_id = querysets.last().id
     last_office = BackupOffices.objects.using('backup_source_db').last()
 
+    # get new registered offices if any
+    # get last registered office id from backup database
     try:
         last_office_id = last_office.source_id
         querysets = querysets.filter(id__gt=last_office_id)

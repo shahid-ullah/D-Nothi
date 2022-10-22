@@ -15,88 +15,121 @@
 {% block content %}
   <div class="right_col" role="main">
     <div class="row tile_count">
+      <div class="summary_header">মোট সংখ্যা</div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-        <span class="count_top"><i class="fas fa-building	"></i> মোট ব্যবহারকারী অফিস</span>
-        <div class="count text-primary">{{ data.report_summary_count.office_total | intcomma }}</div>
-        <span class="date_number">{{ data.report_summary_count.office_start_year }} -</span>
-        <span class="date_number">{{ data.report_summary_count.office_end_year }}</span>
+        <span class="count_top"><i class="fas fa-building	"></i> ব্যবহারকারী অফিস</span>
+        <div class="count text-primary total_report_count">{{ data.total_report_summary_count.office_total | intcomma }}</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-        <span class="count_top"><i class="fa fa-user"></i> মোট ব্যবহারকারী</span>
-        <div class="count text-secondary">{{ data.report_summary_count.users_total | intcomma }}</div>
-        <span class="date_number">{{ data.report_summary_count.user_start_year }} -</span>
-        <span class="date_number">{{ data.report_summary_count.user_end_year }}</span>
+        <span class="count_top"><i class="fa fa-user"></i> ব্যবহারকারী</span>
+        <div class="count text-secondary total_report_count">{{ data.total_report_summary_count.users_total | intcomma }}</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-        <span class="count_top"><i class="fa fa-user"></i> মোট ব্যবহারকারী (পুরুষ)</span>
-        <div class="count text-success">{{ data.report_summary_count.male_users_total | intcomma }}</div>
-        <span class="date_number">{{ data.report_summary_count.user_start_year }} -</span>
-        <span class="date_number">{{ data.report_summary_count.user_end_year }}</span>
+        <span class="count_top"><i class="fa fa-user"></i> ব্যবহারকারী (পুরুষ)</span>
+        <div class="count text-success total_report_count">{{ data.total_report_summary_count.male_users_total | intcomma }}</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-        <span class="count_top"><i class="fa fa-user"></i> মোট ব্যবহারকারী (মহিলা)</span>
-        <div class="count text-danger">{{ data.report_summary_count.female_users_total | intcomma }}</div>
-        <span class="date_number">{{ data.report_summary_count.user_start_year }} -</span>
-        <span class="date_number">{{ data.report_summary_count.user_end_year }}</span>
+        <span class="count_top"><i class="fa fa-user"></i> ব্যবহারকারী (মহিলা)</span>
+        <div class="count text-danger total_report_count">{{ data.total_report_summary_count.female_users_total | intcomma }}</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-        <span class="count_top"><i class="fa fa-user"></i> মোট লগইন</span>
-        <div class="count text-warning">{{ data.report_summary_count.login_users | intcomma }}</div>
-        <span ><i class="green"></i>{{ data.month }}, </span>
-        <span class="bangla_summary">{{ data.year }}</span>
+        <span class="count_top"><i class="fa fa-user"></i> লগইন</span>
+        <div class="count text-warning total_report_count">{{ data.total_report_summary_count.login_users | intcomma }}</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-        <span class="count_top"><i class="fa fa-user"></i> মোট লগইন (পুরুষ)</span>
-        <div class="count">{{ data.report_summary_count.male_login_users }}</div>
-        <span ><i class="green"></i>{{ data.month }}, </span>
-        <span class="bangla_summary">{{ data.year }}</span>
+        <span class="count_top"><i class="fa fa-user"></i> লগইন (পুরুষ)</span>
+        <div class="count total_report_count">{{ data.total_report_summary_count.male_login_users | intcomma }}</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-        <span class="count_top"><i class="fa fa-user"></i> মোট লগইন (মহিলা)</span>
-        <div class="count">{{ data.report_summary_count.female_login_users | intcomma }}</div>
-        <!-- <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>3% </i> From last Week</span> -->
-        <span ><i class="green"></i>{{ data.month }}, </span>
-        <span class="bangla_summary">{{ data.year }}</span>
+        <span class="count_top"><i class="fa fa-user"></i> লগইন (মহিলা)</span>
+        <div class="count total_report_count">{{ data.total_report_summary_count.female_login_users | intcomma }}</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa-solid fa-calculator"></i> নিষ্পত্তিকৃত নথি</span>
-        <div class="count green">{{ data.report_summary_count.nispottikritto_nothi | intcomma }}</div>
-        <!-- <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span> -->
-        <span ><i class="green"></i>{{ data.month }}, </span>
-        <span class="bangla_summary">{{ data.year }}</span>
+        <div class="count green total_report_count">{{ data.total_report_summary_count.nispottikritto_nothi | intcomma }}</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa-solid fa-calculator"></i> নোট নিষ্পন্ন</span>
-        <div class="count">{{ data.report_summary_count.note_nisponno | intcomma }}</div>
-        <!-- <span class="count_bottom"><i class="red"><i class="fa fa-sort-desc"></i>12% </i> From last Week</span> -->
-        <span ><i class="green"></i>{{ data.month }}, </span>
-        <span class="bangla_summary">{{ data.year }}</span>
+        <div class="count total_report_count">{{ data.total_report_summary_count.note_nisponno | intcomma }}</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa-solid fa-calculator"></i> মোট পত্রজারি</span>
-        <div class="count">{{ data.report_summary_count.potrojari | intcomma }}</div>
-        <!-- <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span> -->
-        <span ><i class="green"></i>{{ data.month }}, </span>
-        <span class="bangla_summary">{{ data.year }}</span>
+        <div class="count total_report_count">{{ data.total_report_summary_count.potrojari | intcomma }}</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-        <span class="count_top"><i class="fa fa-user"></i> মোট উপকারভোগী</span>
-        <div class="count text-primary">{{ data.report_summary_count.upokarvogi | intcomma }}</div>
-        <!-- <span class="count_bottom"><i class="green"><i class="fa fa-sort-asc"></i>34% </i> From last Week</span> -->
-        <span ><i class="green"></i>{{ data.month }}, </span>
-        <span class="bangla_summary">{{ data.year }}</span>
+        <span class="count_top"><i class="fa fa-user"></i> উপকারভোগী</span>
+        <div class="count text-primary total_report_count">{{ data.total_report_summary_count.upokarvogi | intcomma }}</div>
       </div>
       <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
         <span class="count_top"><i class="fa fa-user"></i> লগইন মোবাইল ব্যবহারকারী</span>
-        <div class="count text-danger">
-{{ data.report_summary_count.mobile_app_users | intcomma }}
-        </div>
-        <span ><i class="green"></i>{{ data.month }}, </span>
-        <span class="bangla_summary">{{ data.year }}</span>
+        <div class="count text-danger total_report_count">{{ data.total_report_summary_count.mobile_app_users | intcomma }}</div>
       </div>
     </div>
 
-    <div class="row">
+
+
+    <div class="row tile_count home_row">
+      <div class="summary_header">
+        <span>{{ data.month }}</span> -
+        <span>{{ data.year }}</span>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+        <span class="count_top"><i class="fas fa-building	"></i> ব্যবহারকারী অফিস</span>
+        <div class="count text-primary total_report_count">{{ data.report_summary_count.office_total | intcomma }}</div>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+        <span class="count_top"><i class="fa fa-user"></i> ব্যবহারকারী</span>
+        <div class="count text-secondary total_report_count">{{ data.report_summary_count.users_total | intcomma }}</div>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+        <span class="count_top"><i class="fa fa-user"></i> ব্যবহারকারী (পুরুষ)</span>
+        <div class="count text-success total_report_count">{{ data.report_summary_count.male_users_total | intcomma }}</div>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+        <span class="count_top"><i class="fa fa-user"></i> ব্যবহারকারী (মহিলা)</span>
+        <div class="count text-danger total_report_count">{{ data.report_summary_count.female_users_total | intcomma }}</div>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+        <span class="count_top"><i class="fa fa-user"></i> লগইন</span>
+        <div class="count text-warning total_report_count">{{ data.report_summary_count.login_users | intcomma }}</div>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+        <span class="count_top"><i class="fa fa-user"></i> লগইন (পুরুষ)</span>
+        <div class="count total_report_count">{{ data.report_summary_count.male_login_users | intcomma }}</div>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+        <span class="count_top"><i class="fa fa-user"></i> লগইন (মহিলা)</span>
+        <div class="count total_report_count">{{ data.report_summary_count.female_login_users | intcomma }}</div>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+        <span class="count_top"><i class="fa-solid fa-calculator"></i> নিষ্পত্তিকৃত নথি</span>
+        <div class="count green total_report_count">{{ data.report_summary_count.nispottikritto_nothi | intcomma }}</div>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+        <span class="count_top"><i class="fa-solid fa-calculator"></i> নোট নিষ্পন্ন</span>
+        <div class="count total_report_count">{{ data.report_summary_count.note_nisponno | intcomma }}</div>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+        <span class="count_top"><i class="fa-solid fa-calculator"></i> পত্রজারি</span>
+        <div class="count total_report_count">{{ data.report_summary_count.potrojari | intcomma }}</div>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+        <span class="count_top"><i class="fa fa-user"></i> উপকারভোগী</span>
+        <div class="count text-primary total_report_count">{{ data.report_summary_count.upokarvogi | intcomma }}</div>
+      </div>
+      <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+        <span class="count_top"><i class="fa fa-user"></i> লগইন মোবাইল ব্যবহারকারী</span>
+        <div class="count text-danger total_report_count">
+{{ data.report_summary_count.mobile_app_users | intcomma }}
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+    <div class="row home_row">
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="dashboard_graph col-md-9 col-sm-3 col-xs-12">
           <div id="login_stack_bar_chart" class="name">
@@ -137,7 +170,7 @@
 
     <br />
 
-    <div class="row">
+    <div class="row home_row">
 
 
       <div class="col-md-4 col-sm-4 col-xs-12">
@@ -274,7 +307,7 @@
 
     </div>
 
-    <div class="row">
+    <div class="row home_row">
       <div class="col-12">
 
 {% include "dashboard_generate/note_nisponno_generic.html" %}
@@ -325,7 +358,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
   <!-- <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script> -->
   <!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js'></script>
-                                                                  <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js'></script> -->
+                                                                                                                                            <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js'></script> -->
 
   <script src="https://code.highcharts.com/highcharts-3d.js"></script>
   <script src="https://code.highcharts.com/modules/exporting.js"></script>

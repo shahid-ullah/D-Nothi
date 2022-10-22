@@ -5,6 +5,8 @@ from datetime import date
 
 import numpy as np
 import pandas as pd
+from django.conf import settings
+from django.core.cache import cache
 from django.db.models import Sum
 
 from .models import (
@@ -26,6 +28,7 @@ from .models import (
 )
 
 CACHED_DICTIONARY = {'last_cached': time.time()}
+CACHE_TTL = getattr(settings, 'CACHE_TTL', 10)
 
 
 class NpEncoder(json.JSONEncoder):
@@ -103,19 +106,21 @@ def get_report_summary_count():
 
     # office_total calculate
     try:
-        office_count_dict = ReportTotalOfficesModel.objects.aggregate(Sum('count_or_sum'))
-        office_total = int(office_count_dict['count_or_sum__sum'])
+        querysets = ReportLoginTotalUsers.objects.filter(year=year, month=month)
+        querysets = querysets.filter(office_id != 0)
+
+        office_ids = [obj.office_id for obj in querysets]
+        office_total = len(set(office_ids))
 
         if not office_total:
             office_total = 0
     except Exception as _:
         office_total = 0
 
-    office_start_year = ReportTotalOfficesModel.objects.first().year
-    office_end_year = ReportTotalOfficesModel.objects.last().year
     # users total calculate
     try:
-        users_total_dict = ReportTotalUsersModel.objects.aggregate(Sum('count_or_sum'))
+        querysets = ReportTotalUsersModel.objects.filter(year=year, month=month)
+        users_total_dict = querysets.aggregate(Sum('count_or_sum'))
         users_total = int(users_total_dict['count_or_sum__sum'])
 
         if not users_total:
@@ -123,12 +128,10 @@ def get_report_summary_count():
     except Exception as _:
         users_total = 0
 
-    user_start_year = ReportTotalUsersModel.objects.first().year
-    user_end_year = ReportTotalUsersModel.objects.last().year
-
     # male users total calculate
     try:
-        nothi_users_male_dict = ReportMaleNothiUsersModel.objects.aggregate(Sum('count_or_sum'))
+        querysets = ReportMaleNothiUsersModel.objects.filter(year=year, month=month)
+        nothi_users_male_dict = querysets.aggregate(Sum('count_or_sum'))
         male_users_total = int(nothi_users_male_dict['count_or_sum__sum'])
 
         if not male_users_total:
@@ -138,9 +141,9 @@ def get_report_summary_count():
 
     # female users total calculate
     try:
-        nothi_users_female_dict = ReportFemaleNothiUsersModel.objects.aggregate(Sum('count_or_sum'))
+        querysets = ReportFemaleNothiUsersModel.objects.filter(year=year, month=month)
+        nothi_users_female_dict = querysets.aggregate(Sum('count_or_sum'))
         female_users_total = int(nothi_users_female_dict['count_or_sum__sum'])
-
         if not female_users_total:
             female_users_total = 0
     except Exception as _:
@@ -148,31 +151,31 @@ def get_report_summary_count():
 
     # login users total calculate for current month
     try:
-        login_total_users_objects = ReportLoginTotalUsers.objects.filter(year=year, month=month)
-        login_total_users_dict = login_total_users_objects.aggregate(Sum('count_or_sum'))
-        login_users_total = int(login_total_users_dict['count_or_sum__sum'])
-        if not login_users_total:
-            login_users_total = 0
+        querysets = ReportLoginTotalUsers.objects.filter(year=year, month=month)
+        count_dict = {}
+        for obj in querysets:
+            count_dict.update(obj.employee_record_ids)
+        login_users_total = len(count_dict)
     except Exception as _:
         login_users_total = 0
 
     # login male users total calculate for current month
     try:
-        login_male_users_objects = ReportLoginMalelUsersModel.objects.filter(year=year, month=month)
-        login_male_users_dict = login_male_users_objects.aggregate(Sum('count_or_sum'))
-        login_male_users_total = int(login_male_users_dict['count_or_sum__sum'])
-        if not login_male_users_total:
-            login_male_users_total = 0
+        querysets = ReportLoginMalelUsersModel.objects.filter(year=year, month=month)
+        count_dict = {}
+        for obj in querysets:
+            count_dict.update(obj.employee_record_ids)
+        login_male_users_total = len(count_dict)
     except Exception as _:
         login_male_users_total = 0
 
     # login female users total calculate for current month
     try:
-        login_female_users_objects = ReportLoginFemalelUsersModel.objects.filter(year=year, month=month)
-        login_female_users_dict = login_female_users_objects.aggregate(Sum('count_or_sum'))
-        female_login_users_total = int(login_female_users_dict['count_or_sum__sum'])
-        if not female_login_users_total:
-            female_login_users_total = 0
+        querysets = ReportLoginFemalelUsersModel.objects.filter(year=year, month=month)
+        count_dict = {}
+        for obj in querysets:
+            count_dict.update(obj.employee_record_ids)
+        female_login_users_total = len(count_dict)
     except Exception as _:
         female_login_users_total = 0
 
@@ -238,15 +241,14 @@ def get_report_summary_count():
     report_summary_count['potrojari'] = potrojari
     report_summary_count['upokarvogi'] = upokarvogi
     report_summary_count['mobile_app_users'] = mobile_app_users
-    report_summary_count['office_start_year'] = office_start_year
-    report_summary_count['office_end_year'] = office_end_year
-    report_summary_count['user_start_year'] = user_start_year
-    report_summary_count['user_end_year'] = user_end_year
 
     return report_summary_count
 
 
 def generate_login_stack_bar_chart_data():
+    login_stack_bar_chart_data = cache.get('login_stack_bar_chart_data', False)
+    if login_stack_bar_chart_data:
+        return login_stack_bar_chart_data
 
     try:
         login_male_objs = ReportLoginMalelUsersModel.objects.all()
@@ -306,6 +308,8 @@ def generate_login_stack_bar_chart_data():
         chart_data_map = {'male_list': male_list, 'female_list': female_list, 'months': months}
     except Exception as _:
         chart_data_map = {'male_list': [], 'female_list': [], 'months': []}
+
+    cache.set('login_stack_bar_chart_data', chart_data_map, CACHE_TTL)
 
     return chart_data_map
 

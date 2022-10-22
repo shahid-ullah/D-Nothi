@@ -4266,7 +4266,7 @@ table thead .checkbox.radio { margin-top:-7px;margin-top:-21px; }
   font-weight: 200;
   font-size: 20px;
   color: maroon;
-  margin-top: 16px;
+  padding-top: 14px;
 }
 
 .bangla_summary {
@@ -4285,4 +4285,19 @@ table thead .checkbox.radio { margin-top:-7px;margin-top:-21px; }
 #form_container {
   width: 519px;
   margin: auto;
+}
+
+.home_row {
+  border-bottom: 2px solid #e0dddd;
+}
+
+.total_report_count {
+  font-size: 30px !important;
+}
+
+.summary_header {
+  color: #427046;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 8px;
 }
