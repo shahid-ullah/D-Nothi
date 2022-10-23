@@ -19,6 +19,7 @@ environ.Env.read_env(env_file)
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'az895+kp%@b8ab=8yit+vek9vson88l005l!nq^_tv*i2l-d*r'
 SECRET_KEY = env('SECRET_KEY')
+REDIS_HOST = env('REDIS_HOST')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -200,7 +201,7 @@ QUERY_CREATED_DATE = Q(created__gte=datetime(2013, 11, 1, 0, 0, 0)) | Q(created_
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'LOCATION': REDIS_HOST,
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         },
