@@ -90,51 +90,59 @@ if settings.DEBUG:
 else:
     urlpatterns = [
         path('', cache_page(CACHE_TTL, key_prefix='dashboard')(views.dashboard_home), name="dashboard_home"),
-        path('total_offices/', views.total_offices_view, name="total_offices"),
-        path('ministry_wise_total_login/', views.ministry_wise_total_login_view, name="ministry_wise_total_login"),
+        path(
+            'total_offices/',
+            cache_page(CACHE_TTL, key_prefix='dashboard')(views.total_offices_view),
+            name="total_offices",
+        ),
+        path(
+            'ministry_wise_total_login/',
+            cache_page(CACHE_TTL, key_prefix='dashboard')(views.ministry_wise_total_login_view),
+            name="ministry_wise_total_login",
+        ),
         path(
             'nispottikritto_nothi/',
-            views.nispottikritto_nothi_view,
+            cache_page(CACHE_TTL, key_prefix='dashboard')(views.nispottikritto_nothi_view),
             name="nispottikritto_nothi",
         ),
         path(
             'nothi_users_total/',
-            views.nothi_users_total_view,
+            cache_page(CACHE_TTL, key_prefix='dashboard')(views.nothi_users_total_view),
             name="nothi_users_total",
         ),
         path(
             'total_upokarvogi/',
-            views.total_upokarvogi_view,
+            cache_page(CACHE_TTL, key_prefix='dashboard')(views.total_upokarvogi_view),
             name="total_upokarvogi",
         ),
         path(
             'nothi_users_male/',
-            views.nothi_users_male_view,
+            cache_page(CACHE_TTL, key_prefix='dashboard')(views.nothi_users_male_view),
             name="nothi_users_male",
         ),
         path(
             'nothi_users_female/',
-            views.nothi_users_female_view,
+            cache_page(CACHE_TTL, key_prefix='dashboard')(views.nothi_users_female_view),
             name="nothi_users_female",
         ),
         path(
             'note_nisponno/',
-            views.note_nisponno_view,
+            cache_page(CACHE_TTL, key_prefix='dashboard')(views.note_nisponno_view),
             name="note_nisponno",
         ),
         path(
             'potrojari/',
-            views.potrojari_view,
+            cache_page(CACHE_TTL, key_prefix='dashboard')(views.potrojari_view),
             name="potrojari",
         ),
         path(
             'custom_report/',
-            views.custom_report,
+            cache_page(CACHE_TTL, key_prefix='dashboard')(views.custom_report),
             name="custom_report",
         ),
         path(
             'mobile_app_users/',
-            views.mobile_app_users_view,
+            cache_page(CACHE_TTL, key_prefix='dashboard')(views.mobile_app_users_view),
             name="mobile_app_users",
         ),
         path(
@@ -144,12 +152,12 @@ else:
         ),
         path(
             'login_male_users/',
-            views.login_male_users_view,
+            cache_page(CACHE_TTL, key_prefix='dashboard')(views.login_male_users_view),
             name="login_male_users",
         ),
         path(
             'login_female_users/',
-            views.login_female_users_view,
+            cache_page(CACHE_TTL, key_prefix='dashboard')(views.login_female_users_view),
             name="login_female_users",
         ),
         path(
