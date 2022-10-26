@@ -203,6 +203,10 @@ def get_dnothi_office_wise_report_summary(office_ids_string='', from_date='', to
             # 'note_nisponno': note_nisponno,
             # 'potrojari': potrojari,
         },
+        'sum_login_total': sum(login_total.values()),
+        'sum_login_total_users': sum(login_total_users.values()),
+        'sum_login_total_male_users': sum(login_total_male_users.values()),
+        'sum_login_total_female_users': sum(login_total_female_users.values()),
         'office_ids': office_ids,
     }
 

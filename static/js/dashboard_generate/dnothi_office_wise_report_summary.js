@@ -1,4 +1,8 @@
 var office_ids = [];
+var sum_login_total = 0;
+var sum_login_total_users = 0;
+var sum_login_total_male_users = 0;
+var sum_login_total_female_users = 0;
 $(document).ready(function () {
   $("#fromdate_datepicker").datepicker({
     dateFormat: "dd-mm-yy",
@@ -34,12 +38,17 @@ function clear_table() {
 
 function handleError(jqXHR, error_type, exception_object) {
   clear_table();
+  $("#total_summary").css("display", "none");
   console.log(error_type);
 }
 
 function drawTable(data) {
-  var office_ids = data["office_ids"];
+  office_ids = data["office_ids"];
   var reports = data["reports"];
+  sum_login_total = data["sum_login_total"];
+  sum_login_total_users = data["sum_login_total_users"];
+  sum_login_total_male_users = data["sum_login_total_male_users"];
+  sum_login_total_female_users = data["sum_login_total_female_users"];
 
   for (let i = 0; i < office_ids.length; i++) {
     var office_id = office_ids[i];
@@ -59,6 +68,12 @@ function drawTable(data) {
       $(element_id).text(counts);
     }
   }
+  $(".total_office").text(office_ids.length);
+  $(".login_total").text(sum_login_total);
+  $(".login_total_users").text(sum_login_total_users);
+  $(".login_total_male_users").text(sum_login_total_male_users);
+  $(".login_total_female_users").text(sum_login_total_female_users);
+  $("#total_summary").css("display", "");
 }
 
 function tableToCSV() {
@@ -71,8 +86,25 @@ function tableToCSV() {
     });
     csv_data.push(csvrow.join(","));
   });
+  csv_data.push(["", "", ""].join(","));
+  csv_data.push(["", "", ""].join(","));
+  csv_data.push(["", "", ""].join(","));
   var footer_row = ["", "সর্বমোট অফিস", office_ids.length];
   csv_data.push(footer_row.join(","));
+  csv_data.push(["", "সর্বমোট লগিন", sum_login_total].join(","));
+  csv_data.push(
+    ["", "সর্বমোট লগিন ব্যবহারকারী", sum_login_total_users].join(",")
+  );
+  csv_data.push(
+    ["", "সর্বমোট লগিন ব্যবহারকারী (পুরুষ)", sum_login_total_male_users].join(
+      ","
+    )
+  );
+  csv_data.push(
+    ["", "সর্বমোট লগিন ব্যবহারকারী (মহিলা)", sum_login_total_female_users].join(
+      ","
+    )
+  );
   csv_data = csv_data.join("\n");
   downloadCSVFile(csv_data);
 }

@@ -4332,3 +4332,19 @@ footer.pull-right {
   width: 40px;
   margin-right: 58px;
 }
+
+#total_summary .total_office {
+  margin-left: 20px;
+}
+#total_summary .login_total {
+  margin-left: 20px;
+}
+#total_summary .login_total_users {
+  margin-left: 20px;
+}
+#total_summary .login_total_male_users {
+  margin-left: 20px;
+}
+#total_summary .login_total_female_users {
+  margin-left: 20px;
+}
