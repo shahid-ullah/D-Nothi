@@ -4301,3 +4301,34 @@ table thead .checkbox.radio { margin-top:-7px;margin-top:-21px; }
   font-weight: bold;
   margin-bottom: 8px;
 }
+
+footer.pull-right {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  color: white;
+  background-color: green;
+  text-align: center;
+}
+
+.custom_height {
+  min-height: 92vh;
+}
+#summary_table {
+  background-color: white;
+}
+#table_data tr:nth-child(odd) {
+  /* background-color: #ced4ce; */
+  box-shadow: inset 0 0 0 9999px rgb(0 0 0 / 2%);
+  color: #746e6e;
+}
+#table_data tr:nth-child(even) {
+  color: #746e6e;
+}
+
+.download_button_wrapper {
+  float: right;
+  width: 40px;
+  margin-right: 58px;
+}

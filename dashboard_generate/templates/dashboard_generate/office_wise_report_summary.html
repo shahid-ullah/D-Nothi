@@ -5,22 +5,21 @@
 {% block title %}
   রিপোর্ট তৈরি
 {% endblock title %}
-
 {% block stylesheets %}
   {{ block.super }}
   <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
 {% endblock stylesheets %}
-
 {% block content %}
-  <div class="right_col" role="main">
+  <div class="right_col custom_height" role="main">
     <div class="row">
       <div id="form_container">
         <form id="report_summary" action="/nothi_report/" method="GET">
           <div>
             <label for="office_ids">office ids</label>
-            <textarea id="office_ids" class="form-control" name="office_ids" rows="2" cols="50" placeholder="e.g: 8001, 57, ..."></textarea>
+            <textarea id="office_ids" class="form-control" name="office_ids" rows="2" cols="50" placeholder="e.g: 8001, 57, ..." required></textarea>
           </div>
-          <div>
+          <div class="">
             <label for="fromdate_datepicker">From Date</label>
             <input class="form-control" type="text" name="from_date" id="fromdate_datepicker" placeholder="e.g: 09-09-22" min="2022-10-09" required>
           </div>
@@ -28,19 +27,19 @@
             <label for="todate_datepicker">To Date</label>
             <input class="form-control" type="text" name="to_date" id="todate_datepicker" placeholder="e.g: 10-10-22">
           </div>
-
-          <button type="submit" class="btn btn-success">Get Report Summary</button>
+          <button type="submit" class="btn btn-success"     style="margin-top: 10px;">Get Report Summary</button>
         </form>
       </div>
     </div>
-
-    <div>
-      <button class="btn btn-primary" id="download_as_csv" type="button">Download CSV</button>
+    <div class="download_button_wrapper">
+      <button class="btn btn-primary" id="download_as_csv" type="button">
+        <i class="bi bi-download"></i> Download
+      </button>
     </div>
     <div class="row">
       <div class="col-12">
         <div class="table-wrapper">
-          <table class="summary_table table table-striped table-hover table-bordered caption-top">
+          <table id="summary_table" class="summary_table table table-striped table-hover table-bordered caption-top">
             <thead>
               <tr>
                 <th scope="col" class="text-justify">অফিস আইডি</th>
@@ -56,19 +55,13 @@
         </div>
       </div>
     </div>
-
-
-
   </div>
 {% endblock content %}
-
 {% block javascripts %}
 {% endblock javascripts %}
-
 {% block custom_js_var %}
   <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
   <script src="{% static 'js/dashboard_generate/office_wise_report_summary.js' %}"></script>
-
 {% endblock custom_js_var %}
