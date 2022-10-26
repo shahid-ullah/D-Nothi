@@ -48,6 +48,10 @@ function drawTable(data) {
         <td id=${office_id}_login_total_users>0</td>
         <td id=${office_id}_login_total_male_users>0</td>
         <td id=${office_id}_login_total_female_users>0</td>
+        <td id=${office_id}_nispottikritto_nothi>0</td>
+        <td id=${office_id}_upokarvogi>0</td>
+        <td id=${office_id}_note_nisponno>0</td>
+        <td id=${office_id}_potrojari>0</td>
       </tr>`;
     $("#table_data").append(row);
   }

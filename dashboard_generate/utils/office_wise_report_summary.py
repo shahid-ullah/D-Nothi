@@ -101,6 +101,70 @@ def get_login_total_female_users(date_range, office_ids):
     return office_ids_counts
 
 
+def get_nispottikritto_nothi(date_range, office_ids):
+
+    office_ids_counts = {}
+    querysets = ReportNispottikrittoNothiModel.objects.all()
+    querysets = querysets.filter(report_date__range=date_range, office_id__in=office_ids)
+
+    if querysets:
+        dataframe = pd.DataFrame(querysets.values('office_id', 'count_or_sum'))
+        grouped = dataframe.groupby('office_id', sort=False, as_index=False)['count_or_sum'].sum()
+        office_ids_counts = {
+            office_id: counts for office_id, counts in zip(grouped['office_id'], grouped['count_or_sum'])
+        }
+
+    return office_ids_counts
+
+
+def get_upokarvogi(date_range, office_ids):
+
+    office_ids_counts = {}
+    querysets = ReportUpokarvogiModel.objects.all()
+    querysets = querysets.filter(report_date__range=date_range, office_id__in=office_ids)
+
+    if querysets:
+        dataframe = pd.DataFrame(querysets.values('office_id', 'count_or_sum'))
+        grouped = dataframe.groupby('office_id', sort=False, as_index=False)['count_or_sum'].sum()
+        office_ids_counts = {
+            office_id: counts for office_id, counts in zip(grouped['office_id'], grouped['count_or_sum'])
+        }
+
+    return office_ids_counts
+
+
+def get_note_nisponno(date_range, office_ids):
+
+    office_ids_counts = {}
+    querysets = ReportNoteNisponnoModel.objects.all()
+    querysets = querysets.filter(report_date__range=date_range, office_id__in=office_ids)
+
+    if querysets:
+        dataframe = pd.DataFrame(querysets.values('office_id', 'count_or_sum'))
+        grouped = dataframe.groupby('office_id', sort=False, as_index=False)['count_or_sum'].sum()
+        office_ids_counts = {
+            office_id: counts for office_id, counts in zip(grouped['office_id'], grouped['count_or_sum'])
+        }
+
+    return office_ids_counts
+
+
+def get_potrojari(date_range, office_ids):
+
+    office_ids_counts = {}
+    querysets = ReportPotrojariModel.objects.all()
+    querysets = querysets.filter(report_date__range=date_range, office_id__in=office_ids)
+
+    if querysets:
+        dataframe = pd.DataFrame(querysets.values('office_id', 'count_or_sum'))
+        grouped = dataframe.groupby('office_id', sort=False, as_index=False)['count_or_sum'].sum()
+        office_ids_counts = {
+            office_id: counts for office_id, counts in zip(grouped['office_id'], grouped['count_or_sum'])
+        }
+
+    return office_ids_counts
+
+
 def get_office_wise_report_summary(office_ids_string='', from_date='', to_date=''):
     office_ids = office_ids_string_to_list(office_ids_string)
 
@@ -123,6 +187,10 @@ def get_office_wise_report_summary(office_ids_string='', from_date='', to_date='
     login_total_users = get_login_total_users(date_range, office_ids)
     login_total_male_users = get_login_total_male_users(date_range, office_ids)
     login_total_female_users = get_login_total_female_users(date_range, office_ids)
+    nispottikritto_nothi = get_nispottikritto_nothi(date_range, office_ids)
+    upokarvogi = get_upokarvogi(date_range, office_ids)
+    note_nisponno = get_note_nisponno(date_range, office_ids)
+    potrojari = get_potrojari(date_range, office_ids)
 
     context = {
         'reports': {
@@ -130,6 +198,10 @@ def get_office_wise_report_summary(office_ids_string='', from_date='', to_date='
             'login_total_users': login_total_users,
             'login_total_male_users': login_total_male_users,
             'login_total_female_users': login_total_female_users,
+            'nispottikritto_nothi': nispottikritto_nothi,
+            'upokarvogi': upokarvogi,
+            'note_nisponno': note_nisponno,
+            'potrojari': potrojari,
         },
         'office_ids': office_ids,
     }
