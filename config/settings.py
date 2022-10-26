@@ -208,7 +208,7 @@ CACHES = {
     }
 }
 
-CACHE_TTL = 60 * 60
+CACHE_TTL = 60 * 10 * 60
 
 if settings.DEBUG:
     CACHE_TTL = 60

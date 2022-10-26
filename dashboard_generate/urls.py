@@ -83,6 +83,7 @@ if settings.DEBUG:
         path('v1/login_users_not_distinct/', apis.LoginUsersNotDistinctAPI.as_view(), name='login_users_not_distinct'),
         path('v1/clear_cache/', apis.ClearCacheAPI.as_view(), name='clear_cache'),
         path('report_summary/', views.report_summary, name='report_summary'),
+        path('nothi_report/', views.office_wise_report_summary, name='office_wise_report_summary'),
     ]
 
 
@@ -164,4 +165,5 @@ else:
         path('v1/login_users_not_distinct/', apis.LoginUsersNotDistinctAPI.as_view(), name='login_users_not_distinct'),
         path('v1/clear_cache/', apis.ClearCacheAPI.as_view(), name='clear_cache'),
         path('report_summary/', views.report_summary, name='report_summary'),
+        path('nothi_report/', views.office_wise_report_summary, name='office_wise_report_summary'),
     ]

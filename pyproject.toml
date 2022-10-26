@@ -30,5 +30,5 @@ indent = 2
 max_attribute_length = 1000
 use_gitignore = true
 # linter_output_format = "{filename}:{line}: {code} {message} {match}"
-preserve_leading_space = true
-preserve_blank_lines = true
+# preserve_leading_space = true
+# preserve_blank_lines = true
