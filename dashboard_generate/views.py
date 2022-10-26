@@ -37,6 +37,7 @@ from .models import (
 )
 from .report_summary import get_report_summary
 from .utils import total_report_summary_count
+from .utils.dnothi_office_wise_report_summary import get_dnothi_office_wise_report_summary
 from .utils.office_wise_report_summary import get_office_wise_report_summary
 
 User = get_user_model()
@@ -723,3 +724,17 @@ def office_wise_report_summary(request):
         return JsonResponse(response)
 
     return render(request, 'dashboard_generate/office_wise_report_summary.html', context={})
+
+
+def dnothi_office_wise_report_summary(request):
+    if is_ajax(request):
+        office_ids = request.GET['office_ids']
+        from_date = request.GET['from_date']
+        to_date = request.GET['to_date']
+        response = {}
+        response = get_dnothi_office_wise_report_summary(
+            office_ids_string=office_ids, from_date=from_date, to_date=to_date
+        )
+        return JsonResponse(response)
+
+    return render(request, 'dashboard_generate/dnothi_office_wise_report_summary.html', context={})

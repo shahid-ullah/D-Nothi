@@ -14,7 +14,7 @@
   <div class="right_col custom_height" role="main">
     <div class="row">
       <div id="form_container">
-        <form id="report_summary" action="/enothi_report/" method="GET">
+        <form id="report_summary" action="/dnothi_report/" method="GET">
           <div>
             <label for="office_ids">office ids</label>
             <textarea id="office_ids" class="form-control" name="office_ids" rows="2" cols="50" placeholder="e.g: 8001, 57, ..." required></textarea>
@@ -47,10 +47,10 @@
                 <th scope="col" class="">মোট লগইন ব্যবহারকারী</th>
                 <th scope="col" class="">মোট লগইন ব্যবহারকারী (পুরুষ)</th>
                 <th scope="col" class="">মোট লগইন ব্যবহারকারী (মহিলা)</th>
-                <th scope="col" class="">নিষ্পত্তিকৃত নথি</th>
+                {% comment %} <th scope="col" class="">নিষ্পত্তিকৃত নথি</th>
                 <th scope="col" class="">মোট উপকারভোগী</th>
                 <th scope="col" class="">নোট নিষ্পন্ন</th>
-                <th scope="col" class="">পত্রজারি</th>
+                <th scope="col" class="">পত্রজারি</th> {% endcomment %}
               </tr>
             </thead>
             <tbody id="table_data">
@@ -67,5 +67,5 @@
   <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
   <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
-  <script src="{% static 'js/dashboard_generate/office_wise_report_summary.js' %}"></script>
+  <script src="{% static 'js/dashboard_generate/dnothi_office_wise_report_summary.js' %}"></script>
 {% endblock custom_js_var %}

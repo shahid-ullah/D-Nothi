@@ -84,6 +84,7 @@ if settings.DEBUG:
         path('v1/clear_cache/', apis.ClearCacheAPI.as_view(), name='clear_cache'),
         path('report_summary/', views.report_summary, name='report_summary'),
         path('enothi_report/', views.office_wise_report_summary, name='office_wise_report_summary'),
+        path('dnothi_report/', views.dnothi_office_wise_report_summary, name='dnothi_office_wise_report_summary'),
     ]
 
 
@@ -174,4 +175,5 @@ else:
         path('v1/clear_cache/', apis.ClearCacheAPI.as_view(), name='clear_cache'),
         path('report_summary/', views.report_summary, name='report_summary'),
         path('enothi_report/', views.office_wise_report_summary, name='office_wise_report_summary'),
+        path('dnothi_report/', views.dnothi_office_wise_report_summary, name='dnothi_office_wise_report_summary'),
     ]
