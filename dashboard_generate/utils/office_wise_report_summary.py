@@ -3,6 +3,7 @@ from datetime import datetime
 import pandas as pd
 from django.db.models import Sum
 
+from backup_source_db.models import BackupOffices
 from dashboard_generate.models import (
     ReportLoginFemalelUsersModel,
     ReportLoginMalelUsersModel,
@@ -167,6 +168,8 @@ def get_potrojari(date_range, office_ids):
 
 def get_office_wise_report_summary(office_ids_string='', from_date='', to_date=''):
     office_ids = office_ids_string_to_list(office_ids_string)
+    offices_querysets = BackupOffices.objects.filter(source_id__in=office_ids)
+    offices_id_name_map = {obj.source_id: obj.office_name_bng for obj in offices_querysets}
 
     if not to_date:
         today = datetime.today()
@@ -212,6 +215,7 @@ def get_office_wise_report_summary(office_ids_string='', from_date='', to_date='
         'sum_note_nisponno': sum(note_nisponno.values()),
         'sum_potrojari': sum(potrojari.values()),
         'office_ids': office_ids,
+        'offices_id_name_map': offices_id_name_map,
     }
 
     return context

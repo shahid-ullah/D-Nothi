@@ -7,6 +7,7 @@ var sum_nispottikritto_nothi = 0;
 var sum_upokarvogi = 0;
 var sum_note_nisponno = 0;
 var sum_potrojari = 0;
+var offices_id_name_map = {};
 $(document).ready(function () {
   $("#fromdate_datepicker").datepicker({
     dateFormat: "dd-mm-yy",
@@ -56,11 +57,13 @@ function drawTable(data) {
   sum_upokarvogi = data["sum_upokarvogi"];
   sum_note_nisponno = data["sum_note_nisponno"];
   sum_potrojari = data["sum_potrojari"];
+  offices_id_name_map = data["offices_id_name_map"];
 
   for (let i = 0; i < office_ids.length; i++) {
     var office_id = office_ids[i];
     var row = `<tr>
         <th scope="row">${office_id}</th>
+        <td id=${office_id}_name></td>
         <td id=${office_id}_login_total>0</td>
         <td id=${office_id}_login_total_users>0</td>
         <td id=${office_id}_login_total_male_users>0</td>
@@ -78,6 +81,10 @@ function drawTable(data) {
       var element_id = "#" + office_id + "_" + report_type;
       $(element_id).text(counts);
     }
+  }
+  for (const [office_id, office_name] of Object.entries(offices_id_name_map)) {
+    var element_id = "#" + office_id + "_" + "name";
+    $(element_id).text(office_name);
   }
   $("#total_summary .total_office").text(office_ids.length);
   $("#total_summary .login_total").text(sum_login_total);
@@ -97,6 +104,7 @@ function tableToCSV() {
   var csv_data = [];
   var header_row = [
     "মোট অফিস",
+    "অফিসের নাম",
     "মোট লগইন",
     "মোট লগইন ব্যবহারকারী",
     "মোট লগইন ব্যবহারকারী (পুরুষ)",
@@ -110,8 +118,9 @@ function tableToCSV() {
   $("tr", "#table_data").each(function (index) {
     var csvrow = [];
     $("th, td", this).each(function (index) {
-      csvrow.push($(this).text());
-      console.log($(this).text());
+      // csvrow.push($(this).text());
+      csvrow.push($(this).text().split(",").join("     "));
+      // console.log($(this).text());
     });
     csv_data.push(csvrow.join(","));
   });
