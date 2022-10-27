@@ -19,7 +19,7 @@
             <label for="office_ids">office ids</label>
             <textarea id="office_ids" class="form-control" name="office_ids" rows="2" cols="50" placeholder="e.g: 8001, 57, ..." required></textarea>
           </div>
-          <div class="">
+          <div>
             <label for="fromdate_datepicker">From Date</label>
             <input class="form-control" type="text" name="from_date" id="fromdate_datepicker" placeholder="e.g: 09-09-22" min="2022-10-09" required>
           </div>
@@ -27,14 +27,9 @@
             <label for="todate_datepicker">To Date</label>
             <input class="form-control" type="text" name="to_date" id="todate_datepicker" placeholder="e.g: 10-10-22">
           </div>
-          <button type="submit" class="btn btn-success"     style="margin-top: 10px;">Get Report Summary</button>
+          <button type="submit" class="btn btn-success" style="margin-top: 10px;">Get Report Summary</button>
         </form>
       </div>
-    </div>
-    <div class="download_button_wrapper">
-      <button class="btn btn-primary" id="download_as_csv" type="button">
-        <i class="bi bi-download"></i> Download
-      </button>
     </div>
     <div class="row" id="total_summary" style="display:none">
       <div class="">
@@ -55,6 +50,11 @@
         </div>
       </div>
     </div>
+    <div class="download_button_wrapper">
+      <button class="btn btn-primary" id="download_as_csv" type="button">
+        <i class="bi bi-download"></i> Download
+      </button>
+    </div>
     <div class="row">
       <div class="col-12">
         <div class="table-wrapper">
@@ -66,10 +66,6 @@
                 <th scope="col" class="">মোট লগইন ব্যবহারকারী</th>
                 <th scope="col" class="">মোট লগইন ব্যবহারকারী (পুরুষ)</th>
                 <th scope="col" class="">মোট লগইন ব্যবহারকারী (মহিলা)</th>
-                {% comment %} <th scope="col" class="">নিষ্পত্তিকৃত নথি</th>
-                <th scope="col" class="">মোট উপকারভোগী</th>
-                <th scope="col" class="">নোট নিষ্পন্ন</th>
-                <th scope="col" class="">পত্রজারি</th> {% endcomment %}
               </tr>
             </thead>
             <tbody id="table_data">

@@ -34,6 +34,7 @@ $(document).ready(function () {
 
 function clear_table() {
   $("#table_data").empty();
+  $("#total_summary").css("display", "none");
 }
 
 function handleError(jqXHR, error_type, exception_object) {

@@ -1,7 +1,7 @@
 trailingComma: "es5"
 semi: true
 singleQuote: false
-max_line_length: 120
+max_line_length: 300
 tabWidth: 2
 indent_size: 2
 bracketSpacing: true

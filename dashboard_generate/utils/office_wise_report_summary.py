@@ -203,6 +203,14 @@ def get_office_wise_report_summary(office_ids_string='', from_date='', to_date='
             'note_nisponno': note_nisponno,
             'potrojari': potrojari,
         },
+        'sum_login_total': sum(login_total.values()),
+        'sum_login_total_users': sum(login_total_users.values()),
+        'sum_login_total_male_users': sum(login_total_male_users.values()),
+        'sum_login_total_female_users': sum(login_total_female_users.values()),
+        'sum_nispottikritto_nothi': sum(nispottikritto_nothi.values()),
+        'sum_upokarvogi': sum(upokarvogi.values()),
+        'sum_note_nisponno': sum(note_nisponno.values()),
+        'sum_potrojari': sum(potrojari.values()),
         'office_ids': office_ids,
     }
 

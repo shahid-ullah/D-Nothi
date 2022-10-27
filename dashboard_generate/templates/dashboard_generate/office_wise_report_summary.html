@@ -1,4 +1,4 @@
-{% extends 'dashboard_ui/base_site.html' %}
+{% extends "dashboard_ui/base_site.html" %}
 
 {% load static %}
 
@@ -14,12 +14,12 @@
   <div class="right_col custom_height" role="main">
     <div class="row">
       <div id="form_container">
-        <form id="report_summary" action="/enothi_report/" method="GET">
+        <form id="report_summary" action="/enothi_report/" method="get">
           <div>
             <label for="office_ids">office ids</label>
             <textarea id="office_ids" class="form-control" name="office_ids" rows="2" cols="50" placeholder="e.g: 8001, 57, ..." required></textarea>
           </div>
-          <div class="">
+          <div>
             <label for="fromdate_datepicker">From Date</label>
             <input class="form-control" type="text" name="from_date" id="fromdate_datepicker" placeholder="e.g: 09-09-22" min="2022-10-09" required>
           </div>
@@ -27,10 +27,44 @@
             <label for="todate_datepicker">To Date</label>
             <input class="form-control" type="text" name="to_date" id="todate_datepicker" placeholder="e.g: 10-10-22">
           </div>
-          <button type="submit" class="btn btn-success"     style="margin-top: 10px;">Get Report Summary</button>
+          <button type="submit" class="btn btn-success" style="margin-top: 10px;">Get Report Summary</button>
         </form>
       </div>
     </div>
+
+
+    <div class="row" id="total_summary" style="display:none">
+      <div>
+        <div>
+          <span>মোট অফিস</span><span class="summary_count total_office"></span>
+        </div>
+        <div>
+          <span>মোট লগইন</span><span class="summary_count login_total"></span>
+        </div>
+        <div>
+          <span>মোট লগইন ব্যবহারকারী</span><span class="summary_count login_total_users"></span>
+        </div>
+        <div>
+          <span>মোট লগইন ব্যবহারকারী (পুরুষ)</span><span class="summary_count login_total_male_users"></span>
+        </div>
+        <div>
+          <span>মোট লগইন ব্যবহারকারী (মহিলা)</span><span class="summary_count login_total_female_users"></span>
+        </div>
+        <div>
+          <span>নিষ্পত্তিকৃত নথি</span><span class="summary_count nispottikritto_nothi"></span>
+        </div>
+        <div>
+          <span>উপকারভোগী</span><span class="summary_count upokarvogi"></span>
+        </div>
+        <div>
+          <span>নোট নিষ্পন্ন</span><span class="summary_count note_nisponno"></span>
+        </div>
+        <div>
+          <span>পত্রজারি</span><span class="summary_count potrojari"></span>
+        </div>
+      </div>
+    </div>
+
     <div class="download_button_wrapper">
       <button class="btn btn-primary" id="download_as_csv" type="button">
         <i class="bi bi-download"></i> Download
@@ -42,15 +76,25 @@
           <table id="summary_table" class="summary_table table table-striped table-hover table-bordered caption-top">
             <thead>
               <tr>
-                <th scope="col" class="">অফিস আইডি</th>
-                <th scope="col" class="">মোট লগইন</th>
-                <th scope="col" class="">মোট লগইন ব্যবহারকারী</th>
-                <th scope="col" class="">মোট লগইন ব্যবহারকারী (পুরুষ)</th>
-                <th scope="col" class="">মোট লগইন ব্যবহারকারী (মহিলা)</th>
-                <th scope="col" class="">নিষ্পত্তিকৃত নথি</th>
-                <th scope="col" class="">মোট উপকারভোগী</th>
-                <th scope="col" class="">নোট নিষ্পন্ন</th>
-                <th scope="col" class="">পত্রজারি</th>
+                <th scope="col">অফিস আইডি</th>
+                <th scope="col">মোট লগইন</th>
+                <th scope="col">মোট লগইন ব্যবহারকারী</th>
+                <th scope="col">মোট লগইন ব্যবহারকারী (পুরুষ)</th>
+                <th scope="col" class="">
+                  মোট লগইন ব্যবহারকারী (মহিলা)
+                </th>
+                <th scope="col" class="">
+                  নিষ্পত্তিকৃত নথি
+                </th>
+                <th scope="col" class="">
+                  মোট উপকারভোগী
+                </th>
+                <th scope="col" class="">
+                  নোট নিষ্পন্ন
+                </th>
+                <th scope="col" class="">
+                  পত্রজারি
+                </th>
               </tr>
             </thead>
             <tbody id="table_data">
