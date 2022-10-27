@@ -3,6 +3,7 @@ var sum_login_total = 0;
 var sum_login_total_users = 0;
 var sum_login_total_male_users = 0;
 var sum_login_total_female_users = 0;
+var offices_id_name_map = {};
 $(document).ready(function () {
   $("#fromdate_datepicker").datepicker({
     dateFormat: "dd-mm-yy",
@@ -50,11 +51,13 @@ function drawTable(data) {
   sum_login_total_users = data["sum_login_total_users"];
   sum_login_total_male_users = data["sum_login_total_male_users"];
   sum_login_total_female_users = data["sum_login_total_female_users"];
+  offices_id_name_map = data["offices_id_name_map"];
 
   for (let i = 0; i < office_ids.length; i++) {
     var office_id = office_ids[i];
     var row = `<tr>
         <th scope="row">${office_id}</th>
+        <td id=${office_id}_name></td>
         <td id=${office_id}_login_total>0</td>
         <td id=${office_id}_login_total_users>0</td>
         <td id=${office_id}_login_total_male_users>0</td>
@@ -69,6 +72,11 @@ function drawTable(data) {
       $(element_id).text(counts);
     }
   }
+  for (const [office_id, office_name] of Object.entries(offices_id_name_map)) {
+    var element_id = "#" + office_id + "_" + "name";
+    $(element_id).text(office_name);
+  }
+
   $(".total_office").text(office_ids.length);
   $(".login_total").text(sum_login_total);
   $(".login_total_users").text(sum_login_total_users);
@@ -79,11 +87,10 @@ function drawTable(data) {
 
 function tableToCSV() {
   var csv_data = [];
-  $("tr", ".summary_table");
-  $("tr", ".summary_table").each(function (index) {
+  $("tr", "#summary_table").each(function (index) {
     var csvrow = [];
     $("th, td", this).each(function (index) {
-      csvrow.push($(this).text());
+      csvrow.push($(this).text().split(",").join("     "));
     });
     csv_data.push(csvrow.join(","));
   });
