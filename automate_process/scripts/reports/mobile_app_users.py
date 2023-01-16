@@ -6,8 +6,8 @@
 from datetime import datetime, timedelta
 
 import pandas as pd
-from backup_source_db.models import BackupDBLog
-from dashboard_generate.models import ReportGenerationLog, ReportMobileAppUsersModel
+
+from dashboard_generate.models import ReportMobileAppUsersModel
 
 from ...models import UserLoginHistory
 

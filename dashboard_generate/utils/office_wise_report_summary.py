@@ -1,7 +1,6 @@
 from datetime import datetime
 
 import pandas as pd
-from django.db.models import Sum
 
 from backup_source_db.models import BackupOffices
 from dashboard_generate.models import (
@@ -9,7 +8,6 @@ from dashboard_generate.models import (
     ReportLoginMalelUsersModel,
     ReportLoginTotalUsers,
     ReportLoginTotalUsersNotDistinct,
-    ReportMobileAppUsersModel,
     ReportNispottikrittoNothiModel,
     ReportNoteNisponnoModel,
     ReportPotrojariModel,
@@ -49,7 +47,7 @@ def get_login_total_users(date_range, office_ids):
 
     office_ids_counts = {}
     querysets = ReportLoginTotalUsers.objects.all()
-    querysets = querysets.filter(report_date__range=date_range, office_id__in=office_ids)
+    querysets = querysets.filter(report_day__range=date_range, office_id__in=office_ids)
 
     if querysets:
         dataframe = pd.DataFrame(querysets.values('office_id', 'employee_record_ids'))
@@ -68,7 +66,7 @@ def get_login_total_male_users(date_range, office_ids):
 
     office_ids_counts = {}
     querysets = ReportLoginMalelUsersModel.objects.all()
-    querysets = querysets.filter(report_date__range=date_range, office_id__in=office_ids)
+    querysets = querysets.filter(report_day__range=date_range, office_id__in=office_ids)
 
     if querysets:
         dataframe = pd.DataFrame(querysets.values('office_id', 'employee_record_ids'))
@@ -87,7 +85,7 @@ def get_login_total_female_users(date_range, office_ids):
 
     office_ids_counts = {}
     querysets = ReportLoginFemalelUsersModel.objects.all()
-    querysets = querysets.filter(report_date__range=date_range, office_id__in=office_ids)
+    querysets = querysets.filter(report_day__range=date_range, office_id__in=office_ids)
 
     if querysets:
         dataframe = pd.DataFrame(querysets.values('office_id', 'employee_record_ids'))
@@ -106,7 +104,7 @@ def get_nispottikritto_nothi(date_range, office_ids):
 
     office_ids_counts = {}
     querysets = ReportNispottikrittoNothiModel.objects.all()
-    querysets = querysets.filter(report_date__range=date_range, office_id__in=office_ids)
+    querysets = querysets.filter(report_day__range=date_range, office_id__in=office_ids)
 
     if querysets:
         dataframe = pd.DataFrame(querysets.values('office_id', 'count_or_sum'))
@@ -122,7 +120,7 @@ def get_upokarvogi(date_range, office_ids):
 
     office_ids_counts = {}
     querysets = ReportUpokarvogiModel.objects.all()
-    querysets = querysets.filter(report_date__range=date_range, office_id__in=office_ids)
+    querysets = querysets.filter(report_day__range=date_range, office_id__in=office_ids)
 
     if querysets:
         dataframe = pd.DataFrame(querysets.values('office_id', 'count_or_sum'))
@@ -138,7 +136,7 @@ def get_note_nisponno(date_range, office_ids):
 
     office_ids_counts = {}
     querysets = ReportNoteNisponnoModel.objects.all()
-    querysets = querysets.filter(report_date__range=date_range, office_id__in=office_ids)
+    querysets = querysets.filter(report_day__range=date_range, office_id__in=office_ids)
 
     if querysets:
         dataframe = pd.DataFrame(querysets.values('office_id', 'count_or_sum'))
@@ -154,7 +152,7 @@ def get_potrojari(date_range, office_ids):
 
     office_ids_counts = {}
     querysets = ReportPotrojariModel.objects.all()
-    querysets = querysets.filter(report_date__range=date_range, office_id__in=office_ids)
+    querysets = querysets.filter(report_day__range=date_range, office_id__in=office_ids)
 
     if querysets:
         dataframe = pd.DataFrame(querysets.values('office_id', 'count_or_sum'))

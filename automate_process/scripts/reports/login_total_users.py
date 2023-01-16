@@ -2,12 +2,11 @@
 # SELECT count(DISTINCT(`employee_record_id`)) FROM `user_login_history` WHERE
 # `created` >= '2022-01-01 00:00:00' AND `created` <= '2022-01-31 23:59:59'
 from datetime import datetime, timedelta
-from tokenize import group
 
 import pandas as pd
+
 from automate_process.models import UserLoginHistory
-from backup_source_db.models import BackupDBLog, TrackBackupDBLastFetchTime
-from dashboard_generate.models import ReportGenerationLog, ReportLoginTotalUsers
+from dashboard_generate.models import ReportLoginTotalUsers
 
 
 def generate_model_object_dict(request, report_date, count_or_sum, office_id, *args, **kwargs):

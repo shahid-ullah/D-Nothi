@@ -7,13 +7,9 @@
 from datetime import datetime, timedelta
 
 import pandas as pd
+
 from automate_process.models import UserLoginHistory
-from backup_source_db.models import BackupDBLog
-from dashboard_generate.models import (
-    ReportGenerationLog,
-    ReportLoginFemalelUsersModel,
-    ReportLoginMalelUsersModel,
-)
+from dashboard_generate.models import ReportLoginFemalelUsersModel, ReportLoginMalelUsersModel
 
 from . import utils
 

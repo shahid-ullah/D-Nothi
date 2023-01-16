@@ -1,14 +1,10 @@
 # dashboard_generate/veiws.py
 import csv
 import json
-from calendar import month
 from datetime import date, datetime
-from urllib import response
 
 import pandas as pd
-from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.cache import cache
 
 # from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
@@ -719,7 +715,6 @@ def office_wise_report_summary(request):
         office_ids = request.GET['office_ids']
         from_date = request.GET['from_date']
         to_date = request.GET['to_date']
-        response = {}
         response = get_office_wise_report_summary(office_ids_string=office_ids, from_date=from_date, to_date=to_date)
         return JsonResponse(response)
 
@@ -731,7 +726,6 @@ def dnothi_office_wise_report_summary(request):
         office_ids = request.GET['office_ids']
         from_date = request.GET['from_date']
         to_date = request.GET['to_date']
-        response = {}
         response = get_dnothi_office_wise_report_summary(
             office_ids_string=office_ids, from_date=from_date, to_date=to_date
         )

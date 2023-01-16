@@ -5,8 +5,7 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 from automate_process.models import NisponnoRecords
-from backup_source_db.models import BackupDBLog
-from dashboard_generate.models import ReportGenerationLog, ReportPotrojariModel
+from dashboard_generate.models import ReportPotrojariModel
 
 
 def generate_model_object_dict(request, report_date, count_or_sum, office_id, *args, **kwargs):

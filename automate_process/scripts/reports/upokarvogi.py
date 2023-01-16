@@ -3,9 +3,9 @@
 from datetime import datetime, timedelta
 
 import pandas as pd
+
 from automate_process.models import NisponnoRecords
-from backup_source_db.models import BackupDBLog
-from dashboard_generate.models import ReportGenerationLog, ReportUpokarvogiModel
+from dashboard_generate.models import ReportUpokarvogiModel
 
 
 def generate_model_object_dict(request, report_date, upokarvogi_sum, office_id, *args, **kwargs):

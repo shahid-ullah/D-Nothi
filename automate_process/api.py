@@ -1,5 +1,4 @@
 # automate_process/api.py
-from datetime import datetime
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -10,7 +9,13 @@ from rest_framework.views import APIView
 
 from automate_process.models import EmployeeRecords, NisponnoRecords, Offices, UserLoginHistory, Users
 from backup_source_db.models import BackupDBLog
-from dashboard_generate.models import DashboardUpdateLog, ReportGenerationLog
+from dashboard_generate.models import (
+    ReportGenerationLog,
+    ReportLoginFemalelUsersModel,
+    ReportLoginMalelUsersModel,
+    ReportLoginTotalUsers,
+    ReportLoginTotalUsersNotDistinct,
+)
 
 from .models import SourceDBLog
 from .scripts import reports
@@ -61,19 +66,6 @@ class updateDashboard(APIView):
         settings.SYSTEM_UPDATE_RUNNING = True
 
         self.generate_report(request, *args, **kwargs)
-        """ """
-        # try:
-        #     DashboardUpdateLog.objects.create(
-        #         completion_log='empty,',
-        #         user=self.request.user,
-        #         status=scripts_log,
-        #         update_start_time=datetime.now(),
-        #         update_completion_time=datetime.now(),
-        #     )
-        #     scripts_log['dashboard_update_log'] = 'success'
-        # except Exception as e:
-        #     scripts_log['dashboard_update_log'] = str(e)
-        #     print(e)
         self._backup_source_db(request, *args, **kwargs)
         print(self.scripts_log)
 
@@ -96,7 +88,7 @@ class updateDashboard(APIView):
             print(e)
             self.scripts_log['backup_db_log'] = str(e)
 
-    def get_currrent_report_generation_log(self, request, *args, **kwargs):
+    def cache_currrent_report_generation_log(self, request, *args, **kwargs):
         self.queryset_user_login_history = UserLoginHistory.objects.using('source_db').filter(created__isnull=False)
         self.queryset_users = Users.objects.using('source_db').filter(created__isnull=False)
         self.queryset_employee_records = EmployeeRecords.objects.using('source_db').filter(created__isnull=False)
@@ -185,16 +177,17 @@ class updateDashboard(APIView):
 
         self.nisponno_records_querysets = querysets
 
-    def setup_querysets(self, request, *args, **kwargs):
+    def setup_base_querysets(self, request, *args, **kwargs):
         self.set_users_querysets(request, *args, **kwargs)
         self.set_offices_querysets(request, *args, **kwargs)
         self.set_user_login_history_querysets(request, *args, **kwargs)
         self.set_nisponno_records_querysets(request, *args, **kwargs)
 
     def generate_report(self, request, *args, **kwargs):
+        # self.clear_report_tables(request, *args, **kwargs)
         self.initialize_variables(request, *args, **kwargs)
-        self.get_currrent_report_generation_log(request, *args, **kwargs)
-        self.setup_querysets(request, *args, **kwargs)
+        self.cache_currrent_report_generation_log(request, *args, **kwargs)
+        self.setup_base_querysets(request, *args, **kwargs)
 
         self.generate_total_offices_report(request, *args, **kwargs)
         self.generate_nispottikritto_nothi_report(request, *args, **kwargs)
@@ -318,6 +311,14 @@ class updateDashboard(APIView):
         except Exception as e:
             print(e)
             self.scripts_log['login_male_female_users'] = str(e)
+
+    def clear_report_tables(self, request, *args, **kwargs):
+        if settings.DEBUG:
+            ReportGenerationLog.objects.all().delete()
+            ReportLoginMalelUsersModel.objects.all().delete()
+            ReportLoginFemalelUsersModel.objects.all().delete()
+            ReportLoginTotalUsers.objects.all().delete()
+            ReportLoginTotalUsersNotDistinct.objects.all().delete()
 
 
 class ReportGenerationLogAPI(mixins.ListModelMixin, generics.GenericAPIView):
