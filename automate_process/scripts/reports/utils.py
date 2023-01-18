@@ -106,16 +106,18 @@ def update_backup_db_last_fetch_time(request, *args, **kwargs):
 
 
 def update_backup_db_log(request, *args, **kwargs):
+    last_log_map = kwargs['last_log_map']
     print()
     print('updating backup DB log')
-    log_object = SourceDBLog.objects.using('source_db').last()
-    object_dict = {}
-    object_dict['last_office_id'] = log_object.last_office_id
-    object_dict['last_user_id'] = log_object.last_user_id
-    object_dict['last_employee_id'] = log_object.last_employee_id
-    object_dict['last_nisponno_records_time'] = log_object.last_nisponno_records_time
-    object_dict['last_login_history_time'] = log_object.last_login_history_time
-    BackupDBLog.objects.using('backup_source_db').create(**object_dict)
+    # log_object = SourceDBLog.objects.using('source_db').last()
+    # object_dict = {}
+    # object_dict['last_office_id'] = log_object.last_office_id
+    # object_dict['last_user_id'] = log_object.last_user_id
+    # object_dict['last_employee_id'] = log_object.last_employee_id
+    # object_dict['last_nisponno_records_time'] = log_object.last_nisponno_records_time
+    # object_dict['last_login_history_time'] = log_object.last_login_history_time
+    # BackupDBLog.objects.using('backup_source_db').create(**object_dict)
+    BackupDBLog.objects.using('backup_source_db').create(**last_log_map)
     print('End updating backup DB log')
     print()
 

@@ -85,9 +85,7 @@ class BackupOffices(models.Model):
     parent_office_id = models.IntegerField()
     active_status = models.IntegerField()
     unit_organogram_edit_option = models.IntegerField(blank=True, null=True)
-    unit_organogram_edit_option_status_updated_at = models.DateTimeField(
-        blank=True, null=True
-    )
+    unit_organogram_edit_option_status_updated_at = models.DateTimeField(blank=True, null=True)
     created_by = models.IntegerField()
     modified_by = models.IntegerField()
     created = models.DateTimeField(blank=True, null=True)
@@ -147,13 +145,9 @@ class BackupUsers(models.Model):
     active = models.IntegerField(blank=True, null=True)
     user_status = models.CharField(max_length=255, db_collation='latin1_swedish_ci')
     is_email_verified = models.IntegerField(blank=True, null=True)
-    email_verify_code = models.CharField(
-        max_length=255, db_collation='latin1_swedish_ci', blank=True, null=True
-    )
+    email_verify_code = models.CharField(max_length=255, db_collation='latin1_swedish_ci', blank=True, null=True)
     verification_date = models.DateField(blank=True, null=True)
-    ssn = models.CharField(
-        max_length=255, db_collation='latin1_swedish_ci', blank=True, null=True
-    )
+    ssn = models.CharField(max_length=255, db_collation='latin1_swedish_ci', blank=True, null=True)
     force_password_change = models.IntegerField(blank=True, null=True)
     last_password_change = models.DateTimeField(blank=True, null=True)
     created = models.DateTimeField(blank=True, null=True)
@@ -195,6 +189,7 @@ class BackupNisponnoRecords(models.Model):
         managed = True
         db_table = 'backup_nisponno_records'
 
+
 class TrackBackupDBLastFetchTime(models.Model):
     offices = models.DateTimeField()
     users = models.DateTimeField()
@@ -206,6 +201,7 @@ class TrackBackupDBLastFetchTime(models.Model):
     def __str__(self):
         return f'{self.created}'
 
+
 class BackupDBLog(models.Model):
     last_office_id = models.CharField(max_length=100, blank=True, null=True)
     last_user_id = models.CharField(max_length=100, blank=True, null=True)
@@ -214,8 +210,11 @@ class BackupDBLog(models.Model):
     last_login_history_time = models.DateTimeField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
     class Meta:
-        ordering = ['id',]
+        ordering = [
+            'id',
+        ]
 
     def __str__(self):
         return f'{self.created}'

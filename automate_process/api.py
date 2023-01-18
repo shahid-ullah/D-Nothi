@@ -65,6 +65,8 @@ class updateDashboard(APIView):
             return Response({'status': 'system update running. Please request later'})
         settings.SYSTEM_UPDATE_RUNNING = True
 
+        self.initialize_variables(request, *args, **kwargs)
+        self.cache_currrent_report_generation_log(request, *args, **kwargs)
         self.generate_report(request, *args, **kwargs)
         self._backup_source_db(request, *args, **kwargs)
         print(self.scripts_log)
@@ -80,13 +82,6 @@ class updateDashboard(APIView):
         except Exception as e:
             print(e)
             self.scripts_log['backup_db'] = str(e)
-
-        try:
-            reports.utils.update_backup_db_log(request, *args, **kwargs)
-            self.scripts_log['backup_db_log'] = 'success'
-        except Exception as e:
-            print(e)
-            self.scripts_log['backup_db_log'] = str(e)
 
     def cache_currrent_report_generation_log(self, request, *args, **kwargs):
         self.queryset_user_login_history = UserLoginHistory.objects.using('source_db').filter(created__isnull=False)
@@ -185,8 +180,6 @@ class updateDashboard(APIView):
 
     def generate_report(self, request, *args, **kwargs):
         # self.clear_report_tables(request, *args, **kwargs)
-        self.initialize_variables(request, *args, **kwargs)
-        self.cache_currrent_report_generation_log(request, *args, **kwargs)
         self.setup_base_querysets(request, *args, **kwargs)
 
         self.generate_total_offices_report(request, *args, **kwargs)
